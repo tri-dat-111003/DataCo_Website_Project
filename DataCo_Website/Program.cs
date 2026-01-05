@@ -149,19 +149,20 @@ app.Use(async (context, next) =>
         "/products",
         "/categories",
         "/cart",
-        "/shop"
+        "/shop",
+        "/home"
     };
 
     // Nếu ADMIN cố vào trang customer
     if (context.User.IsInRole("Admin") &&
-        customerPaths.Any(p => path.StartsWith(p)))
+        (path == "/" || customerPaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase))))
     {
         context.Response.Redirect("/Admin");
         return;
     }
 
     // Nếu USER cố vào trang admin
-    if (context.User.IsInRole("User") && path.StartsWith("/admin"))
+    if (context.User.IsInRole("User") && path.StartsWith("/admin", StringComparison.OrdinalIgnoreCase))
     {
         context.Response.Redirect("/Products");
         return;

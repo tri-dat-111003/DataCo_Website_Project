@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AnalysisServices.AdomdClient;
 using System.Data;
+using DataCo_Website.Areas.Admin.Models;
 
 namespace DataCo_Website.Areas.Admin.Controllers
 {
@@ -554,7 +555,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return result;
         }
     }
-
+    /*
     // Models
     public class DashboardFilters
     {
@@ -617,5 +618,5 @@ namespace DataCo_Website.Areas.Admin.Controllers
         public string State { get; set; } = "";
         public decimal Revenue { get; set; }
         public decimal Profit { get; set; }
-    }
+    }*/
 }
