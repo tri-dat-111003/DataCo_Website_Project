@@ -1,0 +1,136 @@
+﻿@model DataCo_Website.Models.Department
+
+@{
+    ViewData["Title"] = "Vô Hiệu Hóa Phòng Ban";
+    var categoryCount = ViewBag.CategoryCount as int? ?? 0;
+    var productCount = ViewBag.ProductCount as int? ?? 0;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-circle"></i> Xác nhận vô hiệu hóa
+                        </h5>
+                        <p>
+                            Bạn có chắc chắn muốn <strong>vô hiệu hóa</strong> phòng ban <strong class="text-danger">@Model.DepartmentName</strong>?
+                        </p>
+                        <hr>
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle"></i> Đây là <strong>xóa mềm</strong> - Phòng ban sẽ không bị xóa khỏi database mà chỉ được đánh dấu là không hoạt động.
+                        </p>
+                    </div>
+
+                    <!-- Thông tin phòng ban -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Thông tin phòng ban</h5>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-hashtag"></i> ID
+                                </dt>
+                                <dd class="col-sm-8">#@Model.DepartmentId</dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-building"></i> Tên Phòng Ban
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <strong>@Model.DepartmentName</strong>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-map-marker-alt"></i> Địa Chỉ
+                                </dt>
+                                <dd class="col-sm-8">
+                                    @(Model.AddressLine ?? "Chưa cập nhật")
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-toggle-on"></i> Trạng Thái
+                                </dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Đang hoạt động
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-ban"></i> Đã vô hiệu hóa
+                                        </span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Thống kê -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Dữ liệu liên quan</h5>
+                            <div class="row text-center">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <h3 class="mb-0 text-primary">@categoryCount</h3>
+                                        <small class="text-muted">
+                                            <i class="fas fa-folder"></i> Category (Đang hoạt động)
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded">
+                                        <h3 class="mb-0 text-success">@productCount</h3>
+                                        <small class="text-muted">
+                                            <i class="fas fa-box"></i> Product (Đang hoạt động)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ảnh hưởng -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Khi vô hiệu hóa phòng ban này:</h6>
+                        <ul class="mb-0">
+                            <li>Tất cả <strong>@categoryCount category</strong> và <strong>@productCount product</strong> thuộc phòng ban sẽ <strong>không hiển thị</strong> trên giao diện user.</li>
+                            <li>Trạng thái <code>IsActive</code> của category và product <strong>không bị thay đổi</strong>.</li>
+                            <li>Bạn có thể <strong>kích hoạt lại</strong> phòng ban bất cứ lúc nào từ danh sách.</li>
+                        </ul>
+                    </div>
+
+                    @if (!Model.IsActive)
+                    {
+                        <div class="alert alert-secondary">
+                            <i class="fas fa-info-circle"></i> Phòng ban này đã được vô hiệu hóa trước đó.
+                        </div>
+                    }
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="DepartmentId" />
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa phòng ban này?')">
+                                <i class="fas fa-ban"></i> Xác Nhận Vô Hiệu Hóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

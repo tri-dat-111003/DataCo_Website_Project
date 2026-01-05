@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DataCo Website</title>
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="~/css/vendor.css">
+    
+
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="~/css/Main.css" asp-append-version="true" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/images/icon/favicon6.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="~/images/icon/favicon6.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- SVG Icons từ template -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="shopping-carriage" viewBox="0 0 24 24" fill="none">
+            <path d="M5 22H19C20.103 22 21 21.103 21 20V9C21 8.73478 20.8946 8.48043 20.7071 8.29289C20.5196 8.10536 20.2652 8 20 8H17V7C17 4.243 14.757 2 12 2C9.243 2 7 4.243 7 7V8H4C3.73478 8 3.48043 8.10536 3.29289 8.29289C3.10536 8.48043 3 8.73478 3 9V20C3 21.103 3.897 22 5 22ZM9 7C9 5.346 10.346 4 12 4C13.654 4 15 5.346 15 7V8H9V7ZM5 10H7V12H9V10H15V12H17V10H19L19.002 20H5V10Z" fill="black" />
+        </symbol>
+        <symbol id="quick-view" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6z" />
+        </symbol>
+        <symbol id="shopping-cart" viewBox="0 0 24 24" fill="none">
+            <path d="M21 4H2V6H4.3L7.582 15.025C7.79362 15.6029 8.1773 16.1021 8.68134 16.4552C9.18539 16.8083 9.78556 16.9985 10.401 17H19V15H10.401C9.982 15 9.604 14.735 9.461 14.342L8.973 13H18.246C19.136 13 19.926 12.402 20.169 11.549L21.962 5.275C22.0039 5.12615 22.0109 4.96962 21.9823 4.81763C21.9537 4.66565 21.8904 4.52234 21.7973 4.39889C21.7041 4.27544 21.5837 4.1752 21.4454 4.106C21.3071 4.0368 21.1546 4.00053 21 4ZM18.246 11H8.246L6.428 6H19.675L18.246 11Z" fill="black" />
+            <path d="M10.5 21C11.3284 21 12 20.3284 12 19.5C12 18.6716 11.3284 18 10.5 18C9.67157 18 9 18.6716 9 19.5C9 20.3284 9.67157 21 10.5 21Z" fill="black" />
+            <path d="M16.5 21C17.3284 21 18 20.3284 18 19.5C18 18.6716 17.3284 18 16.5 18C15.6716 18 15 18.6716 15 19.5C15 20.3284 15.6716 21 16.5 21Z" fill="black" />
+        </symbol>
+        <symbol id="user" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2a5 5 0 1 0 5 5a5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3a3 3 0 0 1-3 3zm9 11v-1a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v1h2v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1z" />
+        </symbol>
+        <symbol id="search" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6z" />
+        </symbol>
+        <symbol id="navbar-icon" viewBox="0 0 16 16">
+            <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z" />
+        </symbol>
+        <symbol id="close" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+        </symbol>
+    </svg>
+
+    <!-- Preloader -->
+    <div class="preloader" style="position: fixed;top:0;left:0;width: 100%;height: 100%;background-color: #fff;display: flex;align-items: center;justify-content: center;z-index: 9999;">
+        <svg version="1.1" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+            <circle fill="#111" stroke="none" cx="6" cy="50" r="6">
+                <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.1" />
+            </circle>
+            <circle fill="#111" stroke="none" cx="26" cy="50" r="6">
+                <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.2" />
+            </circle>
+            <circle fill="#111" stroke="none" cx="46" cy="50" r="6">
+                <animate attributeName="opacity" dur="1s" values="0;1;0" repeatCount="indefinite" begin="0.3" />
+            </circle>
+        </svg>
+    </div>
+
+    <!-- Header -->
+    <header id="header" class="site-header text-black">
+        <div class="header-top border-bottom py-2">
+            <div class="container-lg">
+                <div class="row justify-content-between align-items-center">
+                    @if (false)
+                    {
+                        <div class="col-auto">
+                            <p class="text-center text-black m-0">
+                                <strong>Special Offer</strong>: Free Shipping on all orders above $100
+                            </p>
+                        </div>
+                    }
+                    <div class="col-auto">
+                        <ul class="d-flex gap-3 list-unstyled m-0">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="d-flex align-items-center">
+                                    <a asp-area="" asp-controller="Order" asp-action="MyOrders" class="header-link">My Orders</a>
+                                </li>
+                                <li class="d-flex align-items-center">
+                                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="d-inline m-0">
+                                        <button type="submit" class="header-link btn btn-link p-0 m-0">Logout</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                </li>
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav id="header-nav" class="navbar navbar-expand-lg">
+            <div class="container-lg">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/Logo/MyLogo6.png" class="logo" alt="logo" style="height: 50px;">
+                </a>
+
+                <button class="navbar-toggler d-flex d-lg-none order-3 border-0 p-1 ms-2" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#bdNavbar">
+                    <svg class="navbar-icon" width="30" height="30">
+                        <use xlink:href="#navbar-icon"></use>
+                    </svg>
+                </button>
+
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar">
+                    <div class="offcanvas-header px-4 pb-0">
+                        <a class="navbar-brand ps-3" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img src="~/images/Logo/MyLogo6.png" class="logo" alt="logo" style="height: 50px;">
+                        </a>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav fw-bold justify-content-end align-items-center flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link me-4" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link me-4" asp-area="" asp-controller="Products" asp-action="Index">All Products</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="user-items ps-0 ps-md-5">
+                    <ul class="d-flex justify-content-end list-unstyled align-item-center m-0">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="pe-3">
+                                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="border-0" title="Profile">
+                                    <svg class="user" width="24" height="24">
+                                        <use xlink:href="#user"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                            <li class="pe-3 position-relative">
+                                <a asp-area="" asp-controller="Cart" asp-action="Index" class="border-0" title="Cart">
+                                    <svg class="shopping-cart" width="24" height="24">
+                                        <use xlink:href="#shopping-cart"></use>
+                                    </svg>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                          id="cart-count" style="font-size: 0.65rem; display: none;">
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="pe-3">
+                                <a asp-area="Identity" asp-page="/Account/Login" class="border-0" title="Login">
+                                    <svg class="user" width="24" height="24">
+                                        <use xlink:href="#user"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container-lg py-4">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="py-5 border-top mt-5">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-lg-3 pb-3">
+                    <div class="footer-menu">
+                        <h5 class="widget-title pb-2">Info</h5>
+                        <ul class="menu-list list-unstyled">
+                            <li class="pb-2"><a href="#">Track Your Order</a></li>
+                            <li class="pb-2"><a href="#">Privacy Policy</a></li>
+                            <li class="pb-2"><a href="#">Shipping</a></li>
+                            <li class="pb-2"><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 pb-3">
+                    <div class="footer-menu">
+                        <h5 class="widget-title pb-2">Quick Links</h5>
+                        <ul class="menu-list list-unstyled">
+                            <li class="pb-2"><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="pb-2"><a asp-area="" asp-controller="Categories" asp-action="Index">Categories</a></li>
+                            <li class="pb-2"><a asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 pb-3">
+                    <div class="footer-menu">
+                        <h5 class="widget-title pb-3">Get In Touch</h5>
+                        <div class="footer-contact-text">
+                            <span>DataCo Online Store</span><br>
+                            <span>Email: contact@dataco.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="m-0">© @DateTime.Now.Year DataCo Website. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/js/jquery-1.11.0.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/plugins.js"></script>
+    <script src="~/js/script.js"></script>
+
+    @Html.AntiForgeryToken()
+
+    <script>
+        // ===== CART FUNCTIONS =====
+
+        // ⭐ Hàm cập nhật số badge trên icon giỏ hàng
+        function updateCartCount() {
+            $.ajax({
+                url: '@Url.Action("GetCartCount", "Cart")',
+                type: 'GET',
+                success: function(response) {
+                    var count = response.count || 0;
+                    var $badge = $('#cart-count');
+
+                    if (count > 0) {
+                        $badge.text(count).show();
+                    } else {
+                        $badge.hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error updating cart count:', error);
+                }
+            });
+        }
+
+        // ⭐ Hàm thêm sản phẩm vào giỏ hàng
+        function addToCart(productId, quantity = 1) {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    quantity: quantity,
+                    __RequestVerificationToken: token
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Hiển thị thông báo thành công
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added to Cart!',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end'
+                        });
+
+                        // ⭐ CẬP NHẬT BADGE với số mới từ server response
+                        if (response.cartCount !== undefined) {
+                            var $badge = $('#cart-count');
+                            if (response.cartCount > 0) {
+                                $badge.text(response.cartCount).show();
+                            } else {
+                                $badge.hide();
+                            }
+                        } else {
+                            // Fallback: gọi API nếu không có cartCount trong response
+                            updateCartCount();
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong!'
+                    });
+                }
+            });
+        }
+
+        // ⭐ Load cart count khi trang được load
+        $(document).ready(function() {
+            // Chỉ update nếu user đã login (có cart icon)
+            if ($('#cart-count').length > 0) {
+                updateCartCount();
+            }
+        });
+
+        // ⭐ XỬ LÝ NÚT "ADD TO CART" BẰNG CLASS
+        // Sử dụng cho các nút có class 'btn-add-to-cart'
+        $(document).on('click', '.btn-add-to-cart', function(e) {
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var quantity = $(this).data('quantity') || 1;
+
+            if (productId) {
+                addToCart(productId, quantity);
+            } else {
+                console.error('Product ID not found');
+            }
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

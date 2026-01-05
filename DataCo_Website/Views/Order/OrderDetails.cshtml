@@ -1,0 +1,336 @@
+﻿@model DataCo_Website.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    
+    // ✅ GOM NHÓM THEO DEPARTMENT
+    var itemsByDepartment = Model.OrderItems
+        .GroupBy(oi => new
+        {
+            DepartmentId = oi.DepartmentId,
+            DepartmentName = oi.Department?.DepartmentName ?? "Unknown"
+        })
+        .ToList();
+    
+    var totalAmount = Model.OrderItems.Sum(oi => oi.Total ?? 0);
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>Đơn hàng #@Model.OrderId.ToString("D6")</h2>
+                    <p class="text-muted mb-0">Đặt ngày @Model.OrderDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div>
+                    <span class="badge @(Model.Status switch {
+                        "PROCESSING" => "bg-warning",
+                        "COMPLETE" => "bg-success",
+                        "CANCELED" => "bg-danger",
+                        _ => "bg-warning"
+                    }) fs-6">@Model.Status</span>
+                </div>
+            </div>
+
+            <!-- Thông tin shipping -->
+            @if (Model.Shipping != null)
+            {
+                <div class="card mb-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-truck"></i> Thông tin vận chuyển</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Phương thức giao hàng:</strong></p>
+                                <p>@Model.Shipping.ShippingMode</p>
+                                
+                                <p class="mb-2"><strong>Trạng thái giao hàng:</strong></p>
+                                <span class="badge @(Model.Shipping.DeliveryStatus switch {
+                                    "Waiting for Shipment" => "bg-info",
+                                    "Late delivery" => "bg-danger",
+                                    "Shipping on time" => "bg-success",
+                                    "Advance shipping" => "bg-primary",
+                                    "Cancel delivery" => "bg-secondary",
+                                    _ => "bg-secondary"
+                                }) fs-6">@Model.Shipping.DeliveryStatus</span>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Ngày đặt hàng:</strong></p>
+                                <p>@Model.Shipping.OrderDate?.ToString("dd/MM/yyyy")</p>
+                                
+                                <p class="mb-2"><strong>Ngày giao hàng:</strong></p>
+                                <p>@(Model.Shipping.ShippingDate?.ToString("dd/MM/yyyy") ?? "Chưa giao")</p>
+                                
+                                @if (Model.Status != "CANCELED")
+                                {
+                                    <p class="mb-2"><strong>Thời gian giao dự kiến:</strong></p>
+                                    <p>@Model.Shipping.DaysForShipmentScheduled ngày</p>
+                                    
+                                    @if (Model.Shipping.DaysForShippingActual > 0)
+                                    {
+                                        <p class="mb-2"><strong>Thời gian giao thực tế:</strong></p>
+                                        <p>@Model.Shipping.DaysForShippingActual ngày</p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        
+                        @if (Model.Status == "PROCESSING" && Model.Shipping.DeliveryStatus == "Waiting for Shipment")
+                        {
+                            <hr>
+                            <button class="btn btn-success me-2" onclick="confirmDelivery(@Model.OrderId)">
+                                <i class="bi bi-check-circle"></i> Xác nhận đã nhận hàng
+                            </button>
+                            <button class="btn btn-danger" onclick="cancelOrder(@Model.OrderId)">
+                                <i class="bi bi-x-circle"></i> Hủy đơn hàng
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- ✅ DANH SÁCH SẢN PHẨM GOM THEO DEPARTMENT -->
+            @foreach (var dept in itemsByDepartment)
+            {
+                var deptTotal = dept.Sum(oi => oi.Total ?? 0);
+                
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-shop"></i>
+                                <strong>@dept.Key.DepartmentName</strong>
+                                <span class="badge bg-light text-dark ms-2">@dept.Count() sản phẩm</span>
+                            </div>
+                            <div>
+                                <strong>$@deptTotal.ToString("F2")</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th class="text-center">Số lượng</th>
+                                        <th class="text-end">Đơn giá</th>
+                                        <th class="text-end">Giảm giá</th>
+                                        <th class="text-end">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in dept)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                    {
+                                                        <img src="~/images/products/@item.Product.Image"
+                                                                alt="@item.Product.ProductName"
+                                                                class="img-thumbnail me-3"
+                                                                style="width: 60px; height: 60px; object-fit: contain;">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center" 
+                                                                style="width: 60px; height: 60px; background-color: #f8f9fa;">
+                                                            <i class="bi bi-image text-muted"></i>
+                                                        </div>
+                                                    }
+                                                    <div>
+                                                        <h6 class="mb-0">@item.Product?.ProductName</h6>
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-tag"></i> @item.Product?.Category?.CategoryName
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <span class="badge bg-secondary">@item.Quantity</span>
+                                            </td>
+                                            <td class="text-end align-middle">
+                                                $@((item.Product?.ProductPrice ?? 0).ToString("F2"))
+                                            </td>
+                                            <td class="text-end align-middle">
+                                                $@((item.Discount ?? 0).ToString("F2"))
+                                            </td>
+                                            <td class="text-end align-middle">
+                                                <strong>$@((item.Total ?? 0).ToString("F2"))</strong>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Nút hành động -->
+            <div class="mb-4">
+                <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách đơn hàng
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Thông tin khách hàng -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-person"></i> Thông tin khách hàng</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Tên:</strong></p>
+                    <p>@Model.Customer?.FirstName @Model.Customer?.LastName</p>
+                    
+                    <p class="mb-2"><strong>Segment:</strong></p>
+                    <p>@Model.Customer?.Segment</p>
+                </div>
+            </div>
+
+            <!-- Địa chỉ giao hàng -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-geo-alt"></i> Địa chỉ giao hàng</h6>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.AddressLine))
+                    {
+                        <p class="mb-2"><strong>Address Line:</strong></p>
+                        <p class="mb-3">@Model.AddressLine</p>
+                    }
+                    
+                    <p class="mb-1"><i class="bi bi-geo"></i> @Model.OrderCity</p>
+                    <p class="mb-1"><i class="bi bi-map"></i> @Model.OrderState</p>
+                    <p class="mb-3"><i class="bi bi-flag"></i> @Model.OrderCountry</p>
+                    
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Region:</strong></p>
+                            <p class="mb-0">@Model.OrderRegion</p>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-1"><strong>Market:</strong></p>
+                            <p class="mb-0">@Model.Market</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phương thức thanh toán -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-credit-card"></i> Thanh toán</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">
+                        @switch (Model.TypeTransaction)
+                        {
+                            case "COD":
+                                <span><i class="bi bi-cash"></i> Thanh toán khi nhận hàng</span>
+                                break;
+                            case "CREDIT":
+                                <span><i class="bi bi-credit-card"></i> Thẻ tín dụng</span>
+                                break;
+                            case "TRANSFER":
+                                <span><i class="bi bi-bank"></i> Chuyển khoản</span>
+                                break;
+                            case "EWALLET":
+                                <span><i class="bi bi-wallet2"></i> Ví điện tử</span>
+                                break;
+                            default:
+                                <span>@Model.TypeTransaction</span>
+                                break;
+                        }
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tổng đơn hàng -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-receipt"></i> Tổng đơn hàng</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Số lượng shop:</span>
+                        <strong>@itemsByDepartment.Count</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tổng sản phẩm:</span>
+                        <strong>@Model.OrderItems.Sum(oi => oi.Quantity)</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Tổng cộng:</strong>
+                        <strong class="text-primary fs-5">$@totalAmount.ToString("F2")</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelivery(orderId) {
+            if (!confirm('Bạn xác nhận đã nhận được hàng?')) return;
+            
+            $.ajax({
+                url: '@Url.Action("ConfirmDelivery", "Order")',
+                type: 'POST',
+                data: {
+                    orderId: orderId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message + '\nTrạng thái giao hàng: ' + response.deliveryStatus);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra');
+                }
+            });
+        }
+
+        function cancelOrder(orderId) {
+            if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) return;
+
+            $.ajax({
+                url: '@Url.Action("CancelOrder", "Order")',
+                type: 'POST',
+                data: {
+                    orderId: orderId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra');
+                }
+            });
+        }
+    </script>
+}
+
+<form id="antiforgery-form">
+    @Html.AntiForgeryToken()
+</form>

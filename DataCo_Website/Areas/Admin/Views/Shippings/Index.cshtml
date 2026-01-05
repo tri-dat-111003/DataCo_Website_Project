@@ -1,0 +1,258 @@
+﻿@model IEnumerable<DataCo_Website.Models.Shipping>
+
+@{
+    ViewData["Title"] = "Quản Lý Vận Chuyển";
+}
+
+<style>
+    .search-panel {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+        .search-panel .form-label {
+            color: white;
+            font-weight: 500;
+        }
+
+        .search-panel .form-control,
+        .search-panel .form-select {
+            border: none;
+            border-radius: 6px;
+        }
+
+        .search-panel .btn-search {
+            background: white;
+            color: #667eea;
+            border: none;
+            font-weight: 600;
+        }
+
+            .search-panel .btn-search:hover {
+                background: #f8f9fa;
+            }
+</style>
+
+<!-- Search Panel -->
+<div class="search-panel">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </label>
+            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
+                   class="form-control" placeholder="Order ID, Tên khách hàng...">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">
+                <i class="fas fa-filter"></i> Trạng thái giao hàng
+            </label>
+            <select name="deliveryStatus" class="form-select">
+                <option value="">Tất cả</option>
+                @foreach (var status in ViewBag.DeliveryStatuses)
+                {
+                    <option value="@status" selected="@(status == ViewData["CurrentStatus"]?.ToString())">
+                        @status
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-search w-100">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </div>
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Shippings Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> Order ID</th>
+                    <th><i class="fas fa-user"></i> Khách hàng</th>
+                    <th><i class="fas fa-calendar"></i> Ngày đặt</th>
+                    <th><i class="fas fa-truck"></i> Ngày giao</th>
+                    <th><i class="fas fa-shipping-fast"></i> Hình thức</th>
+                    <th><i class="fas fa-check-circle"></i> Trạng thái</th>
+                    <th class="text-center"><i class="fas fa-clock"></i> Ngày (DK/TT)</th>
+                    <th class="text-center" style="width: 80px;"><i class="fas fa-eye"></i> Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var shipping in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong class="text-primary">#@shipping.OrderId</strong>
+                            </td>
+                            <td>
+                                @if (shipping.Order?.Customer != null)
+                                {
+                                    <span class="text-truncate d-inline-block" style="max-width: 150px;"
+                                          title="@shipping.Order.Customer.FirstName @shipping.Order.Customer.LastName">
+                                        @shipping.Order.Customer.FirstName
+                                        @shipping.Order.Customer.LastName
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                            <td>
+                                <small>@shipping.OrderDate?.ToString("dd/MM/yy")</small>
+                            </td>
+                            <td>
+                                @if (shipping.DeliveryStatus != "Waiting for Shipment")
+                                {
+                                    <small>@shipping.ShippingDate?.ToString("dd/MM/yy")</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted"><small>Chưa giao</small></span>
+                                }
+                            </td>
+                            <td>
+                                @switch (shipping.ShippingMode)
+                                {
+                                    case "Same Day":
+                                        <span class="badge bg-danger">Same Day</span>
+                                        break;
+                                    case "First Class":
+                                        <span class="badge bg-success">1st Class</span>
+                                        break;
+                                    case "Second Class":
+                                        <span class="badge bg-info">2nd Class</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@shipping.ShippingMode</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @switch (shipping.DeliveryStatus)
+                                {
+                                    case "Shipping on time":
+                                        <span class="badge bg-success">Đúng hạn</span>
+                                        break;
+                                    case "Advance shipping":
+                                        <span class="badge bg-info">Giao sớm</span>
+                                        break;
+                                    case "Late delivery":
+                                        <span class="badge bg-danger">Giao trễ</span>
+                                        break;
+                                    case "Shipping canceled":
+                                        <span class="badge bg-dark">Đã hủy</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@shipping.DeliveryStatus</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-center">
+                                <small class="badge bg-light text-dark">
+                                    @shipping.DaysForShipmentScheduled / @shipping.DaysForShippingActual
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@shipping.OrderId"
+                                   class="btn btn-sm btn-info p-1" title="Chi tiết" style="width: 30px; height: 30px;">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                            <p class="mb-0">Chưa có thông tin vận chuyển nào</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.Page == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page - 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]"
+                   asp-route-deliveryStatus="@ViewData["CurrentStatus"]">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            </li>
+
+            @{
+                int start = Math.Max(1, ViewBag.Page - 2);
+                int end = Math.Min(ViewBag.TotalPages, ViewBag.Page + 2);
+
+                if (start > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-deliveryStatus="@ViewData["CurrentStatus"]">1</a>
+                    </li>
+                    if (start > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = start; i <= end; i++)
+                {
+                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-deliveryStatus="@ViewData["CurrentStatus"]">@i</a>
+                    </li>
+                }
+
+                if (end < ViewBag.TotalPages)
+                {
+                    if (end < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchString="@ViewData["CurrentFilter"]"
+                           asp-route-deliveryStatus="@ViewData["CurrentStatus"]">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+
+            <li class="page-item @(ViewBag.Page == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page + 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]"
+                   asp-route-deliveryStatus="@ViewData["CurrentStatus"]">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

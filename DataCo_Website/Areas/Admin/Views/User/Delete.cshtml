@@ -1,0 +1,128 @@
+﻿@model DataCo_Website.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Vô hiệu hóa User";
+}
+
+<style>
+    .danger-alert {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 3px solid #ef4444;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .danger-alert h4 {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+            .danger-alert h4 i {
+                animation: pulse 2s infinite;
+            }
+
+    @@keyframes pulse {
+        0%, 100%
+
+    {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
+        <!-- Warning Alert -->
+        <div class="danger-alert">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Xác nhận vô hiệu hóa User?
+            </h4>
+            <p class="mb-2 fw-bold">Hành động này sẽ thực hiện:</p>
+            <ul>
+                <li>Set <strong>IsActive = False</strong> cho User: <strong>@Model.Email</strong></li>
+                @if (Model.CustomerId.HasValue)
+                {
+                    <li>Đồng thời set <strong>IsActive = False</strong> cho Customer ID: <strong>@Model.CustomerId</strong></li>
+                }
+                <li>User sẽ <strong>không thể đăng nhập</strong> vào hệ thống</li>
+                <li>Có thể <strong>khôi phục</strong> tài khoản sau này nếu cần</li>
+            </ul>
+        </div>
+
+        <!-- Info Card -->
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-user-circle"></i> Thông tin tài khoản</h5>
+            </div>
+            <div class="card-body p-4">
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 text-primary">
+                        <i class="fas fa-envelope"></i> Email / Username
+                    </dt>
+                    <dd class="col-sm-8">
+                        <strong>@Model.Email</strong>
+                    </dd>
+
+                    <dt class="col-sm-4 text-primary">
+                        <i class="fas fa-id-badge"></i> User ID
+                    </dt>
+                    <dd class="col-sm-8">
+                        <code>@Model.Id</code>
+                    </dd>
+
+                    <dt class="col-sm-4 text-primary">
+                        <i class="fas fa-link"></i> Customer ID
+                    </dt>
+                    <dd class="col-sm-8">
+                        @if (Model.CustomerId.HasValue)
+                        {
+                            <span class="badge bg-info">@Model.CustomerId</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không liên kết</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4 text-primary">
+                        <i class="fas fa-circle"></i> Trạng thái hiện tại
+                    </dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i> Đang hoạt động
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-ban"></i> Đã vô hiệu hóa
+                            </span>
+                        }
+                    </dd>
+                </dl>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-ban"></i> Xác nhận Vô hiệu hóa
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy bỏ
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

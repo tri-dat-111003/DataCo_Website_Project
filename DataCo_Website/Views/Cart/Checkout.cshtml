@@ -1,0 +1,506 @@
+﻿@model DataCo_Website.Models.Cart
+
+@{
+    ViewData["Title"] = "Thanh toán";
+
+    // ✅ CHỈ LẤY ITEMS ĐÃ CHỌN (Status = "Selected") TRONG SESSION HIỆN TẠI
+    var selectedItems = Model.CartItems
+        .Where(ci => ci.Status == "Selected" && ci.SessionId == Model.CurrentSessionId)
+        .ToList();
+
+    // GOM NHÓM THEO DEPARTMENT
+    var itemsByDepartment = selectedItems
+        .GroupBy(ci => new
+        {
+            DepartmentId = ci.Product.Category.DepartmentId,
+            DepartmentName = ci.Product.Category.Department?.DepartmentName ?? "Unknown"
+        })
+        .ToList();
+
+    var totalAmount = selectedItems.Sum(ci => ci.Quantity * (ci.Product?.ProductPrice ?? 0));
+
+    var customer = Model.Customer;
+    var applicationUser = customer?.ApplicationUser;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-credit-card"></i> Thanh toán đơn hàng
+    </h2>
+
+    @if (TempData["Warning"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            @TempData["Warning"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- ✅ THÔNG TIN ĐƠN HÀNG -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-box-seam"></i> Sản phẩm đã chọn
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @foreach (var dept in itemsByDepartment)
+                    {
+                        var deptItems = dept.ToList();
+                        var deptTotal = deptItems.Sum(ci => ci.Quantity * (ci.Product?.ProductPrice ?? 0));
+
+                        <div class="border-bottom">
+                            <div class="bg-light p-2">
+                                <strong>
+                                    <i class="bi bi-shop"></i> @dept.Key.DepartmentName
+                                </strong>
+                                <span class="badge bg-secondary ms-2">@deptItems.Count sản phẩm</span>
+                            </div>
+                            <table class="table table-hover mb-0">
+                                <tbody>
+                                    @foreach (var item in deptItems)
+                                    {
+                                        var itemTotal = item.Quantity * (item.Product?.ProductPrice ?? 0);
+
+                                        <tr>
+                                            <td style="width: 80px;">
+                                                @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                {
+                                                    <img src="~/images/products/@item.Product.Image"
+                                                         class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;" alt="Product">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                                                         style="width: 60px; height: 60px;">
+                                                        <i class="bi bi-image"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="align-middle">
+                                                <strong>@item.Product.ProductName</strong>
+                                                <div class="text-muted small">@item.Product.Category?.CategoryName</div>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <div class="text-muted small">$@item.Product.ProductPrice?.ToString("N2") x @item.Quantity</div>
+                                                <strong class="text-primary">$@itemTotal.ToString("N2")</strong>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="p-2 bg-light">
+                                <div class="d-flex justify-content-between">
+                                    <span>Tổng shop:</span>
+                                    <strong class="text-primary">$@deptTotal.ToString("N2")</strong>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ✅ FORM THÔNG TIN GIAO HÀNG -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-truck"></i> Thông tin giao hàng
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="checkoutForm" asp-action="ProcessCheckout" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Thông tin khách hàng -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Họ tên</label>
+                                <input type="text" class="form-control" value="@customer?.FirstName @customer?.LastName" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="@applicationUser?.Email" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Địa chỉ chi tiết -->
+                        <div class="mb-3">
+                            <label class="form-label">Address Line <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="shippingAddress" rows="2" required
+                                      placeholder="Nhập địa chỉ chi tiết: Số nhà, tên đường..."></textarea>
+                        </div>
+
+                        <!-- ⭐ DROPDOWN QUỐC GIA, TỈNH, THÀNH PHỐ (API AUTO-FILL) -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Quốc gia <span class="text-danger">*</span></label>
+                                <select class="form-select" id="orderCountry" name="orderCountry" required>
+                                    <option value="">-- Chọn quốc gia --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Tỉnh/Bang <span class="text-danger">*</span></label>
+                                <select class="form-select" id="orderState" name="orderState" required disabled>
+                                    <option value="">-- Chọn tỉnh/bang --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Thành phố <span class="text-danger">*</span></label>
+                                <select class="form-select" id="orderCity" name="orderCity" required disabled>
+                                    <option value="">-- Chọn thành phố --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Region & Market (auto-fill, readonly) -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Khu vực (Region)</label>
+                                <input type="text" class="form-control" id="orderRegion" name="orderRegion" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Market</label>
+                                <input type="text" class="form-control" id="orderMarket" readonly>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- ⭐ PHƯƠNG THỨC VẬN CHUYỂN (RADIO BUTTONS) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Phương thức vận chuyển <span class="text-danger">*</span></label>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="shippingMode"
+                                       id="sameDay" value="Same Day">
+                                <label class="form-check-label w-100" for="sameDay">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Same Day</strong>
+                                            <span class="badge bg-danger ms-2">Trong ngày</span>
+                                            <p class="text-muted mb-0 small">Giao hàng trong ngày (Chỉ áp dụng nội thành)</p>
+                                        </div>
+                                        <strong class="text-success">Miễn phí</strong>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="shippingMode"
+                                       id="firstClass" value="First Class" checked>
+                                <label class="form-check-label w-100" for="firstClass">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>First Class</strong>
+                                            <span class="badge bg-warning text-dark ms-2">1 ngày</span>
+                                            <p class="text-muted mb-0 small">Giao hàng hỏa tốc</p>
+                                        </div>
+                                        <strong class="text-success">Miễn phí</strong>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="shippingMode"
+                                       id="secondClass" value="Second Class">
+                                <label class="form-check-label w-100" for="secondClass">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Second Class</strong>
+                                            <span class="badge bg-primary ms-2">2 ngày</span>
+                                            <p class="text-muted mb-0 small">Giao hàng nhanh</p>
+                                        </div>
+                                        <strong class="text-success">Miễn phí</strong>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="shippingMode"
+                                       id="standardClass" value="Standard Class">
+                                <label class="form-check-label w-100" for="standardClass">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>Standard Class</strong>
+                                            <span class="badge bg-info ms-2">4 ngày</span>
+                                            <p class="text-muted mb-0 small">Giao hàng tiêu chuẩn</p>
+                                        </div>
+                                        <strong class="text-success">Miễn phí</strong>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ⭐ PHƯƠNG THỨC THANH TOÁN (RADIO BUTTONS) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Phương thức thanh toán <span class="text-danger">*</span></label>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                       id="payment" value="PAYMENT" checked>
+                                <label class="form-check-label w-100" for="payment">
+                                    <strong>Thanh toán trực tuyến</strong>
+                                    <p class="text-muted mb-0 small">Thanh toán qua cổng thanh toán an toàn</p>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                       id="cash" value="CASH">
+                                <label class="form-check-label w-100" for="cash">
+                                    <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                    <p class="text-muted mb-0 small">Thanh toán bằng tiền mặt khi nhận hàng</p>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                       id="transfer" value="TRANSFER">
+                                <label class="form-check-label w-100" for="transfer">
+                                    <strong>Chuyển khoản ngân hàng</strong>
+                                    <p class="text-muted mb-0 small">Chuyển khoản qua Internet Banking</p>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                       id="debit" value="DEBIT">
+                                <label class="form-check-label w-100" for="debit">
+                                    <strong>Thẻ ghi nợ (Debit)</strong>
+                                    <p class="text-muted mb-0 small">Visa, Mastercard, JCB</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Xác nhận đặt hàng
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Quay lại giỏ hàng
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ SUMMARY SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 20px; z-index: 100;">
+
+                <div class="card shadow-sm mb-3">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i> Tóm tắt đơn hàng
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tổng sản phẩm:</span>
+                            <strong>@selectedItems.Sum(ci => ci.Quantity)</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span>$@totalAmount.ToString("N2")</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Phí vận chuyển:</span>
+                            <span class="text-success">Miễn phí</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Tổng cộng:</strong>
+                            <strong class="text-primary fs-4">$@totalAmount.ToString("N2")</strong>
+                        </div>
+
+                        <div class="alert alert-info small">
+                            <i class="bi bi-info-circle"></i>
+                            Bạn đang thanh toán <strong>@selectedItems.Count sản phẩm</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">
+                            <i class="bi bi-shield-check text-success"></i> Đảm bảo an toàn
+                        </h6>
+                        <ul class="list-unstyled small mb-0">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                Thanh toán an toàn và bảo mật
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                Chính sách hoàn trả trong 30 ngày
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                                Bảo hành chính hãng
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ⚠️ THAY ĐỔI USERNAME GEONAMES CỦA BẠN TẠI ĐÂY
+        const geoUser = "tntd"; // ← Đổi thành username của bạn
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            const countrySelect = document.getElementById("orderCountry");
+            const stateSelect = document.getElementById("orderState");
+            const citySelect = document.getElementById("orderCity");
+            const regionInput = document.getElementById("orderRegion");
+            const marketInput = document.getElementById("orderMarket");
+
+            // ------------------ 1️⃣ TẢI DANH SÁCH QUỐC GIA ------------------
+            try {
+                const res = await fetch(`https://secure.geonames.org/countryInfoJSON?username=${geoUser}`);
+                const data = await res.json();
+                const countries = data.geonames || [];
+
+                countries
+                    .sort((a, b) => a.countryName.localeCompare(b.countryName))
+                    .forEach(c => {
+                        const opt = document.createElement("option");
+                        opt.value = c.countryName;
+                        opt.dataset.id = c.geonameId;
+                        opt.textContent = c.countryName;
+                        countrySelect.appendChild(opt);
+                    });
+            } catch (err) {
+                console.error("❌ Không thể tải danh sách quốc gia:", err);
+            }
+
+            // ------------------ 2️⃣ KHI CHỌN COUNTRY ------------------
+            countrySelect.addEventListener("change", async function () {
+                const countryName = this.value;
+                const countryId = this.options[this.selectedIndex].dataset.id;
+
+                if (!countryId) return;
+
+                // Reset dropdowns
+                stateSelect.innerHTML = '<option value="">-- Chọn tỉnh/bang --</option>';
+                citySelect.innerHTML = '<option value="">-- Chọn thành phố --</option>';
+                stateSelect.disabled = true;
+                citySelect.disabled = true;
+                regionInput.value = "";
+                marketInput.value = "";
+
+                try {
+                    // 🟢 Lấy region & market từ server
+                    const resMarket = await fetch(`/Cart/GetRegionMarket?country=${encodeURIComponent(countryName)}`);
+                    const dataMarket = await resMarket.json();
+                    regionInput.value = dataMarket.region ?? "Unknown";
+                    marketInput.value = dataMarket.market ?? "Unknown";
+
+                    // 🗺️ Lấy danh sách state/province
+                    const res = await fetch(`https://secure.geonames.org/childrenJSON?geonameId=${countryId}&username=${geoUser}`);
+                    const data = await res.json();
+                    const states = data.geonames || [];
+
+                    if (states.length === 0) {
+                        // Nếu không có states, load trực tiếp cities
+                        const resCities = await fetch(`https://secure.geonames.org/searchJSON?country=${countryId}&featureClass=P&maxRows=1000&username=${geoUser}`);
+                        const dataCities = await resCities.json();
+                        const cities = dataCities.geonames || [];
+
+                        cities
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .forEach(c => {
+                                const opt = document.createElement("option");
+                                opt.value = c.name;
+                                opt.textContent = c.name;
+                                citySelect.appendChild(opt);
+                            });
+
+                        stateSelect.value = countryName;
+                        stateSelect.disabled = true;
+                        citySelect.disabled = false;
+                    } else {
+                        // Có states, cho phép chọn
+                        states
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .forEach(s => {
+                                const opt = document.createElement("option");
+                                opt.value = s.name;
+                                opt.dataset.id = s.geonameId;
+                                opt.textContent = s.name;
+                                stateSelect.appendChild(opt);
+                            });
+
+                        stateSelect.disabled = false;
+                    }
+                } catch (err) {
+                    console.error("❌ Không thể tải dữ liệu địa lý:", err);
+                }
+            });
+
+            // ------------------ 3️⃣ KHI CHỌN STATE ------------------
+            stateSelect.addEventListener("change", async function () {
+                const stateId = this.options[this.selectedIndex].dataset.id;
+
+                if (!stateId) return;
+
+                citySelect.innerHTML = '<option value="">-- Chọn thành phố --</option>';
+                citySelect.disabled = true;
+
+                try {
+                    const res = await fetch(`https://secure.geonames.org/childrenJSON?geonameId=${stateId}&username=${geoUser}`);
+                    const data = await res.json();
+                    const cities = data.geonames || [];
+
+                    cities
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .forEach(c => {
+                            const opt = document.createElement("option");
+                            opt.value = c.name;
+                            opt.textContent = c.name;
+                            citySelect.appendChild(opt);
+                        });
+
+                    citySelect.disabled = false;
+                } catch (err) {
+                    console.error("❌ Không thể tải danh sách thành phố:", err);
+                }
+            });
+        });
+
+        // ✅ XÁC NHẬN TRƯỚC KHI ĐẶT HÀNG
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            const country = document.getElementById('orderCountry').value;
+            const state = document.getElementById('orderState').value;
+            const city = document.getElementById('orderCity').value;
+            const address = document.querySelector('textarea[name="shippingAddress"]').value.trim();
+
+            if (!country || !state || !city || !address) {
+                alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng!');
+                e.preventDefault();
+                return false;
+            }
+
+            if (!confirm('Bạn có chắc muốn đặt hàng?')) {
+                e.preventDefault();
+                return false;
+            }
+                // ⭐ QUAN TRỌNG: BỎ DISABLED ĐỂ GỬI ĐƯỢC DỮ LIỆU VỀ SERVER ⭐
+        state.disabled = false;
+        city.disabled = false;
+
+        // Đảm bảo Region/Market cũng được gửi (dù chúng là readonly thì vẫn gửi được, nhưng cứ chắc chắn)
+        document.getElementById("orderRegion").readOnly = false;
+        document.getElementById("orderMarket").readOnly = false;
+        });
+    </script>
+}

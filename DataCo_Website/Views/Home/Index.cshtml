@@ -1,0 +1,376 @@
+﻿@model IEnumerable<DataCo_Website.Models.Department>
+@{
+    ViewData["Title"] = "Home";
+    var featuredProducts = ViewBag.FeaturedProducts as IEnumerable<DataCo_Website.Models.Product>;
+}
+
+<!-- Hero Banner Section -->
+<section id="billboard" class="position-relative d-flex align-items-center py-5"
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 500px;">
+    <div class="container-lg">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="banner-content text-white" data-aos="fade-right">
+                    <h1 class="display-2 fw-bold mb-3">
+                        Welcome to <span style="color: #ffd700;">DataCo</span>
+                    </h1>
+                    <p class="fs-4 mb-4">
+                        Discover amazing products across all departments
+                    </p>
+                    <div>
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-light btn-lg px-5 py-3 rounded-pill me-3">
+                            <i class="bi bi-bag-fill me-2"></i> Shop Now
+                        </a>
+                        <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                            <i class="bi bi-grid-3x3-gap me-2"></i> Categories
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center" data-aos="fade-left">
+                <div class="hero-image-container">
+                    <i class="bi bi-shop" style="font-size: 20rem; color: rgba(255,255,255,0.2);"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Decorative waves -->
+    <div class="custom-shape-divider-bottom-1">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                  fill="#ffffff"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+@if (featuredProducts != null && featuredProducts.Any())
+{
+    <section class="py-5 bg-light">
+        <div class="container-lg">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold">
+                    <i class="bi bi-star-fill text-warning me-2"></i>
+                    Featured Products
+                </h2>
+                <p class="text-muted">Check out our latest and most popular products</p>
+            </div>
+
+            <div class="row g-4">
+                @foreach (var product in featuredProducts)
+                {
+                    <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="@((featuredProducts.ToList().IndexOf(product) % 4) * 100)">
+                        <div class="product-card card h-100 shadow-sm border-0">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId" class="text-decoration-none">
+                                <div class="card-img">
+                                    @if (!string.IsNullOrEmpty(product.Image))
+                                    {
+                                        <img src="~/images/products/@product.Image"
+                                             class="product-image"
+                                             alt="@product.ProductName">
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                        </div>
+                                    }
+                                </div>
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title text-truncate mb-2">
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ProductId"
+                                       class="text-dark text-decoration-none">
+                                        @product.ProductName
+                                    </a>
+                                </h6>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="bi bi-tag"></i> @product.Category.CategoryName
+                                </p>
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fs-5 fw-bold text-primary">
+                                            @String.Format("{0:C}", product.ProductPrice)
+                                        </span>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button class="btn btn-sm btn-primary rounded-circle btn-add-to-cart"
+                                                    data-product-id="@product.ProductId"
+                                                    data-quantity="1"
+                                                    title="Add to Cart">
+                                                <i class="bi bi-cart-plus"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg px-5 rounded-pill">
+                    View All Products <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Departments Section -->
+<section class="py-5">
+    <div class="container-lg">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold">
+                <i class="bi bi-building me-2" style="color: #667eea;"></i>
+                Shop by Department
+            </h2>
+            <p class="text-muted">Explore our wide range of product categories</p>
+        </div>
+
+        @foreach (var department in Model)
+        {
+            var categories = department.Categories.Where(c => c.IsActive && c.Products.Any(p => p.IsActive)).ToList();
+
+            if (categories.Any())
+            {
+                <div class="department-section mb-5" data-aos="fade-up">
+                    <!-- Department Header -->
+                    <div class="card shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="mb-0 text-white fw-bold">
+                                    <i class="bi bi-folder2-open me-2"></i>
+                                    @department.DepartmentName
+                                </h3>
+                                <span class="badge bg-light text-dark fs-6">
+                                    @categories.Sum(c => c.Products.Count(p => p.IsActive)) Products
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories Grid -->
+                    <div class="row g-4 mb-4">
+                        @foreach (var category in categories.Take(6))
+                        {
+                            var productCount = category.Products.Count(p => p.IsActive);
+                            var sampleProduct = category.Products.FirstOrDefault(p => p.IsActive);
+
+                            @* ✅ Tạo slug từ DepartmentName và CategoryName lowercase *@
+                            var departmentSlug = Uri.EscapeDataString(department.DepartmentName.ToLowerInvariant().Trim());
+                            var categorySlug = Uri.EscapeDataString(category.CategoryName.ToLowerInvariant().Trim());
+
+                            <div class="col-6 col-md-4 col-lg-2" data-aos="zoom-in" data-aos-delay="@((categories.IndexOf(category) % 6) * 50)">
+                                <a href="/department/@departmentSlug/category/@categorySlug"
+                                   class="text-decoration-none">
+                                    <div class="category-card card h-100 border-0 shadow-sm">
+                                        <div class="card-body text-center p-3">
+                                            @if (sampleProduct != null && !string.IsNullOrEmpty(sampleProduct.Image))
+                                            {
+                                                <div class="category-img mb-3">
+                                                    <img src="~/images/products/@sampleProduct.Image"
+                                                         alt="@category.CategoryName"
+                                                         style="width: 100%; height: 80px; object-fit: contain;">
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="category-img mb-3">
+                                                    <i class="bi bi-box-seam" style="font-size: 3rem; color: #667eea;"></i>
+                                                </div>
+                                            }
+                                            <h6 class="card-title mb-2 text-dark fw-bold">@category.CategoryName</h6>
+                                            <small class="text-muted">@productCount items</small>
+                                        </div>
+                                        <div class="card-footer bg-transparent border-0 text-center pb-3">
+                                            <small class="text-primary fw-semibold">Shop Now →</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- View All Button if more than 6 categories -->
+                    @if (categories.Count > 6)
+                    {
+                        <div class="text-center">
+                            <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-primary rounded-pill">
+                                View All @categories.Count Categories <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    <div class="container-lg">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="feature-box text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box mb-3">
+                        <i class="bi bi-truck" style="font-size: 3.5rem; color: #667eea;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Free Shipping</h5>
+                    <p class="text-muted mb-0">On all orders over $100</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-box text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box mb-3">
+                        <i class="bi bi-shield-check" style="font-size: 3.5rem; color: #667eea;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Secure Payment</h5>
+                    <p class="text-muted mb-0">100% secure transactions</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-box text-center p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="icon-box mb-3">
+                        <i class="bi bi-headset" style="font-size: 3.5rem; color: #667eea;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">24/7 Support</h5>
+                    <p class="text-muted mb-0">Dedicated customer service</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+    </script>
+
+    <style>
+        /* Hero Banner Styles */
+        #billboard {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-shape-divider-bottom-1 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+            .custom-shape-divider-bottom-1 svg {
+                position: relative;
+                display: block;
+                width: calc(100% + 1.3px);
+                height: 60px;
+            }
+
+        .hero-image-container {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Category Cards */
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+            .category-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3) !important;
+            }
+
+                .category-card:hover .category-img img {
+                    transform: scale(1.1);
+                }
+
+        .category-img img {
+            transition: transform 0.3s ease;
+        }
+
+        /* Feature Boxes */
+        .feature-box {
+            transition: all 0.3s ease;
+        }
+
+            .feature-box:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+            }
+
+                .feature-box:hover .icon-box i {
+                    transform: scale(1.1) rotate(5deg);
+                }
+
+        .icon-box i {
+            transition: all 0.3s ease;
+        }
+
+        /* Department Section */
+        .department-section {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Product Cards Enhancement */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+            .product-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+            }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            #billboard {
+                min-height: 400px;
+            }
+
+            .display-2 {
+                font-size: 2.5rem;
+            }
+
+            .custom-shape-divider-bottom-1 svg {
+                height: 40px;
+            }
+        }
+    </style>
+}

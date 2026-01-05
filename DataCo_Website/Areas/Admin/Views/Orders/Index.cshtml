@@ -1,0 +1,244 @@
+﻿@model IEnumerable<DataCo_Website.Models.Order>
+
+@{
+    ViewData["Title"] = "Quản Lý Đơn Hàng";
+}
+
+<style>
+    .search-panel {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+        .search-panel .form-label {
+            color: white;
+            font-weight: 500;
+        }
+
+        .search-panel .form-control {
+            border: none;
+            border-radius: 6px;
+        }
+
+        .search-panel .btn-search {
+            background: white;
+            color: #667eea;
+            border: none;
+            font-weight: 600;
+        }
+
+            .search-panel .btn-search:hover {
+                background: #f8f9fa;
+            }
+</style>
+
+<!-- Search Panel -->
+<div class="search-panel">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">
+                <i class="fas fa-search"></i> Tìm kiếm Order ID hoặc khách hàng
+            </label>
+            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]"
+                   class="form-control" placeholder="Nhập Order ID hoặc tên khách hàng...">
+        </div>
+
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-search w-100">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </div>
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Orders Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 80px;"><i class="fas fa-hashtag"></i> Order ID</th>
+                    <th style="width: 150px;"><i class="fas fa-user"></i> Khách hàng</th>
+                    <th style="width: 180px;"><i class="fas fa-building"></i> Phòng ban</th>
+                    <th style="width: 100px;"><i class="fas fa-calendar"></i> Ngày đặt</th>
+                    <th style="width: 100px;"><i class="fas fa-info-circle"></i> Trạng thái</th>
+                    <th style="width: 60px;" class="text-center"><i class="fas fa-box"></i> SP</th>
+                    <th style="width: 110px;" class="text-end"><i class="fas fa-dollar-sign"></i> Tổng</th>
+                    <th style="width: 100px;" class="text-center"><i class="fas fa-cog"></i> Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var o in Model)
+                    {
+                        <tr>
+                            <td><strong class="text-primary">#@o.OrderId</strong></td>
+                            <td>
+                                <span class="text-truncate d-inline-block" style="max-width: 130px;"
+                                      title="@(o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : "N/A")">
+                                    @(o.Customer != null ? o.Customer.FirstName + " " + o.Customer.LastName : "N/A")
+                                </span>
+                            </td>
+                            <td>
+                                @{
+                                    var depts = o.OrderItems?
+                                    .Select(oi => oi.Department?.DepartmentName)
+                                    .Where(d => !string.IsNullOrEmpty(d))
+                                    .Distinct()
+                                    .ToList();
+                                }
+                                @if (depts != null && depts.Any())
+                                {
+                                    if (depts.Count <= 2)
+                                    {
+                                        <small>@string.Join(", ", depts)</small>
+                                    }
+                                    else
+                                    {
+                                        <small>@string.Join(", ", depts.Take(2))</small>
+                                        <br>
+
+                                        <span class="badge bg-info mt-1">+@(depts.Count - 2) more</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted"><small>N/A</small></span>
+                                }
+                            </td>
+                            <td><small>@o.OrderDate?.ToString("dd/MM/yy")</small></td>
+                            <td>
+                                @switch (o.Status)
+                                {
+                                    case "COMPLETE":
+                                        <span class="badge bg-success">Complete</span>
+                                        break;
+                                    case "PENDING":
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        break;
+                                    case "CANCELED":
+                                        <span class="badge bg-danger">Canceled</span>
+                                        break;
+                                    case "PROCESSING":
+                                        <span class="badge bg-info text-dark">Processing</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@o.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark">@o.OrderItems.Count()</span>
+                            </td>
+                            <td class="text-end">
+                                <strong class="text-success">$@o.OrderItems.Sum(i => i.Total).GetValueOrDefault().ToString("N2")</strong>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a asp-action="Details" asp-route-id="@o.OrderId"
+                                       class="btn btn-sm btn-info p-1" title="Chi tiết" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="EditStatus" asp-route-id="@o.OrderId"
+                                       class="btn btn-sm btn-warning p-1" title="Cập nhật" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                            <p class="mb-0">Chưa có đơn hàng nào</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.Page == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.Page - 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            </li>
+
+            @{
+                int start = Math.Max(1, ViewBag.Page - 2);
+                int end = Math.Min(ViewBag.TotalPages, ViewBag.Page + 2);
+
+                if (start > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="1"
+                           asp-route-searchString="@ViewData["CurrentFilter"]">1</a>
+                    </li>
+                    if (start > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = start; i <= end; i++)
+                {
+                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-searchString="@ViewData["CurrentFilter"]">@i</a>
+                    </li>
+                }
+
+                if (end < ViewBag.TotalPages)
+                {
+                    if (end < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchString="@ViewData["CurrentFilter"]">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+
+            <li class="page-item @(ViewBag.Page == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.Page + 1)"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

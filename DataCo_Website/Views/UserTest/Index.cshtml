@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>User Generation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .btn { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .result { margin: 20px 0; padding: 15px; border: 1px solid #ddd; background: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Quản lý User cho Customer</h1>
+
+    <div>
+        <button class="btn" onclick="viewCustomers()">Xem danh sách Customer & User</button>
+        <button class="btn" onclick="createUsers()">Tạo User cho tất cả Customer</button>
+    </div>
+
+    <div id="result" class="result" style="display: none;"></div>
+
+    <div id="customerList"></div>
+
+    <script>
+        // Xem danh sách customer và user
+        async function viewCustomers() {
+            try {
+                const response = await fetch('/UserTest/GetCustomerUsers');
+                const data = await response.json();
+
+                if (data.success) {
+                    let html = '<h3>Danh sách Customer & User (50 record đầu):</h3>';
+                    html += '<table>';
+                    html += '<tr><th>Tên Customer</th><th>Segment</th><th>Có User?</th><th>Username</th><th>Email</th></tr>';
+
+                    data.data.forEach(item => {
+                        html += `<tr>
+                            <td>${item.customerName}</td>
+                            <td>${item.customerSegment}</td>
+                            <td>${item.hasUser ? '✓ Có' : '✗ Chưa có'}</td>
+                            <td>${item.username}</td>
+                            <td>${item.email}</td>
+                        </tr>`;
+                    });
+
+                    html += '</table>';
+                    document.getElementById('customerList').innerHTML = html;
+                } else {
+                    showResult('Lỗi: ' + data.message, false);
+                }
+            } catch (error) {
+                showResult('Lỗi: ' + error.message, false);
+            }
+        }
+
+        // Tạo user cho tất cả customer
+        async function createUsers() {
+            if (!confirm('Bạn có chắc muốn tạo user cho tất cả customer chưa có user?')) {
+                return;
+            }
+
+            try {
+                showResult('Đang tạo user... Vui lòng đợi...', true);
+
+                const response = await fetch('/UserTest/CreateUsers', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult('Kết quả tạo user:\n' + data.message, true);
+                    // Tự động refresh danh sách
+                    setTimeout(() => viewCustomers(), 1000);
+                } else {
+                    showResult('Lỗi: ' + data.message, false);
+                }
+            } catch (error) {
+                showResult('Lỗi: ' + error.message, false);
+            }
+        }
+
+        function showResult(message, isSuccess) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = isSuccess ? 'result success' : 'result error';
+            resultDiv.innerHTML = '<pre>' + message + '</pre>';
+        }
+
+        // Tự động load danh sách khi trang load
+        window.onload = function() {
+            viewCustomers();
+        };
+    </script>
+</body>
+</html>

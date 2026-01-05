@@ -1,0 +1,172 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <p>This page shows your stored personal data and allows you to manage customer info.</p>
+
+        <h5 class="mt-4">User Info</h5>
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>User Name:</strong> @Model.CurrentUser.UserName</li>
+            <li class="list-group-item"><strong>Email:</strong> @Model.CurrentUser.Email</li>
+            <li class="list-group-item"><strong>Phone:</strong> @Model.CurrentUser.PhoneNumber</li>
+        </ul>
+
+        <h5>Customer Info</h5>
+        @if (Model.CustomerInfo != null)
+        {
+            <form method="post" asp-page-handler="UpdateCustomerInfo">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.FirstName"></label>
+                    <input asp-for="CustomerInput.FirstName" class="form-control" />
+                    <span asp-validation-for="CustomerInput.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.LastName"></label>
+                    <input asp-for="CustomerInput.LastName" class="form-control" />
+                    <span asp-validation-for="CustomerInput.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.Country"></label>
+                    <select id="country" asp-for="CustomerInput.Country" asp-items="Model.Countries" class="form-select"></select>
+                    <span asp-validation-for="CustomerInput.Country" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.State"></label>
+                    <select id="state" asp-for="CustomerInput.State" class="form-select"></select>
+                    <span asp-validation-for="CustomerInput.State" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.City"></label>
+                    <select id="city" asp-for="CustomerInput.City" class="form-select"></select>
+                    <span asp-validation-for="CustomerInput.City" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label asp-for="CustomerInput.Zipcode"></label>
+                    <select id="zipcode" asp-for="CustomerInput.Zipcode" class="form-select"></select>
+                    <span asp-validation-for="CustomerInput.Zipcode" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-2">
+                    <label>Segment</label>
+                    <input class="form-control" value="@Model.CustomerInfo.Segment" readonly />
+                </div>
+
+                <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+            </form>
+        }
+        else
+        {
+            <p class="text-muted">No customer data found for this user.</p>
+        }
+
+        <hr class="my-4" />
+
+        <form id="download-data" asp-page="DownloadPersonalData" method="post">
+            <button class="btn btn-primary" type="submit">Download Personal Data</button>
+        </form>
+
+        <p class="mt-3">
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-danger">Delete Account</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        async function fetchJson(url) {
+            const r = await fetch(url);
+            if (!r.ok) return null;
+            return await r.json();
+        }
+
+        // On DOM ready: populate dependent selects according to current values
+        document.addEventListener("DOMContentLoaded", async function () {
+            const countryEl = document.getElementById("country");
+            const stateEl = document.getElementById("state");
+            const cityEl = document.getElementById("city");
+            const zipEl = document.getElementById("zipcode");
+
+            // helper to clear a select
+            function clear(sel, placeholder) {
+                sel.innerHTML = "";
+                const opt = document.createElement("option");
+                opt.value = "";
+                opt.text = placeholder;
+                sel.appendChild(opt);
+            }
+
+            // When country changes -> load states
+            countryEl.addEventListener("change", async function () {
+                clear(stateEl, "-- Select State --");
+                clear(cityEl, "-- Select City --");
+                clear(zipEl, "-- Select Zipcode --");
+                if (!this.value) return;
+                const states = await fetchJson(`/Locations/GetStates?country=${encodeURIComponent(this.value)}`);
+                if (states) states.forEach(s => stateEl.add(new Option(s, s)));
+            });
+
+            // When state changes -> load cities
+            stateEl.addEventListener("change", async function () {
+                clear(cityEl, "-- Select City --");
+                clear(zipEl, "-- Select Zipcode --");
+                if (!this.value) return;
+                const country = countryEl.value;
+                const cities = await fetchJson(`/Locations/GetCities?country=${encodeURIComponent(country)}&state=${encodeURIComponent(this.value)}`);
+                if (cities) cities.forEach(c => cityEl.add(new Option(c, c)));
+            });
+
+            // When city changes -> load zipcodes
+            cityEl.addEventListener("change", async function () {
+                clear(zipEl, "-- Select Zipcode --");
+                if (!this.value) return;
+                const country = countryEl.value;
+                const state = stateEl.value;
+                const zips = await fetchJson(`/Locations/GetZipcodes?country=${encodeURIComponent(country)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(this.value)}`);
+                if (zips) zips.forEach(z => zipEl.add(new Option(z, z)));
+            });
+
+            // Initialize dependent selects with current model values if present
+            const currentCountry = "@(Model.CustomerInput?.Country ?? "")";
+            const currentState = "@(Model.CustomerInput?.State ?? "")";
+            const currentCity = "@(Model.CustomerInput?.City ?? "")";
+            const currentZip = "@(Model.CustomerInput?.Zipcode ?? "")";
+
+            if (currentCountry) {
+                // states
+                const states = await fetchJson(`/Locations/GetStates?country=${encodeURIComponent(currentCountry)}`);
+                clear(stateEl, "-- Select State --");
+                if (states) states.forEach(s => stateEl.add(new Option(s, s)));
+                stateEl.value = currentState;
+            }
+
+            if (currentState && currentCountry) {
+                const cities = await fetchJson(`/Locations/GetCities?country=${encodeURIComponent(currentCountry)}&state=${encodeURIComponent(currentState)}`);
+                clear(cityEl, "-- Select City --");
+                if (cities) cities.forEach(c => cityEl.add(new Option(c, c)));
+                cityEl.value = currentCity;
+            }
+
+            if (currentCity && currentState && currentCountry) {
+                const zips = await fetchJson(`/Locations/GetZipcodes?country=${encodeURIComponent(currentCountry)}&state=${encodeURIComponent(currentState)}&city=${encodeURIComponent(currentCity)}`);
+                clear(zipEl, "-- Select Zipcode --");
+                if (zips) zips.forEach(z => zipEl.add(new Option(z, z)));
+                zipEl.value = currentZip;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,272 @@
+﻿@model DataCo_Website.Models.Order
+
+@{
+    ViewData["Title"] = $"Chi Tiết Đơn Hàng #{Model.OrderId}";
+
+    var itemsByDepartment = Model.OrderItems
+        .GroupBy(oi => new
+        {
+            DepartmentId = oi.DepartmentId,
+            DepartmentName = oi.Department?.DepartmentName ?? "Unknown"
+        })
+        .ToList();
+
+    var totalAmount = Model.OrderItems.Sum(i => i.Total ?? 0);
+    var totalSales = Model.OrderItems.Sum(i => i.Sales ?? 0);
+    var totalDiscount = Model.OrderItems.Sum(i => i.Discount ?? 0);
+}
+
+<div class="d-flex justify-content-end mb-3 gap-2">
+    <a asp-action="EditStatus" asp-route-id="@Model.OrderId" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Cập Nhật
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-info-circle"></i> Trạng thái</h6>
+                <h5 class="mb-0">@Model.Status</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-dollar-sign"></i> Tổng tiền</h6>
+                <h5 class="mb-0">$@totalAmount.ToString("N2")</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-building"></i> Số shop</h6>
+                <h5 class="mb-0">@itemsByDepartment.Count</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-tag"></i> Giảm giá</h6>
+                <h5 class="mb-0">$@totalDiscount.ToString("N2")</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Order Information -->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-file-invoice"></i> Thông Tin Đơn Hàng</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Order ID:</dt>
+                    <dd class="col-sm-7"><strong class="text-primary">#@Model.OrderId</strong></dd>
+
+                    <dt class="col-sm-5">Ngày đặt:</dt>
+                    <dd class="col-sm-7">@Model.OrderDate?.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-5">Trạng thái:</dt>
+                    <dd class="col-sm-7">
+                        @switch (Model.Status)
+                        {
+                            case "COMPLETE":
+                                <span class="badge bg-success">COMPLETE</span>
+                                break;
+                            case "PENDING":
+                                <span class="badge bg-warning text-dark">PENDING</span>
+                                break;
+                            case "CANCELED":
+                                <span class="badge bg-danger">CANCELED</span>
+                                break;
+                            case "PROCESSING":
+                                <span class="badge bg-info text-dark">PROCESSING</span>
+                                break;
+                            default:
+                                <span class="badge bg-secondary">@Model.Status</span>
+                                break;
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5">Tổng tiền:</dt>
+                    <dd class="col-sm-7">
+                        <strong class="text-success fs-5">$@totalAmount.ToString("N2")</strong>
+                    </dd>
+
+                    <dt class="col-sm-5">Số sản phẩm:</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-info">@Model.OrderItems.Count sản phẩm</span>
+                    </dd>
+
+                    <dt class="col-sm-5">Số phòng ban:</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-secondary">@itemsByDepartment.Count shop</span>
+                    </dd>
+
+                    <dt class="col-sm-5">Giảm giá:</dt>
+                    <dd class="col-sm-7">
+                        <span class="text-danger">$@totalDiscount.ToString("N2")</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Information -->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-user"></i> Thông Tin Khách Hàng</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Customer != null)
+                {
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Họ tên:</dt>
+                        <dd class="col-sm-7">
+                            <strong>@Model.Customer.FirstName @Model.Customer.LastName</strong>
+                        </dd>
+
+                        <dt class="col-sm-5">Phân khúc:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-primary">@Model.Customer.Segment</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Thành phố:</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.Customer.ZipcodeNavigation != null)
+                            {
+                                <small>@Model.Customer.ZipcodeNavigation.City</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Quốc gia:</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.Customer.ZipcodeNavigation != null)
+                            {
+                                <small>@Model.Customer.ZipcodeNavigation.Country</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+                    </dl>
+                }
+                else
+                {
+                    <p class="text-muted">Không có thông tin khách hàng</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Items by Department -->
+@foreach (var deptGroup in itemsByDepartment)
+{
+    var deptTotal = deptGroup.Sum(oi => oi.Total ?? 0);
+
+    <div class="card mb-3">
+        <div class="card-header bg-success text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-building"></i> @deptGroup.Key.DepartmentName
+                </h5>
+                <span class="badge bg-light text-dark">
+                    Tổng: $@deptTotal.ToString("N2")
+                </span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th class="text-center">SL</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Giảm</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in deptGroup)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                        {
+                                            <img src="~/images/products/@item.Product.Image"
+                                                 alt="@item.Product.ProductName"
+                                                 class="img-thumbnail me-2"
+                                                 style="width: 40px; height: 40px; object-fit: contain;">
+                                        }
+                                        <span>@item.Product?.ProductName</span>
+                                    </div>
+                                </td>
+                                <td><small>@item.Product?.Category?.CategoryName</small></td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark">@item.Quantity</span>
+                                </td>
+                                <td class="text-end">
+                                    <small>$@(item.Product?.ProductPrice ?? 0).ToString("N2")</small>
+                                </td>
+                                <td class="text-end">
+                                    <small class="text-danger">$@(item.Discount ?? 0).ToString("N2")</small>
+                                </td>
+                                <td class="text-end">
+                                    <strong>$@(item.Total ?? 0).ToString("N2")</strong>
+                                </td>
+                            </tr>
+                        }
+                        <tr class="table-light">
+                            <td colspan="5" class="text-end"><strong>TỔNG @deptGroup.Key.DepartmentName:</strong></td>
+                            <td class="text-end">
+                                <strong class="text-success fs-6">$@deptTotal.ToString("N2")</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Grand Total -->
+<div class="card bg-light">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8 offset-md-4">
+                <dl class="row mb-0">
+                    <dt class="col-sm-6 text-end">Tổng tiền hàng:</dt>
+                    <dd class="col-sm-6 text-end">$@totalAmount.ToString("N2")</dd>
+
+                    <dt class="col-sm-6 text-end">Tổng giảm giá:</dt>
+                    <dd class="col-sm-6 text-end text-danger">-$@totalDiscount.ToString("N2")</dd>
+
+                    <dt class="col-sm-6 text-end fs-5"><strong>TỔNG CỘNG:</strong></dt>
+                    <dd class="col-sm-6 text-end">
+                        <strong class="text-success fs-4">$@totalAmount.ToString("N2")</strong>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

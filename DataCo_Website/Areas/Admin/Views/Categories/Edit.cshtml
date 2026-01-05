@@ -1,0 +1,103 @@
+﻿@model DataCo_Website.Models.Category
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Danh Mục";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <input type="hidden" asp-for="CategoryId" />
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-hashtag"></i> Category ID
+                            </label>
+                            <input type="text" class="form-control" value="@Model.CategoryId" disabled readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CategoryName" class="form-label">
+                                <i class="fas fa-tag"></i> Tên Danh Mục <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="CategoryName"
+                                   class="form-control"
+                                   placeholder="Nhập tên danh mục..."
+                                   required />
+                            <span asp-validation-for="CategoryName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DepartmentId" class="form-label">
+                                <i class="fas fa-building"></i> Phòng Ban <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="DepartmentId"
+                                    asp-items="ViewBag.Departments"
+                                    class="form-select"
+                                    required>
+                                <option value="">-- Chọn phòng ban --</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle"></i> Chọn phòng ban quản lý danh mục này
+                            </small>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save"></i> Lưu Thay Đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (Model.Products?.Any() == true)
+            {
+                <div class="card shadow mt-3">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-boxes"></i> Sản Phẩm Thuộc Danh Mục
+                            <span class="badge bg-light text-dark ms-2">@Model.Products.Count</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý:</strong> Thay đổi phòng ban sẽ ảnh hưởng đến
+                            <strong>@Model.Products.Count sản phẩm</strong> thuộc danh mục này.
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            @foreach (var product in Model.Products.Take(5))
+                            {
+                                <li class="list-group-item">
+                                    <i class="fas fa-box"></i> @product.ProductName
+                                </li>
+                            }
+                            @if (Model.Products.Count > 5)
+                            {
+                                <li class="list-group-item text-muted">
+                                    <i class="fas fa-ellipsis-h"></i> Và @(Model.Products.Count - 5) sản phẩm khác...
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

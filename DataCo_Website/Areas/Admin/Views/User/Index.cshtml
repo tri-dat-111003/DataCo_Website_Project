@@ -1,0 +1,299 @@
+﻿@model IEnumerable<DataCo_Website.Areas.Admin.Models.UserListViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý Users";
+}
+
+<style>
+    .search-panel {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        padding: 1.5rem;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+        .search-panel .form-label {
+            color: white;
+            font-weight: 500;
+        }
+
+        .search-panel .form-control {
+            border: none;
+            border-radius: 6px;
+        }
+
+        .search-panel .btn-search {
+            background: white;
+            color: #667eea;
+            border: none;
+            font-weight: 600;
+        }
+
+            .search-panel .btn-search:hover {
+                background: #f8f9fa;
+            }
+</style>
+
+<!-- Search Panel with gradient background -->
+<div class="search-panel">
+    <form method="get" class="row g-3 align-items-end" id="searchForm">
+        <div class="col-md-8">
+            <label class="form-label">
+                <i class="fas fa-search"></i> Tìm kiếm theo Email
+            </label>
+            <input type="text" name="searchEmail" class="form-control"
+                   placeholder="Nhập email để tìm kiếm..." value="@ViewBag.SearchEmail" />
+        </div>
+
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-search w-100">
+                <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+        </div>
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="fas fa-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Users Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-id-card"></i> Cust ID</th>
+                    <th><i class="fas fa-envelope"></i> Email</th>
+                    <th><i class="fas fa-check"></i> Email Conf</th>
+                    <th><i class="fas fa-phone"></i> Phone</th>
+                    <th><i class="fas fa-check"></i> Phone Conf</th>
+                    <th><i class="fas fa-shield-alt"></i> 2FA</th>
+                    <th><i class="fas fa-lock"></i> Lockout</th>
+                    <th><i class="fas fa-toggle-on"></i> Lock Enb</th>
+                    <th><i class="fas fa-circle"></i> Active</th>
+                    <th class="text-center" style="width: 120px;"><i class="fas fa-cog"></i> Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                @if (Model == null || !Model.Any())
+                {
+                    @for (int i = 0; i < 10; i++)
+                    {
+                        <tr class="skeleton-row">
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-text"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-text"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-badge"></div></td>
+                            <td><div class="skeleton skeleton-text"></div></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr class="@(item.IsActive ? "" : "table-secondary text-muted") fade-in">
+                            <td>
+                                @if (item.CustomerId.HasValue)
+                                {
+                                    <span class="badge bg-info text-dark">@item.CustomerId</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td><strong class="text-truncate d-inline-block" style="max-width: 250px;" title="@item.Email">@item.Email</strong></td>
+
+                            <td class="text-center">
+                                @if (item.EmailConfirmed)
+                                {
+                                    <i class="fas fa-check-circle text-success" title="Email đã xác thực"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times-circle text-secondary" title="Chưa xác thực"></i>
+                                }
+                            </td>
+
+                            <td>@(item.PhoneNumber ?? "-")</td>
+
+                            <td class="text-center">
+                                @if (item.PhoneNumberConfirmed)
+                                {
+                                    <i class="fas fa-check-circle text-success" title="SĐT đã xác thực"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times-circle text-secondary" title="Chưa xác thực"></i>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.TwoFactorEnabled)
+                                {
+                                    <i class="fas fa-shield-alt text-success" title="2FA đã bật"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-minus text-muted" title="2FA chưa bật"></i>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.LockoutEnd.HasValue && item.LockoutEnd.Value > DateTimeOffset.Now)
+                                {
+                                    <span class="badge bg-danger" title="@item.LockoutEnd.Value.ToString("g")">
+                                        <i class="fas fa-lock"></i> Locked
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-lock-open"></i> Open
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.LockoutEnabled)
+                                {
+                                    <i class="fas fa-check-circle text-primary" title="Lockout enabled"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-times-circle text-secondary" title="Lockout disabled"></i>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check"></i> Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-ban"></i> Inactive
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a asp-action="Edit" asp-route-id="@item.UserId"
+                                       class="btn btn-sm btn-warning p-1" title="Sửa" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="ChangePassword" asp-route-id="@item.UserId"
+                                       class="btn btn-sm btn-primary p-1" title="Đổi Pass" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-key"></i>
+                                    </a>
+
+                                    @if (item.IsActive)
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.UserId"
+                                           class="btn btn-sm btn-danger p-1" title="Vô hiệu hóa" style="width: 30px; height: 30px;">
+                                            <i class="fas fa-ban"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Restore" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.UserId" />
+                                            <button type="submit" class="btn btn-sm btn-success p-1" title="Khôi phục" style="width: 30px; height: 30px;">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(ViewBag.Page == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.Page - 1)"
+                   asp-route-searchEmail="@ViewBag.SearchEmail">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            </li>
+
+            @{
+                int start = Math.Max(1, ViewBag.Page - 2);
+                int end = Math.Min(ViewBag.TotalPages, ViewBag.Page + 2);
+
+                if (start > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="1"
+                           asp-route-searchEmail="@ViewBag.SearchEmail">1</a>
+                    </li>
+                    if (start > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = start; i <= end; i++)
+                {
+                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-searchEmail="@ViewBag.SearchEmail">@i</a>
+                    </li>
+                }
+
+                if (end < ViewBag.TotalPages)
+                {
+                    if (end < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@ViewBag.TotalPages"
+                           asp-route-searchEmail="@ViewBag.SearchEmail">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+
+            <li class="page-item @(ViewBag.Page == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.Page + 1)"
+                   asp-route-searchEmail="@ViewBag.SearchEmail">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

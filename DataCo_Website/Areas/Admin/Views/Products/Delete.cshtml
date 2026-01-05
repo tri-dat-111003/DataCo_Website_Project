@@ -1,0 +1,140 @@
+﻿@model DataCo_Website.Models.Product
+
+@{
+    ViewData["Title"] = "Vô Hiệu Hóa Sản Phẩm";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <hr />
+
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">
+                    <i class="fas fa-exclamation-circle"></i> Xác nhận vô hiệu hóa
+                </h4>
+                <p>
+                    Bạn có chắc chắn muốn vô hiệu hóa sản phẩm <strong>@Model.ProductName</strong>?
+                </p>
+                <hr>
+                <p class="mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    Sản phẩm sẽ không hiển thị trên giao diện user nhưng dữ liệu vẫn được giữ lại và có thể kích hoạt lại sau.
+                </p>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Thông Tin Sản Phẩm
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    @if (!string.IsNullOrEmpty(Model.Image))
+                                    {
+                                        <img src="~/images/products/@Model.Image"
+                                             alt="@Model.ProductName"
+                                             class="img-fluid rounded"
+                                             style="max-height: 250px; object-fit: contain;">
+                                    }
+                                    else
+                                    {
+                                        <div class="py-4">
+                                            <i class="fas fa-image fa-4x text-muted"></i>
+                                            <p class="text-muted mt-2 mb-0">Không có hình ảnh</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-hashtag"></i> ID
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-secondary">@Model.ProductId</span>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-tag"></i> Tên Sản Phẩm
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <strong>@Model.ProductName</strong>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-folder"></i> Danh Mục
+                                </dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Category != null)
+                                    {
+                                        <span class="badge bg-primary">
+                                            <i class="fas fa-folder"></i>
+                                            @Model.Category.CategoryName
+                                        </span>
+                                        @if (Model.Category.Department != null)
+                                        {
+                                            <br />
+                                            <small class="badge bg-info mt-1">
+                                                <i class="fas fa-building"></i> @Model.Category.Department.DepartmentName
+                                            </small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">N/A</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-dollar-sign"></i> Giá Bán
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <strong class="text-success">$@(Model.ProductPrice?.ToString("N2") ?? "0.00")</strong>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-coins"></i> Giá Vốn
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <strong class="text-primary">$@(Model.Cost?.ToString("N2") ?? "0.00")</strong>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-toggle-on"></i> Trạng Thái
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Đang hoạt động
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post" class="mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="ProductId" />
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Hủy
+                    </a>
+                    <button type="submit"
+                            class="btn btn-danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa sản phẩm này?');">
+                        <i class="fas fa-ban"></i> Xác nhận vô hiệu hóa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

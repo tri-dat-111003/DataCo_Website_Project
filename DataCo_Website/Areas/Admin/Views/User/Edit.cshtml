@@ -1,0 +1,147 @@
+﻿@model DataCo_Website.Areas.Admin.Models.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa User";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-11 col-lg-10">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0"><i class="fas fa-user-edit"></i> Chỉnh sửa thông tin User</h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="CustomerId" />
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <!-- Left Column: Account Info -->
+                        <div class="col-md-6 border-end pe-4">
+                            <h5 class="text-primary mb-3 pb-2 border-bottom">
+                                <i class="fas fa-user-circle"></i> Thông tin tài khoản
+                            </h5>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-id-badge"></i> User ID
+                                </label>
+                                <input type="text" class="form-control" value="@Model.UserId" disabled readonly />
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> Không thể thay đổi ID
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-link"></i> Customer ID Liên kết
+                                </label>
+                                @if (Model.CustomerId.HasValue)
+                                {
+                                    <input type="text" class="form-control" value="@Model.CustomerId" disabled readonly />
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" value="Không liên kết" disabled readonly />
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email
+                                </label>
+                                <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">
+                                    <i class="fas fa-phone"></i> Phone Number
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control"
+                                       placeholder="Không bắt buộc" data-val="false" />
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> Để trống nếu user chưa có số điện thoại
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Settings & Status -->
+                        <div class="col-md-6 ps-4">
+                            <h5 class="text-primary mb-3 pb-2 border-bottom">
+                                <i class="fas fa-cogs"></i> Cài đặt & Trạng thái
+                            </h5>
+
+                            <!-- Info Guide -->
+                            <div class="alert alert-info">
+                                <h6 class="fw-bold"><i class="fas fa-info-circle"></i> Hướng dẫn:</h6>
+                                <ul class="mb-0 small">
+                                    <li><strong>EmailConfirmed:</strong> Email đã được xác thực</li>
+                                    <li><strong>PhoneNumberConfirmed:</strong> Số điện thoại đã được xác thực</li>
+                                    <li><strong>TwoFactorEnabled:</strong> Đã cài đặt xác thực 2 yếu tố</li>
+                                    <li><strong>LockoutEnabled:</strong> Tự động khóa tạm thời khi đăng nhập sai nhiều lần</li>
+                                </ul>
+                            </div>
+
+                            <!-- Settings Box -->
+                            <div class="bg-light rounded p-3 mb-3">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="EmailConfirmed" id="emailConfirmed" />
+                                    <label class="form-check-label fw-bold" asp-for="EmailConfirmed" for="emailConfirmed">
+                                        <i class="fas fa-envelope-circle-check"></i> Email Confirmed
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="PhoneNumberConfirmed" id="phoneConfirmed" />
+                                    <label class="form-check-label fw-bold" asp-for="PhoneNumberConfirmed" for="phoneConfirmed">
+                                        <i class="fas fa-phone-square"></i> Phone Number Confirmed
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="TwoFactorEnabled" id="twoFactor" />
+                                    <label class="form-check-label fw-bold" asp-for="TwoFactorEnabled" for="twoFactor">
+                                        <i class="fas fa-shield-alt"></i> Two Factor Enabled
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" asp-for="LockoutEnabled" id="lockout" />
+                                    <label class="form-check-label fw-bold" asp-for="LockoutEnabled" for="lockout">
+                                        <i class="fas fa-lock"></i> Lockout Enabled
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Warning -->
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Lưu ý:</strong> Để vô hiệu hóa tài khoản, vui lòng sử dụng chức năng
+                                <strong>"Delete"</strong> trong danh sách User.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end mt-4 gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn btn-warning text-white">
+                            <i class="fas fa-save"></i> Lưu thay đổi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

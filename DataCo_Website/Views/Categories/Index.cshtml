@@ -1,0 +1,197 @@
+﻿@model IEnumerable<DataCo_Website.Models.Department>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container-lg my-5">
+    <!-- Page Header -->
+    <div class="text-center mb-5" data-aos="fade-down">
+        <h1 class="display-4 fw-bold">
+            <i class="bi bi-grid-3x3-gap me-2" style="color: #667eea;"></i>
+            Browse All Categories
+        </h1>
+        <p class="lead text-muted">Find products organized by department and category</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4" data-aos="fade-up">
+            <div class="stat-card card border-0 shadow-sm text-center p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="bi bi-building text-white mb-2" style="font-size: 3rem;"></i>
+                <h3 class="text-white fw-bold mb-1">@Model.Count()</h3>
+                <p class="text-white mb-0">Departments</p>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-card card border-0 shadow-sm text-center p-4" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <i class="bi bi-tag text-white mb-2" style="font-size: 3rem;"></i>
+                <h3 class="text-white fw-bold mb-1">@Model.Sum(d => d.Categories.Count())</h3>
+                <p class="text-white mb-0">Categories</p>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-card card border-0 shadow-sm text-center p-4" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="bi bi-box text-white mb-2" style="font-size: 3rem;"></i>
+                <h3 class="text-white fw-bold mb-1">@Model.Sum(d => d.Categories.Sum(c => c.Products.Count()))</h3>
+                <p class="text-white mb-0">Products</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Departments and Categories -->
+    @foreach (var department in Model)
+    {
+        var categories = department.Categories.Where(c => c.IsActive && c.Products.Any(p => p.IsActive)).ToList();
+
+        if (categories.Any())
+        {
+            <div class="department-section mb-5" data-aos="fade-up">
+                <!-- Department Header -->
+                <div class="card shadow-sm border-0 mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="card-body py-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="mb-0 text-white fw-bold">
+                                    <i class="bi bi-building me-3"></i>
+                                    @department.DepartmentName
+                                </h2>
+                                <p class="text-white mb-0 mt-2 opacity-75">
+                                    @categories.Count categories · @categories.Sum(c => c.Products.Count(p => p.IsActive)) products
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <a asp-controller="Products" asp-action="Index"
+                                   class="btn btn-light btn-lg rounded-pill px-4">
+                                    View All Products <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Grid -->
+                <div class="row g-4">
+                    @foreach (var category in categories)
+                    {
+                        var productCount = category.Products.Count(p => p.IsActive);
+                        var sampleProduct = category.Products.FirstOrDefault(p => p.IsActive);
+
+                        @* ✅ Tạo slug từ DepartmentName và CategoryName lowercase *@
+                        var departmentSlug = Uri.EscapeDataString(department.DepartmentName.ToLowerInvariant().Trim());
+                        var categorySlug = Uri.EscapeDataString(category.CategoryName.ToLowerInvariant().Trim());
+
+                        <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="@((categories.IndexOf(category) % 4) * 50)">
+                            <a href="/department/@departmentSlug/category/@categorySlug"
+                               class="text-decoration-none">
+                                <div class="category-card card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center p-4">
+                                        @if (sampleProduct != null && !string.IsNullOrEmpty(sampleProduct.Image))
+                                        {
+                                            <div class="category-image mb-3">
+                                                <img src="~/images/products/@sampleProduct.Image"
+                                                     alt="@category.CategoryName"
+                                                     style="width: 100%; height: 120px; object-fit: contain;">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="category-image mb-3">
+                                                <i class="bi bi-box-seam" style="font-size: 4rem; color: #667eea;"></i>
+                                            </div>
+                                        }
+                                        <h5 class="card-title mb-2 text-dark fw-bold">@category.CategoryName</h5>
+                                        <p class="text-muted mb-0">
+                                            <i class="bi bi-box me-1"></i> @productCount Products
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0 text-center pb-3">
+                                        <span class="text-primary fw-semibold">
+                                            Browse <i class="bi bi-arrow-right ms-1"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 5rem; color: #ccc;"></i>
+            <h3 class="mt-4 text-muted">No Categories Available</h3>
+            <p class="text-muted">Check back later for new categories.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg mt-3 rounded-pill px-5">
+                <i class="bi bi-house-door me-2"></i> Back to Home
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 600,
+            once: true,
+            offset: 100
+        });
+    </script>
+
+    <style>
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
+            }
+
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .category-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+            }
+
+                .category-card:hover .category-image img {
+                    transform: scale(1.1);
+                }
+
+        .category-image img {
+            transition: transform 0.3s ease;
+        }
+
+        .department-section {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .display-4 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,144 @@
+﻿@model DataCo_Website.Models.Category
+
+@{
+    ViewData["Title"] = "Vô Hiệu Hóa Danh Mục";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-circle"></i> Xác nhận vô hiệu hóa
+                        </h5>
+                        <p>
+                            Bạn có chắc chắn muốn vô hiệu hóa danh mục <strong class="text-danger">@Model.CategoryName</strong>
+                            thuộc phòng ban
+                            @if (Model.Department != null)
+                            {
+                                <span class="badge bg-warning text-dark">@Model.Department.DepartmentName</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">N/A</span>
+                            }
+?
+                        </p>
+                        <hr>
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle"></i>
+                            Danh mục sẽ không hiển thị trên giao diện user nhưng dữ liệu vẫn được giữ lại và có thể kích hoạt lại sau.
+                        </p>
+                    </div>
+
+                    <!-- Thông tin danh mục -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Thông tin danh mục</h5>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-hashtag"></i> Category ID
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info text-dark">@Model.CategoryId</span>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-tag"></i> Tên Danh Mục
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <strong>@Model.CategoryName</strong>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-building"></i> Phòng Ban
+                                </dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Department != null)
+                                    {
+                                        <span class="badge @(Model.Department.IsActive ? "bg-primary" : "bg-secondary")">
+                                            <i class="fas fa-building"></i>
+                                            @Model.Department.DepartmentName
+                                        </span>
+                                        @if (!Model.Department.IsActive)
+                                        {
+                                            <br />
+                                            <small class="text-danger">
+                                                <i class="fas fa-exclamation-triangle"></i> Phòng ban đã vô hiệu hóa
+                                            </small>
+                                        }
+                                        <br>
+                                        <small class="text-muted">
+                                            <a asp-area="Admin"
+                                               asp-controller="Departments"
+                                               asp-action="Details"
+                                               asp-route-id="@Model.DepartmentId"
+                                               class="text-decoration-none">
+                                                <i class="fas fa-link"></i> Xem chi tiết phòng ban
+                                            </a>
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">N/A</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-toggle-on"></i> Trạng Thái
+                                </dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Đang hoạt động
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-4">
+                                    <i class="fas fa-box"></i> Số Sản Phẩm
+                                </dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Products?.Any() == true)
+                                    {
+                                        <span class="badge bg-info text-dark">@Model.Products.Count sản phẩm</span>
+                                        <br />
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle"></i> Các sản phẩm này sẽ không hiển thị trên giao diện user khi danh mục bị vô hiệu hóa
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">0 sản phẩm</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="CategoryId" />
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa danh mục này?');">
+                                <i class="fas fa-ban"></i> Xác nhận vô hiệu hóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

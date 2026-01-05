@@ -1,0 +1,65 @@
+﻿@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Vô hiệu hóa tài khoản";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="alert alert-warning" role="alert">
+    <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Cảnh báo quan trọng</h5>
+    <p>
+        <strong>Vô hiệu hóa tài khoản sẽ:</strong>
+    </p>
+    <ul class="mb-0">
+        <li>Khóa tài khoản của bạn - bạn sẽ không thể đăng nhập</li>
+        <li>Vô hiệu hóa thông tin khách hàng liên kết</li>
+        <li>Dữ liệu vẫn được lưu trữ nhưng bạn không thể truy cập</li>
+        <li>Liên hệ quản trị viên nếu muốn khôi phục tài khoản</li>
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form id="delete-user" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            @if (Model.RequirePassword)
+            {
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label fw-bold"></label>
+                    <input asp-for="Input.Password" class="form-control"
+                           autocomplete="current-password"
+                           aria-required="true"
+                           placeholder="Nhập mật khẩu để xác nhận" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    <small class="form-text text-muted">
+                        Nhập mật khẩu hiện tại để xác nhận bạn muốn vô hiệu hóa tài khoản
+                    </small>
+                </div>
+            }
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-lg btn-danger" type="submit">
+                    <i class="fas fa-user-slash"></i> Vô hiệu hóa tài khoản của tôi
+                </button>
+                <a asp-page="./Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Xác nhận trước khi submit
+        document.getElementById('delete-user').addEventListener('submit', function(e) {
+            if (!confirm('Bạn có chắc chắn muốn vô hiệu hóa tài khoản? Hành động này sẽ khóa tài khoản của bạn.')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

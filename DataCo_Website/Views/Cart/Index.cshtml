@@ -1,0 +1,629 @@
+﻿@model DataCo_Website.Models.Cart
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+
+    // ✅ LẤY ITEMS TRONG SESSION HIỆN TẠI (chưa checkout)
+    var currentSessionItems = Model.CartItems
+        .Where(ci => ci.SessionId == Model.CurrentSessionId && ci.Status != "CheckedOut")
+        .ToList();
+
+    // ✅ PHÂN LOẠI ACTIVE VÀ INACTIVE
+    var activeItems = currentSessionItems
+        .Where(ci => ci.Product != null
+            && ci.Product.Category != null
+            && ci.Product.IsActive
+            && ci.Product.Category.IsActive
+            && ci.Product.Category.Department != null
+            && ci.Product.Category.Department.IsActive)
+        .ToList();
+
+    var inactiveItems = currentSessionItems
+        .Where(ci => ci.Product == null
+            || ci.Product.Category == null
+            || !ci.Product.IsActive
+            || !ci.Product.Category.IsActive
+            || ci.Product.Category.Department == null
+            || !ci.Product.Category.Department.IsActive)
+        .ToList();
+
+    // ✅ ITEMS ĐÃ CHỌN (Status = "Selected")
+    var selectedItems = activeItems.Where(ci => ci.Status == "Selected").ToList();
+
+    // ✅ GOM NHÓM THEO DEPARTMENT
+    var itemsByDepartment = activeItems
+        .GroupBy(ci => new
+        {
+            DepartmentId = ci.Product.Category.DepartmentId,
+            DepartmentName = ci.Product.Category.Department?.DepartmentName ?? "Unknown"
+        })
+        .ToList();
+
+    // ✅ TỔNG TIỀN CHỈ TÍNH ITEMS ĐÃ CHỌN
+    var totalAmount = selectedItems.Sum(ci => ci.Quantity * (ci.Product?.ProductPrice ?? 0));
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="bi bi-cart3"></i> Giỏ hàng của bạn
+    </h2>
+
+    <!-- ✅ HƯỚNG DẪN SỬ DỤNG -->
+    @if (activeItems.Any() && !selectedItems.Any())
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-info-circle"></i> Hướng dẫn
+            </h5>
+            <p class="mb-0">
+                Vui lòng <strong>tick chọn</strong> các sản phẩm bạn muốn thanh toán.
+                Bạn có thể chọn từng sản phẩm hoặc dùng nút "Chọn tất cả".
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- ⭐ CẢNH BÁO SẢN PHẨM INACTIVE -->
+    @if (inactiveItems.Any())
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo!
+            </h5>
+            <p>
+                Có <strong>@inactiveItems.Count sản phẩm</strong> trong giỏ hàng <strong>không còn khả dụng</strong>.
+                Vui lòng xóa các sản phẩm này trước khi thanh toán.
+            </p>
+            <hr>
+            <small class="mb-0">
+                Sản phẩm không còn khả dụng do chính sách của cửa hàng.
+            </small>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!currentSessionItems.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="bi bi-cart-x fs-1"></i>
+            <p class="mt-3">Giỏ hàng trống</p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                <i class="bi bi-shop"></i> Tiếp tục mua sắm
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- ✅ NÚT CHỌN TẤT CẢ GLOBAL -->
+                @if (activeItems.Any())
+                {
+                    <div class="card mb-3 shadow-sm bg-light">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="selectAllGlobal"
+                                           @(activeItems.All(ci => ci.Status == "Selected") ? "checked" : "")>
+                                    <label class="form-check-label fw-bold" for="selectAllGlobal">
+                                        Chọn tất cả sản phẩm (@activeItems.Count)
+                                    </label>
+                                </div>
+                                <small class="text-muted" id="selection-status">
+                                    @selectedItems.Count/@activeItems.Count đã chọn
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- ✅ HIỂN THỊ SẢN PHẨM INACTIVE (nếu có) -->
+                @if (inactiveItems.Any())
+                {
+                    <div class="card mb-3 shadow-sm border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Sản phẩm không còn khả dụng</strong>
+                            <span class="badge bg-light text-dark ms-2">@inactiveItems.Count sản phẩm</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 100px;">Hình ảnh</th>
+                                        <th>Sản phẩm</th>
+                                        <th style="width: 80px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in inactiveItems)
+                                    {
+                                        <tr class="table-danger">
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                {
+                                                    <img src="~/images/products/@item.Product.Image"
+                                                         class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" alt="Product">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                                                         style="width: 80px; height: 80px;">
+                                                        <i class="bi bi-image fs-3"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="align-middle">
+                                                <strong>@(item.Product?.ProductName ?? "N/A")</strong>
+                                                <div class="text-danger small mt-1">
+                                                    <i class="bi bi-x-circle"></i> Sản phẩm không khả dụng
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-item"
+                                                        data-id="@item.CartItemId">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+
+                <!-- ✅ HIỂN THỊ SẢN PHẨM ACTIVE THEO DEPARTMENT -->
+                @foreach (var dept in itemsByDepartment)
+                {
+                    var deptItems = dept.ToList();
+                    var deptTotal = deptItems.Where(ci => ci.Status == "Selected").Sum(ci => ci.Quantity * (ci.Product?.ProductPrice ?? 0));
+
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <input type="checkbox" class="form-check-input dept-select-all"
+                                       id="dept-@dept.Key.DepartmentId"
+                                       data-dept="@dept.Key.DepartmentId"
+                                       @(deptItems.All(ci => ci.Status == "Selected") ? "checked" : "")>
+                                <label class="form-check-label" for="dept-@dept.Key.DepartmentId">
+                                    <i class="bi bi-shop"></i>
+                                    <strong>@dept.Key.DepartmentName</strong>
+                                </label>
+                            </div>
+                            <span class="badge bg-light text-dark">@deptItems.Count sản phẩm</span>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 40px;"></th>
+                                        <th style="width: 100px;">Hình ảnh</th>
+                                        <th>Sản phẩm</th>
+                                        <th style="width: 120px;">Đơn giá</th>
+                                        <th style="width: 120px;">Số lượng</th>
+                                        <th style="width: 120px;">Thành tiền</th>
+                                        <th style="width: 80px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in deptItems)
+                                    {
+                                        var itemTotal = item.Quantity * (item.Product?.ProductPrice ?? 0);
+                                        var rowClass = item.Status == "Selected" ? "" : "table-secondary opacity-75";
+
+                                        <tr class="@rowClass" data-item-id="@item.CartItemId">
+                                            <td class="align-middle text-center">
+                                                <!-- ✅ CHECKBOX CHỌN SẢN PHẨM -->
+                                                <input type="checkbox" class="form-check-input item-checkbox"
+                                                       data-id="@item.CartItemId"
+                                                       data-dept="@dept.Key.DepartmentId"
+                                                       @(item.Status == "Selected" ? "checked" : "")>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                {
+                                                    <img src="~/images/products/@item.Product.Image"
+                                                         class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" alt="Product">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                                                         style="width: 80px; height: 80px;">
+                                                        <i class="bi bi-image fs-3"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="align-middle">
+                                                <strong>@item.Product.ProductName</strong>
+                                                <div class="text-muted small">@item.Product.Category?.CategoryName</div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <strong class="item-price" data-price="@item.Product.ProductPrice">$@item.Product.ProductPrice?.ToString("N2")</strong>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="input-group" style="width: 120px;">
+                                                    <button class="btn btn-sm btn-outline-secondary update-quantity"
+                                                            data-id="@item.CartItemId"
+                                                            data-action="decrease">
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                    <input type="number" class="form-control form-control-sm text-center quantity-input"
+                                                           data-id="@item.CartItemId"
+                                                           value="@item.Quantity"
+                                                           min="1"
+                                                           max="999">
+                                                    <button class="btn btn-sm btn-outline-secondary update-quantity"
+                                                            data-id="@item.CartItemId"
+                                                            data-action="increase">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">
+                                                <strong class="text-primary item-total">$@itemTotal.ToString("N2")</strong>
+                                            </td>
+                                            <td class="align-middle text-end">
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-item"
+                                                        data-id="@item.CartItemId">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Tổng tiền shop (đã chọn):</span>
+                                <strong class="text-primary fs-5 dept-total" data-dept="@dept.Key.DepartmentId">$@deptTotal.ToString("N2")</strong>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- ✅ SUMMARY SIDEBAR -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i> Tóm tắt đơn hàng
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Sản phẩm đã chọn:</span>
+                            <strong id="selected-quantity">@selectedItems.Sum(ci => ci.Quantity)</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tổng số items:</span>
+                            <span class="text-muted">@activeItems.Count</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Tổng cộng:</strong>
+                            <strong class="text-primary fs-4" id="total-amount">$@totalAmount.ToString("N2")</strong>
+                        </div>
+
+                        <form asp-action="Checkout" method="post" id="checkout-form">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="btn btn-secondary w-100 btn-lg"
+                                    id="checkout-btn"
+                                    disabled>
+                                <i class="bi bi-credit-card"></i> Vui lòng chọn sản phẩm
+                            </button>
+                        </form>
+
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="bi bi-shop"></i> Tiếp tục mua sắm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // ⭐ LẤY TOKEN NGAY TỪ ĐẦU
+            var antiforgeryToken = $('input[name="__RequestVerificationToken"]').first().val();
+
+            if (!antiforgeryToken) {
+                console.error('Antiforgery token not found!');
+            }
+
+            // ===== FUNCTION: FORMAT SỐ TIỀN =====
+            function formatMoney(amount) {
+                return '$' + amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+
+            // ===== FUNCTION: CẬP NHẬT UI TỔNG TIỀN =====
+            function updateCartSummary() {
+                let totalQuantity = 0;
+                let totalAmount = 0;
+
+                // Tính tổng từ các items đã chọn
+                $('.item-checkbox:checked').each(function() {
+                    const $row = $(this).closest('tr');
+                    const quantity = parseInt($row.find('.quantity-input').val()) || 0;
+                    const price = parseFloat($row.find('.item-price').data('price')) || 0;
+
+                    totalQuantity += quantity;
+                    totalAmount += quantity * price;
+                });
+
+                // Cập nhật sidebar summary
+                $('#selected-quantity').text(totalQuantity);
+                $('#total-amount').text(formatMoney(totalAmount));
+
+                // Cập nhật selection status
+                const totalItems = $('.item-checkbox').length;
+                const selectedCount = $('.item-checkbox:checked').length;
+                $('#selection-status').text(`${selectedCount}/${totalItems} đã chọn`);
+
+                // Cập nhật nút thanh toán
+                const $checkoutBtn = $('#checkout-btn');
+                if (selectedCount > 0) {
+                    $checkoutBtn
+                        .prop('disabled', false)
+                        .removeClass('btn-secondary')
+                        .addClass('btn-primary')
+                        .html(`<i class="bi bi-credit-card"></i> Thanh toán (${selectedCount} sản phẩm)`);
+                } else {
+                    $checkoutBtn
+                        .prop('disabled', true)
+                        .removeClass('btn-primary')
+                        .addClass('btn-secondary')
+                        .html('<i class="bi bi-credit-card"></i> Vui lòng chọn sản phẩm');
+                }
+
+                // Cập nhật tổng tiền mỗi department
+                $('.dept-total').each(function() {
+                    const deptId = $(this).data('dept');
+                    let deptTotal = 0;
+
+                    $(`.item-checkbox[data-dept="${deptId}"]:checked`).each(function() {
+                        const $row = $(this).closest('tr');
+                        const quantity = parseInt($row.find('.quantity-input').val()) || 0;
+                        const price = parseFloat($row.find('.item-price').data('price')) || 0;
+                        deptTotal += quantity * price;
+                    });
+
+                    $(this).text(formatMoney(deptTotal));
+                });
+            }
+
+            // ===== FUNCTION: CẬP NHẬT THÀNH TIỀN CỦA TỪNG ITEM =====
+            function updateItemTotal(cartItemId) {
+                const $row = $(`.quantity-input[data-id="${cartItemId}"]`).closest('tr');
+                const quantity = parseInt($row.find('.quantity-input').val()) || 0;
+                const price = parseFloat($row.find('.item-price').data('price')) || 0;
+                const total = quantity * price;
+                $row.find('.item-total').text(formatMoney(total));
+            }
+
+            // ===== XỬ LÝ NÚT "CHỌN TẤT CẢ" GLOBAL =====
+            $('#selectAllGlobal').on('change', function() {
+                const isChecked = $(this).prop('checked');
+
+                $('.item-checkbox').each(function() {
+                    const cartItemId = $(this).data('id');
+                    const currentChecked = $(this).prop('checked');
+
+                    if (currentChecked !== isChecked) {
+                        $(this).prop('checked', isChecked);
+
+                        // Cập nhật class cho row
+                        const $row = $(this).closest('tr');
+                        if (isChecked) {
+                            $row.removeClass('table-secondary opacity-75');
+                        } else {
+                            $row.addClass('table-secondary opacity-75');
+                        }
+
+                        toggleSelect(cartItemId, isChecked);
+                    }
+                });
+
+                $('.dept-select-all').prop('checked', isChecked);
+                updateCartSummary();
+            });
+
+            // ===== XỬ LÝ CHECKBOX "CHỌN TẤT CẢ" THEO DEPARTMENT =====
+            $('.dept-select-all').on('change', function() {
+                const deptId = $(this).data('dept');
+                const isChecked = $(this).prop('checked');
+
+                $(`.item-checkbox[data-dept="${deptId}"]`).each(function() {
+                    const cartItemId = $(this).data('id');
+                    const currentChecked = $(this).prop('checked');
+
+                    if (currentChecked !== isChecked) {
+                        $(this).prop('checked', isChecked);
+
+                        // Cập nhật class cho row
+                        const $row = $(this).closest('tr');
+                        if (isChecked) {
+                            $row.removeClass('table-secondary opacity-75');
+                        } else {
+                            $row.addClass('table-secondary opacity-75');
+                        }
+
+                        toggleSelect(cartItemId, isChecked);
+                    }
+                });
+
+                updateGlobalSelectAll();
+                updateCartSummary();
+            });
+
+            // ===== XỬ LÝ CHECKBOX CHỌN TỪNG SẢN PHẨM =====
+            $('.item-checkbox').on('change', function() {
+                const cartItemId = $(this).data('id');
+                const isChecked = $(this).prop('checked');
+                const deptId = $(this).data('dept');
+
+                // Thêm/bỏ class để làm mờ item chưa chọn
+                const $row = $(this).closest('tr');
+                if (isChecked) {
+                    $row.removeClass('table-secondary opacity-75');
+                } else {
+                    $row.addClass('table-secondary opacity-75');
+                }
+
+                toggleSelect(cartItemId, isChecked);
+                updateDeptSelectAll(deptId);
+                updateGlobalSelectAll();
+                updateCartSummary();
+            });
+
+            // ===== AJAX: Toggle Select =====
+                function toggleSelect(cartItemId, isSelected) {
+                $('#checkout-btn').prop('disabled', true); // khóa tạm
+
+                $.ajax({
+                    url: '@Url.Action("ToggleSelect", "Cart")',
+                    type: 'POST',
+                    data: {
+                        cartItemId: cartItemId,
+                        isSelected: isSelected,
+                        __RequestVerificationToken: antiforgeryToken
+                    },
+                    success: function(response) {
+                        if (!response.success) {
+                            alert(response.message || 'Có lỗi xảy ra');
+                            location.reload();
+                        } else {
+                            updateCartSummary(); // mở lại nếu hợp lệ
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra');
+                        location.reload();
+                    }
+                });
+            }
+
+
+            function updateDeptSelectAll(deptId) {
+                const total = $(`.item-checkbox[data-dept="${deptId}"]`).length;
+                const checked = $(`.item-checkbox[data-dept="${deptId}"]:checked`).length;
+                $(`.dept-select-all[data-dept="${deptId}"]`).prop('checked', total === checked);
+            }
+
+            function updateGlobalSelectAll() {
+                const total = $('.item-checkbox').length;
+                const checked = $('.item-checkbox:checked').length;
+                $('#selectAllGlobal').prop('checked', total === checked);
+            }
+
+            // ===== XỬ LÝ NÚT TĂNG/GIẢM SỐ LƯỢNG =====
+            $('.update-quantity').on('click', function() {
+                const cartItemId = $(this).data('id');
+                const action = $(this).data('action');
+                const $input = $(`.quantity-input[data-id="${cartItemId}"]`);
+                let quantity = parseInt($input.val());
+
+                if (action === 'increase') {
+                    quantity++;
+                } else if (action === 'decrease' && quantity > 1) {
+                    quantity--;
+                } else if (action === 'decrease' && quantity <= 1) {
+                    return; // Không cho giảm xuống dưới 1
+                }
+
+                $input.val(quantity);
+                updateItemTotal(cartItemId);
+                updateQuantity(cartItemId, quantity);
+                updateCartSummary();
+            });
+
+            // ===== XỬ LÝ THAY ĐỔI SỐ LƯỢNG TRỰC TIẾP =====
+            $('.quantity-input').on('change', function() {
+                const cartItemId = $(this).data('id');
+                let quantity = parseInt($(this).val());
+
+                if (isNaN(quantity) || quantity < 1) {
+                    quantity = 1;
+                    $(this).val(1);
+                }
+
+                updateItemTotal(cartItemId);
+                updateQuantity(cartItemId, quantity);
+                updateCartSummary();
+            });
+
+            function updateQuantity(cartItemId, quantity) {
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Cart")',
+                    type: 'POST',
+                    data: {
+                        cartItemId: cartItemId,
+                        quantity: quantity,
+                        __RequestVerificationToken: antiforgeryToken
+                    },
+                    success: function(response) {
+                        if (!response.success) {
+                            alert(response.message || 'Có lỗi xảy ra');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Update quantity error:', error);
+                        alert('Có lỗi xảy ra');
+                        location.reload();
+                    }
+                });
+            }
+
+            // ===== XỬ LÝ XÓA SẢN PHẨM =====
+            $('.remove-item').on('click', function() {
+                if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+                    return;
+                }
+
+                const cartItemId = $(this).data('id');
+                const $row = $(this).closest('tr');
+
+                $.ajax({
+                    url: '@Url.Action("RemoveItem", "Cart")',
+                    type: 'POST',
+                    data: {
+                        cartItemId: cartItemId,
+                        __RequestVerificationToken: antiforgeryToken
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Xóa hàng khỏi UI với animation
+                            $row.fadeOut(300, function() {
+                                $(this).remove();
+                                updateCartSummary();
+
+                                // Reload nếu không còn item nào
+                                if ($('.item-checkbox').length === 0) {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra');
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Remove item error:', error);
+                        alert('Có lỗi xảy ra');
+                        location.reload();
+                    }
+                });
+            });
+
+            // ===== KHỞI TẠO BAN ĐẦU =====
+            updateCartSummary();
+        });
+    </script>
+}

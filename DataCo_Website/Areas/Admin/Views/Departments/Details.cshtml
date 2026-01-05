@@ -1,0 +1,215 @@
+﻿@model DataCo_Website.Models.Department
+
+@{
+    ViewData["Title"] = "Chi Tiết Phòng Ban";
+    var orders = ViewBag.Orders as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var currentPage = ViewBag.Page as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var categoryCount = ViewBag.CategoryCount as int? ?? 0;
+    var productCount = ViewBag.ProductCount as int? ?? 0;
+}
+
+<!-- Quick Actions -->
+<div class="d-flex justify-content-end gap-2 mb-4">
+    <a asp-action="Edit" asp-route-id="@Model.DepartmentId" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Chỉnh sửa
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<!-- Status Badge -->
+<div class="mb-3">
+    @if (Model.IsActive)
+    {
+        <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-check-circle"></i> Đang hoạt động
+        </span>
+    }
+    else
+    {
+        <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-ban"></i> Đã vô hiệu hóa
+        </span>
+    }
+</div>
+
+<!-- Thông tin cơ bản -->
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-info-circle"></i> Thông Tin Cơ Bản
+        </h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">
+                <i class="fas fa-hashtag"></i> ID
+            </dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-info text-dark">#@Model.DepartmentId</span>
+            </dd>
+
+            <dt class="col-sm-3">
+                <i class="fas fa-building"></i> Tên Phòng Ban
+            </dt>
+            <dd class="col-sm-9">
+                <strong>@Model.DepartmentName</strong>
+            </dd>
+
+            <dt class="col-sm-3">
+                <i class="fas fa-map-marker-alt"></i> Địa Chỉ
+            </dt>
+            <dd class="col-sm-9">
+                @(Model.AddressLine ?? "Chưa cập nhật")
+            </dd>
+
+            <dt class="col-sm-3">
+                <i class="fas fa-toggle-on"></i> Trạng Thái
+            </dt>
+            <dd class="col-sm-9">
+                @if (Model.IsActive)
+                {
+                    <span class="badge bg-success">
+                        <i class="fas fa-check-circle"></i> Đang hoạt động
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">
+                        <i class="fas fa-ban"></i> Đã vô hiệu hóa
+                    </span>
+                }
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- Thống kê -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h3 class="text-primary mb-0">@categoryCount</h3>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-folder"></i> Categories
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow text-center">
+            <div class="card-body">
+                <h3 class="text-success mb-0">@productCount</h3>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-box"></i> Products
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Danh sách đơn hàng -->
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-shopping-cart"></i> Đơn Hàng Thuộc Phòng Ban
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (orders.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> Order ID</th>
+                            <th><i class="fas fa-user"></i> Khách hàng</th>
+                            <th><i class="fas fa-calendar"></i> Ngày đặt</th>
+                            <th class="text-end"><i class="fas fa-dollar-sign"></i> Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in orders)
+                        {
+                            <tr class="fade-in">
+                                <td>
+                                    <span class="badge bg-info text-dark">#@order.OrderId</span>
+                                </td>
+                                <td>@order.CustomerName</td>
+                                <td>@((order.OrderDate as DateTime?)?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                                <td class="text-end">
+                                    <strong class="text-success">
+                                        @string.Format(new System.Globalization.CultureInfo("en-US"), "{0:C}", order.TotalAmount)
+                                    </strong>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Page navigation" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-action="Details" asp-route-id="@Model.DepartmentId" asp-route-page="@(currentPage - 1)">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </a>
+                        </li>
+
+                        @{
+                            int start = Math.Max(1, currentPage - 2);
+                            int end = Math.Min(totalPages, currentPage + 2);
+
+                            if (start > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Details" asp-route-id="@Model.DepartmentId" asp-route-page="1">1</a>
+                                </li>
+                                if (start > 2)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                }
+                            }
+
+                            for (int i = start; i <= end; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Details" asp-route-id="@Model.DepartmentId" asp-route-page="@i">@i</a>
+                                </li>
+                            }
+
+                            if (end < totalPages)
+                            {
+                                if (end < totalPages - 1)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Details" asp-route-id="@Model.DepartmentId" asp-route-page="@totalPages">@totalPages</a>
+                                </li>
+                            }
+                        }
+
+                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                            <a class="page-link" asp-action="Details" asp-route-id="@Model.DepartmentId" asp-route-page="@(currentPage + 1)">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>Chưa có đơn hàng nào thuộc phòng ban này.</p>
+            </div>
+        }
+    </div>
+</div>

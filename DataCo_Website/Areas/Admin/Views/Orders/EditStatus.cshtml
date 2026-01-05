@@ -1,0 +1,151 @@
+﻿@model DataCo_Website.Models.Order
+
+@{
+    ViewData["Title"] = $"Cập Nhật Trạng Thái #{Model.OrderId}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit"></i> Cập Nhật Trạng Thái Đơn Hàng
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Order Information -->
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-info-circle"></i> Thông Tin Đơn Hàng</h6>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Order ID:</dt>
+                        <dd class="col-sm-8"><strong class="text-primary">#@Model.OrderId</strong></dd>
+
+                        <dt class="col-sm-4">Khách hàng:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Customer != null)
+                            {
+                                <span>@Model.Customer.FirstName @Model.Customer.LastName</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Phòng ban:</dt>
+                        <dd class="col-sm-8">
+                            @{
+                                var deptNames = Model.OrderItems?
+                                .Select(oi => oi.Department?.DepartmentName)
+                                .Where(d => !string.IsNullOrEmpty(d))
+                                .Distinct()
+                                .ToList();
+                            }
+                            @if (deptNames != null && deptNames.Any())
+                            {
+                                <small>@string.Join(", ", deptNames)</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Ngày đặt:</dt>
+                        <dd class="col-sm-8"><small>@Model.OrderDate?.ToString("dd/MM/yyyy HH:mm")</small></dd>
+
+                        <dt class="col-sm-4">Trạng thái hiện tại:</dt>
+                        <dd class="col-sm-8">
+                            @switch (Model.Status)
+                            {
+                                case "COMPLETE":
+                                    <span class="badge bg-success">@Model.Status</span>
+                                    break;
+                                case "PENDING":
+                                    <span class="badge bg-warning text-dark">@Model.Status</span>
+                                    break;
+                                case "CANCELED":
+                                    <span class="badge bg-danger">@Model.Status</span>
+                                    break;
+                                case "PROCESSING":
+                                    <span class="badge bg-info text-dark">@Model.Status</span>
+                                    break;
+                                default:
+                                    <span class="badge bg-secondary">@Model.Status</span>
+                                    break;
+                            }
+                        </dd>
+                    </dl>
+                </div>
+
+                <!-- Edit Status Form -->
+                <form asp-action="EditStatus" method="post">
+                    <input type="hidden" asp-for="OrderId" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-sync-alt"></i> Trạng thái mới:
+                        </label>
+
+                        <select name="status" class="form-select" required>
+                            <option value="PENDING" selected="@(Model.Status == "PENDING")">PENDING – Chờ xử lý</option>
+                            <option value="PROCESSING" selected="@(Model.Status == "PROCESSING")">PROCESSING – Đang xử lý</option>
+                            <option value="COMPLETE" selected="@(Model.Status == "COMPLETE")">COMPLETE – Hoàn thành</option>
+                            <option value="CLOSED" selected="@(Model.Status == "CLOSED")">CLOSED – Đã đóng</option>
+                            <option value="CANCELED" selected="@(Model.Status == "CANCELED")">CANCELED – Đã hủy</option>
+                            <option value="PAYMENT_REVIEW" selected="@(Model.Status == "PAYMENT_REVIEW")">PAYMENT_REVIEW – Kiểm tra thanh toán</option>
+                            <option value="PENDING_PAYMENT" selected="@(Model.Status == "PENDING_PAYMENT")">PENDING_PAYMENT – Chờ thanh toán</option>
+                            <option value="SUSPECTED_FRAUD" selected="@(Model.Status == "SUSPECTED_FRAUD")">SUSPECTED_FRAUD – Nghi ngờ gian lận</option>
+                        </select>
+
+                        <small class="form-text text-muted">
+                            <i class="fas fa-info-circle"></i> Chọn trạng thái mới cho đơn hàng
+                        </small>
+                    </div>
+
+                    <!-- Status Descriptions -->
+                    <div class="card mb-3 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="fas fa-question-circle"></i> Ý nghĩa các trạng thái:
+                            </h6>
+                            <ul class="small mb-0">
+                                <li><strong>PENDING:</strong> Đơn hàng đang chờ xử lý</li>
+                                <li><strong>PROCESSING:</strong> Đang xử lý đơn hàng</li>
+                                <li><strong>COMPLETE:</strong> Đơn hàng đã hoàn thành</li>
+                                <li><strong>CLOSED:</strong> Đơn hàng đã đóng</li>
+                                <li><strong>CANCELED:</strong> Đơn hàng đã hủy</li>
+                                <li><strong>PAYMENT_REVIEW:</strong> Đang kiểm tra thanh toán</li>
+                                <li><strong>PENDING_PAYMENT:</strong> Chờ thanh toán</li>
+                                <li><strong>SUSPECTED_FRAUD:</strong> Nghi ngờ gian lận</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Warning -->
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Lưu ý:</strong>
+                        Bạn chỉ có thể thay đổi trạng thái đơn hàng. Các thông tin khác không thể chỉnh sửa.
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                        <button type="submit" class="btn btn-warning text-white">
+                            <i class="fas fa-save"></i> Cập Nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

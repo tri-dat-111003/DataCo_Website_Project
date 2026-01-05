@@ -1,0 +1,333 @@
+﻿@model DataCo_Website.Models.Shipping
+
+@{
+    ViewData["Title"] = $"Chi Tiết Vận Chuyển - Order #{Model.OrderId}";
+    var totalAmount = Model.Order?.OrderItems?.Sum(i => i.Total ?? 0) ?? 0;
+}
+
+<div class="d-flex justify-content-end mb-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<!-- Alert: Read Only -->
+<div class="alert alert-info">
+    <i class="fas fa-info-circle"></i>
+    <strong>Chế độ chỉ xem:</strong> Bạn không thể chỉnh sửa hoặc xóa thông tin vận chuyển.
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-info-circle"></i> Trạng thái</h6>
+                <h5 class="mb-0">@Model.DeliveryStatus</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-shipping-fast"></i> Hình thức</h6>
+                <h5 class="mb-0">@Model.ShippingMode</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white @(Model.LateDeliveryRisk == true ? "bg-danger" : "bg-success")">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-exclamation-triangle"></i> Nguy cơ trễ</h6>
+                <h5 class="mb-0">
+                    @if (Model.LateDeliveryRisk == true)
+                    {
+                        <span>CÓ</span>
+                    }
+                    else
+                    {
+                        <span>KHÔNG</span>
+                    }
+                </h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6 class="mb-1"><i class="fas fa-clock"></i> Ngày giao (TT)</h6>
+                <h5 class="mb-0">@Model.DaysForShippingActual ngày</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Shipping Information -->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-truck"></i> Thông Tin Vận Chuyển</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Order ID:</dt>
+                    <dd class="col-sm-7">
+                        <strong class="text-primary">#@Model.OrderId</strong>
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Details"
+                           asp-route-id="@Model.OrderId" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="fas fa-external-link-alt"></i> Xem đơn
+                        </a>
+                    </dd>
+
+                    <dt class="col-sm-5">Ngày đặt hàng:</dt>
+                    <dd class="col-sm-7">@Model.OrderDate?.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-5">Ngày giao dự kiến:</dt>
+                    <dd class="col-sm-7">
+                        @if (Model.ShippingDate.HasValue)
+                        {
+                            @Model.ShippingDate.Value.ToString("dd/MM/yyyy")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Chưa xác định</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5">Trạng thái:</dt>
+                    <dd class="col-sm-7">
+                        @switch (Model.DeliveryStatus)
+                        {
+                            case "Shipping on time":
+                                <span class="badge bg-success">Đúng hạn</span>
+                                break;
+                            case "Advance shipping":
+                                <span class="badge bg-info">Giao sớm</span>
+                                break;
+                            case "Late delivery":
+                                <span class="badge bg-danger">Giao trễ</span>
+                                break;
+                            case "Shipping canceled":
+                                <span class="badge bg-dark">Đã hủy</span>
+                                break;
+                            default:
+                                <span class="badge bg-secondary">@Model.DeliveryStatus</span>
+                                break;
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5">Hình thức:</dt>
+                    <dd class="col-sm-7">
+                        @switch (Model.ShippingMode)
+                        {
+                            case "Same Day":
+                                <span class="badge bg-danger">@Model.ShippingMode</span>
+                                break;
+                            case "First Class":
+                                <span class="badge bg-success">@Model.ShippingMode</span>
+                                break;
+                            case "Second Class":
+                                <span class="badge bg-info">@Model.ShippingMode</span>
+                                break;
+                            default:
+                                <span class="badge bg-secondary">@Model.ShippingMode</span>
+                                break;
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5">Nguy cơ giao trễ:</dt>
+                    <dd class="col-sm-7">
+                        @if (Model.LateDeliveryRisk == true)
+                        {
+                            <span class="badge bg-danger">
+                                <i class="fas fa-exclamation-triangle"></i> CÓ
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i> KHÔNG
+                            </span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5">Ngày giao dự kiến:</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-light text-dark">
+                            @Model.DaysForShipmentScheduled ngày
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-5">Ngày giao thực tế:</dt>
+                    <dd class="col-sm-7">
+                        <span class="badge bg-light text-dark">
+                            @Model.DaysForShippingActual ngày
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order & Customer Information -->
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Thông Tin Đơn Hàng</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Order != null)
+                {
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Khách hàng:</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.Order.Customer != null)
+                            {
+                                <strong>
+                                    @Model.Order.Customer.FirstName
+                                    @Model.Order.Customer.LastName
+                                </strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Phân khúc:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-secondary">@Model.Order.Customer?.Segment</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Địa chỉ:</dt>
+                        <dd class="col-sm-7">
+                            @if (Model.Order.Customer?.ZipcodeNavigation != null)
+                            {
+                                <small>
+                                    @Model.Order.Customer.ZipcodeNavigation.City,
+                                    @Model.Order.Customer.ZipcodeNavigation.State<br>
+                                    @Model.Order.Customer.ZipcodeNavigation.Country
+                                </small>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Phòng ban:</dt>
+                        <dd class="col-sm-7">
+                            @{
+                                var departments = Model.Order.OrderItems?
+                                .Select(oi => oi.Department?.DepartmentName)
+                                .Where(d => !string.IsNullOrEmpty(d))
+                                .Distinct()
+                                .ToList();
+                            }
+                            @if (departments != null && departments.Any())
+                            {
+                                <small>@string.Join(", ", departments)</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">N/A</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Trạng thái đơn:</dt>
+                        <dd class="col-sm-7">
+                            @switch (Model.Order.Status)
+                            {
+                                case "COMPLETE":
+                                    <span class="badge bg-success">@Model.Order.Status</span>
+                                    break;
+                                case "PENDING":
+                                    <span class="badge bg-warning">@Model.Order.Status</span>
+                                    break;
+                                case "CANCELED":
+                                    <span class="badge bg-danger">@Model.Order.Status</span>
+                                    break;
+                                default:
+                                    <span class="badge bg-secondary">@Model.Order.Status</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt class="col-sm-5">Số sản phẩm:</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-info">
+                                @Model.Order.OrderItems?.Count ?? 0 sản phẩm
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-5">Tổng tiền:</dt>
+                        <dd class="col-sm-7">
+                            <strong class="text-success">
+                                @totalAmount.ToString("C0", new System.Globalization.CultureInfo("en-US"))
+                            </strong>
+                        </dd>
+                    </dl>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Items -->
+@if (Model.Order?.OrderItems != null && Model.Order.OrderItems.Any())
+{
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-box"></i> Sản Phẩm Trong Đơn</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Đơn giá</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Order.OrderItems)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                        {
+                                            <img src="~/images/products/@item.Product.Image"
+                                                 alt="@item.Product.ProductName"
+                                                 class="img-thumbnail me-2"
+                                                 style="width: 40px; height: 40px; object-fit: contain;">
+                                        }
+                                        <span>@item.Product?.ProductName</span>
+                                    </div>
+                                </td>
+                                <td><small>@item.Product?.Category?.CategoryName</small></td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark">@item.Quantity</span>
+                                </td>
+                                <td class="text-end">
+                                    <small>@((item.Product?.ProductPrice ?? 0).ToString("C0", new System.Globalization.CultureInfo("en-US")))</small>
+                                </td>
+                                <td class="text-end">
+                                    <strong>@((item.Total ?? 0).ToString("C0", new System.Globalization.CultureInfo("en-US")))</strong>
+                                </td>
+                            </tr>
+                        }
+                        <tr class="table-light">
+                            <td colspan="4" class="text-end"><strong>TỔNG CỘNG:</strong></td>
+                            <td class="text-end">
+                                <strong class="text-success fs-5">
+                                    @totalAmount.ToString("C0", new System.Globalization.CultureInfo("en-US"))
+                                </strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

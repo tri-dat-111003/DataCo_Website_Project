@@ -1,0 +1,185 @@
+﻿@model DataCo_Website.Models.Order
+
+@{
+    ViewData["Title"] = "Xác nhận đơn hàng";
+    var totalAmount = Model.OrderItems.Sum(oi => oi.Total ?? 0);
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Thông báo thành công -->
+            <div class="card border-success mb-4">
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="text-success mb-3">Đặt hàng thành công!</h2>
+                    <p class="lead mb-4">Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ xử lý đơn hàng của bạn sớm nhất.</p>
+
+                    <div class="alert alert-info d-inline-block">
+                        <strong>Mã đơn hàng:</strong> #@Model.OrderId.ToString("D6")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin đơn hàng -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-receipt"></i> Chi tiết đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Ngày đặt hàng:</strong></p>
+                            <p>@Model.OrderDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Trạng thái:</strong></p>
+                            <span class="badge bg-warning">@Model.Status</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Phương thức thanh toán:</strong></p>
+                            <p>
+                                @switch (Model.TypeTransaction)
+                                {
+                                    case "PAYMENT":
+                                        <span><i class="bi bi-credit-card"></i> Thanh toán trực tuyến</span>
+                                        break;
+                                    case "CASH":
+                                        <span><i class="bi bi-cash"></i> Thanh toán khi nhận hàng (COD)</span>
+                                        break;
+                                    case "TRANSFER":
+                                        <span><i class="bi bi-bank"></i> Chuyển khoản ngân hàng</span>
+                                        break;
+                                    case "DEBIT":
+                                        <span><i class="bi bi-wallet2"></i> Thẻ ghi nợ</span>
+                                        break;
+                                    default:
+                                        <span>@Model.TypeTransaction</span>
+                                        break;
+                                }
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Địa chỉ giao hàng:</strong></p>
+                            <p>
+                                @* ✅ ĐỌC TỪ MODEL.ADDRESSLINE THAY VÌ TEMPDATA *@
+                                @if (!string.IsNullOrEmpty(Model.AddressLine))
+                                {
+                                    @Model.AddressLine
+                                    <br />
+                                }
+                                @Model.OrderCity, @Model.OrderState<br>
+                                @Model.OrderCountry
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-box-seam"></i> Sản phẩm đã đặt</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-center">Số lượng</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @if (!string.IsNullOrEmpty(item.Product?.Image))
+                                                {
+                                                    <img src="~/images/products/@item.Product.Image"
+                                                         alt="@item.Product.ProductName"
+                                                         class="img-thumbnail me-3"
+                                                         style="width: 60px; height: 60px; object-fit: contain;">
+                                                }
+                                                else
+                                                {
+                                                    <div class="img-thumbnail me-3 d-flex align-items-center justify-content-center"
+                                                         style="width: 60px; height: 60px; background-color: #f8f9fa;">
+                                                        <i class="bi bi-image text-muted"></i>
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <h6 class="mb-0">@item.Product?.ProductName</h6>
+                                                    <small class="text-muted">@item.Product?.Category?.CategoryName</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <span class="badge bg-secondary">@item.Quantity</span>
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            $@String.Format("{0:N2}", item.Product?.ProductPrice ?? 0)
+                                        </td>
+                                        <td class="text-end align-middle">
+                                            <strong>$@((item.Total ?? 0).ToString("N2"))</strong>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                                    <td class="text-end">
+                                        <strong class="text-primary fs-5">$@totalAmount.ToString("N2")</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin liên hệ -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Thông tin hữu ích</h6>
+                    <ul class="mb-0">
+                        <li>Bạn sẽ nhận được email xác nhận đơn hàng trong vài phút tới.</li>
+                        <li>Đơn hàng của bạn sẽ được xử lý trong vòng 24 giờ.</li>
+                        <li>
+                            Thời gian giao hàng dự kiến:
+                            @if (Model.Shipping != null)
+                            {
+                                <strong>@Model.Shipping.DaysForShipmentScheduled ngày</strong>
+                            }
+                            else
+                            {
+                                <strong>3-5 ngày làm việc</strong>
+                            }
+                        </li>
+                        <li>Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ hotline: <strong>1900-xxxx</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Các nút hành động -->
+            <div class="d-flex justify-content-between mb-5">
+                <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-primary">
+                    <i class="bi bi-list-ul"></i> Xem đơn hàng của tôi
+                </a>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-shop"></i> Tiếp tục mua sắm
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D2ABAB84-BF74-430A-B69E-9DC6D40DDA17}") = "DataCo_OLAP", "DataCo_OLAP.dwproj", "{0B0E40AB-F042-49AB-8B70-7E23446CABE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B0E40AB-F042-49AB-8B70-7E23446CABE6}.Development|Default.ActiveCfg = Development
+		{0B0E40AB-F042-49AB-8B70-7E23446CABE6}.Development|Default.Build.0 = Development
+		{0B0E40AB-F042-49AB-8B70-7E23446CABE6}.Development|Default.Deploy.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3ADB463B-E665-4E48-8772-91684214BC0F}
+	EndGlobalSection
+EndGlobal

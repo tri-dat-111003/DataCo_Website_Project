@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce"
+  DTS:DTSID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=DESKTOP-V3U3D65\TRIDAT;Initial Catalog=DataCo_Ecommerce;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-DataCo-ETL-{3943685F-973C-4BF9-BE8B-D2F8189A5615}DESKTOP-V3U3D65\TRIDAT.DataCo_Ecommerce;Auto Translate=False;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

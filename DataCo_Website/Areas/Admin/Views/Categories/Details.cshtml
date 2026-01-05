@@ -1,0 +1,221 @@
+﻿@model DataCo_Website.Models.Category
+
+@{
+    ViewData["Title"] = "Chi Tiết Danh Mục";
+}
+
+<!-- Quick Actions -->
+<div class="d-flex justify-content-end gap-2 mb-4">
+    <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Chỉnh sửa
+    </a>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<!-- Status Badge -->
+<div class="mb-3">
+    @if (Model.IsActive)
+    {
+        <span class="badge bg-success" style="font-size: 1rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-check-circle"></i> Đang hoạt động
+        </span>
+    }
+    else
+    {
+        <span class="badge bg-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+            <i class="fas fa-ban"></i> Đã vô hiệu hóa
+        </span>
+    }
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info"></i> Thông Tin Cơ Bản
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">
+                        <i class="fas fa-hashtag"></i> ID
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-info text-dark">@Model.CategoryId</span>
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        <i class="fas fa-tag"></i> Tên Danh Mục
+                    </dt>
+                    <dd class="col-sm-8">
+                        <strong>@Model.CategoryName</strong>
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        <i class="fas fa-building"></i> Phòng Ban
+                    </dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Department != null)
+                        {
+                            <span class="badge @(Model.Department.IsActive ? "bg-success" : "bg-secondary")">
+                                <i class="fas fa-building"></i>
+                                @Model.Department.DepartmentName
+                            </span>
+                            @if (!Model.Department.IsActive)
+                            {
+                                <br />
+                                <small class="text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i> Phòng ban đã vô hiệu hóa
+                                </small>
+                            }
+                            <br>
+                            <small class="text-muted">
+                                <a asp-area="Admin"
+                                   asp-controller="Departments"
+                                   asp-action="Details"
+                                   asp-route-id="@Model.DepartmentId"
+                                   class="text-decoration-none">
+                                    <i class="fas fa-link"></i> Xem chi tiết phòng ban
+                                </a>
+                            </small>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">N/A</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        <i class="fas fa-toggle-on"></i> Trạng Thái
+                    </dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i> Đang hoạt động
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-ban"></i> Đã vô hiệu hóa
+                            </span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar"></i> Thống Kê
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded">
+                            <h3 class="mb-0 text-primary">@(Model.Products?.Count ?? 0)</h3>
+                            <small class="text-muted">Tổng Sản Phẩm</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded">
+                            <h3 class="mb-0 text-success">@(Model.Products?.Count(p => p.IsActive) ?? 0)</h3>
+                            <small class="text-muted">Sản Phẩm Active</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Products?.Any() == true)
+{
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-boxes"></i> Danh Sách Sản Phẩm
+                <span class="badge bg-light text-dark ms-2">@Model.Products.Count</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;"><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-box"></i> Tên Sản Phẩm</th>
+                            <th style="width: 120px;"><i class="fas fa-circle"></i> Trạng Thái</th>
+                            <th style="width: 120px;" class="text-end"><i class="fas fa-dollar-sign"></i> Giá</th>
+                            <th style="width: 100px;" class="text-center"><i class="fas fa-cog"></i> Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.Products)
+                        {
+                            <tr class="@(!product.IsActive ? "table-secondary" : "") fade-in">
+                                <td>
+                                    <span class="badge bg-info text-dark">@product.ProductId</span>
+                                </td>
+                                <td>
+                                    @product.ProductName
+                                </td>
+                                <td class="text-center">
+                                    @if (product.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-ban"></i> Vô hiệu
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <strong class="text-success">$@product.ProductPrice?.ToString("N2")</strong>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-area="Admin"
+                                       asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.ProductId"
+                                       class="btn btn-sm btn-info p-1"
+                                       title="Chi tiết"
+                                       style="width: 30px; height: 30px;">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card shadow">
+        <div class="card-body text-center text-muted py-5">
+            <i class="fas fa-inbox fa-3x mb-3"></i>
+            <p>Chưa có sản phẩm nào thuộc danh mục này</p>
+            <a asp-area="Admin"
+               asp-controller="Products"
+               asp-action="Create"
+               class="btn btn-primary">
+                <i class="fas fa-plus"></i> Thêm Sản Phẩm
+            </a>
+        </div>
+    </div>
+}
