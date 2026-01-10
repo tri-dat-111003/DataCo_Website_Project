@@ -19,7 +19,9 @@ namespace DataCo_Website.Areas.Admin.Controllers
             _logger = logger;
         }
 
-        // GET: Admin/Dashboard
+        // ============================================================================
+        // GET: Admin/Dashboard - Main dashboard view
+        // ============================================================================
         public async Task<IActionResult> Index(DashboardFilters filters)
         {
             try
@@ -33,12 +35,18 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 // Current filters
                 ViewBag.Filters = filters;
 
+                // ✅ CẢI TIẾN #1: Tính Profit và Revenue trước để tính Profit Margin
+                var totalProfit = await GetTotalProfit(filters);
+                var totalRevenue = await GetTotalRevenue(filters);
+
                 // Load dashboard data
                 var dashboardData = new DashboardViewModel
                 {
-                    // Summary metrics
-                    TotalProfit = await GetTotalProfit(filters),
-                    TotalRevenue = await GetTotalRevenue(filters),
+                    TotalProfit = totalProfit,
+                    TotalRevenue = totalRevenue,
+
+                    // ✅ CẢI TIẾN #1: Tính Profit Margin %
+                    ProfitMargin = totalRevenue > 0 ? Math.Round((totalProfit / totalRevenue) * 100, 2) : 0,
 
                     // Charts data
                     ProfitBySegment = await GetProfitBySegment(filters),
@@ -61,7 +69,85 @@ namespace DataCo_Website.Areas.Admin.Controllers
             }
         }
 
-        // Get Available Years from Cube
+        // ============================================================================
+        // ✅ THÊM MỚI: API endpoint cho Cross-Filtering (PRODUCTION-READY)
+        // ============================================================================
+        [HttpPost]
+        public async Task<IActionResult> GetFilteredData([FromBody] CrossFilterRequest request)
+        {
+            try
+            {
+                _logger.LogInformation($"GetFilteredData called for dataType: {request.DataType}");
+
+                // ✅ FIX: Build filters từ FormFilters trong request thay vì empty DashboardFilters
+                var filters = new DashboardFilters
+                {
+                    Years = request.FormFilters?.Years,
+                    Quarters = request.FormFilters?.Quarters,
+                    Markets = request.FormFilters?.Markets,
+                    Departments = request.FormFilters?.Departments
+                };
+
+                var crossFilters = BuildCrossFilters(request.Filters);
+
+                // Route to appropriate data method
+                object result = request.DataType switch
+                {
+                    "segment" => await GetProfitBySegment(filters, crossFilters),
+                    "status" => await GetOrderCountByStatus(filters, crossFilters),
+                    "transactionType" => await GetTransactionCountByType(filters, crossFilters),
+                    "market" => await GetRevenueByMarket(filters, crossFilters),
+                    "year" => await GetRevenueByYear(filters, crossFilters),
+                    "department" => await GetRevenueByDepartment(filters, crossFilters),
+                    "category" => await GetRevenueByCategory(filters, crossFilters),
+                    "state" => await GetProfitByState(filters, crossFilters),
+                    "kpis" => await GetKPIsWithCrossFilters(filters, crossFilters),
+                    _ => throw new ArgumentException($"Invalid data type: {request.DataType}")
+                };
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error in GetFilteredData for {request.DataType}");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        // ✅ THÊM MỚI: Get KPIs với cross-filters
+        private async Task<KpiResponse> GetKPIsWithCrossFilters(DashboardFilters filters, Dictionary<string, string?> crossFilters)
+        {
+            var profit = await GetTotalProfit(filters, crossFilters);
+            var revenue = await GetTotalRevenue(filters, crossFilters);
+
+            return new KpiResponse
+            {
+                TotalProfit = profit,
+                TotalRevenue = revenue,
+                ProfitMargin = revenue > 0 ? Math.Round((profit / revenue) * 100, 2) : 0
+            };
+        }
+
+        // ✅ THÊM MỚI: Build cross-filter dictionary
+        private Dictionary<string, string?> BuildCrossFilters(Dictionary<string, string?> filters)
+        {
+            var crossFilters = new Dictionary<string, string?>();
+
+            foreach (var filter in filters)
+            {
+                if (!string.IsNullOrEmpty(filter.Value))
+                {
+                    crossFilters[filter.Key] = filter.Value;
+                }
+            }
+
+            return crossFilters;
+        }
+
+        // ============================================================================
+        // Get Available Options for Filters
+        // ============================================================================
+
         private async Task<List<int>> GetAvailableYears()
         {
             string mdxQuery = @"
@@ -85,7 +171,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return years.OrderByDescending(y => y).ToList();
         }
 
-        // Get Available Markets
         private async Task<List<string>> GetAvailableMarkets()
         {
             string mdxQuery = @"
@@ -109,7 +194,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return markets;
         }
 
-        // Get Available Departments
         private async Task<List<string>> GetAvailableDepartments()
         {
             string mdxQuery = @"
@@ -133,14 +217,18 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return departments;
         }
 
+        // ============================================================================
+        // Data Retrieval Methods với Cross-Filter Support
+        // ============================================================================
+
         // 1. Total Profit
-        private async Task<decimal> GetTotalProfit(DashboardFilters filters)
+        private async Task<decimal> GetTotalProfit(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
                     [Measures].[Profit] ON COLUMNS 
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters)}
             ";
 
             var table = await ExecuteMDXQuery(mdxQuery);
@@ -152,13 +240,13 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 2. Total Revenue
-        private async Task<decimal> GetTotalRevenue(DashboardFilters filters)
+        private async Task<decimal> GetTotalRevenue(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
                     [Measures].[Total Price] ON COLUMNS 
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters)}
             ";
 
             var table = await ExecuteMDXQuery(mdxQuery);
@@ -170,7 +258,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 3. Profit by Customer Segment
-        private async Task<List<ChartDataPoint>> GetProfitBySegment(DashboardFilters filters)
+        private async Task<List<ChartDataPoint>> GetProfitBySegment(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
@@ -181,7 +269,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         BDESC
                     ) ON ROWS
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters, excludeDimension: "segment")}
             ";
 
             var data = await ExecuteMDXQuery(mdxQuery);
@@ -189,7 +277,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 4. Order Count by Status
-        private async Task<List<ChartDataPoint>> GetOrderCountByStatus(DashboardFilters filters)
+        private async Task<List<ChartDataPoint>> GetOrderCountByStatus(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
@@ -200,7 +288,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         BDESC
                     ) ON ROWS
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters, excludeDimension: "status")}
             ";
 
             var data = await ExecuteMDXQuery(mdxQuery);
@@ -208,7 +296,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 5. Transaction Count by Type
-        private async Task<List<ChartDataPoint>> GetTransactionCountByType(DashboardFilters filters)
+        private async Task<List<ChartDataPoint>> GetTransactionCountByType(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
@@ -219,7 +307,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         BDESC
                     ) ON ROWS
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters, excludeDimension: "transactionType")}
             ";
 
             var data = await ExecuteMDXQuery(mdxQuery);
@@ -227,7 +315,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 6. Revenue & Profit by Market
-        private async Task<List<MarketChartData>> GetRevenueByMarket(DashboardFilters filters)
+        private async Task<List<MarketChartData>> GetRevenueByMarket(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string marketSetOnRows;
 
@@ -240,7 +328,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 marketSetOnRows = "[Fact Sales].[Market].[Market].MEMBERS";
             }
 
-            string whereClause = BuildWhereClause(filters, excludeMarket: true);
+            string whereClause = BuildWhereClause(filters, crossFilters, excludeMarket: true, excludeDimension: "market");
 
             string mdxQuery = $@"
                 SELECT 
@@ -259,7 +347,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 7. Revenue & Profit by Year
-        private async Task<List<YearChartData>> GetRevenueByYear(DashboardFilters filters)
+        private async Task<List<YearChartData>> GetRevenueByYear(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string yearSetOnRows;
 
@@ -272,7 +360,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 yearSetOnRows = "FILTER([Dim Date].[Year].[Year].MEMBERS, NOT IsEmpty([Measures].[Total Price]) OR NOT IsEmpty([Measures].[Profit]))";
             }
 
-            string whereClause = BuildWhereClause(filters, excludeYear: true);
+            string whereClause = BuildWhereClause(filters, crossFilters, excludeYear: true, excludeDimension: "year");
 
             string mdxQuery = $@"
                 SELECT
@@ -292,7 +380,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 8. Revenue & Profit by Department
-        private async Task<List<DepartmentChartData>> GetRevenueByDepartment(DashboardFilters filters)
+        private async Task<List<DepartmentChartData>> GetRevenueByDepartment(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string deptSetOnRows;
 
@@ -305,7 +393,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 deptSetOnRows = "[Dim Department].[Department Name].[Department Name].MEMBERS";
             }
 
-            string whereClause = BuildWhereClause(filters, excludeDepartment: true);
+            string whereClause = BuildWhereClause(filters, crossFilters, excludeDepartment: true, excludeDimension: "department");
 
             string mdxQuery = $@"
                 SELECT 
@@ -324,7 +412,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 9. Revenue & Profit by Category (Top 20)
-        private async Task<List<CategoryChartData>> GetRevenueByCategory(DashboardFilters filters)
+        private async Task<List<CategoryChartData>> GetRevenueByCategory(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
@@ -335,7 +423,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         [Measures].[Total Price]
                     ) ON ROWS
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters, excludeDimension: "category")}
             ";
 
             var data = await ExecuteMDXQuery(mdxQuery);
@@ -343,7 +431,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // 10. Profit by State (Top 20)
-        private async Task<List<StateChartData>> GetProfitByState(DashboardFilters filters)
+        private async Task<List<StateChartData>> GetProfitByState(DashboardFilters filters, Dictionary<string, string?>? crossFilters = null)
         {
             string mdxQuery = $@"
                 SELECT 
@@ -354,48 +442,81 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         [Measures].[Profit]
                     ) ON ROWS
                 FROM [DataCo Sales]
-                {BuildWhereClause(filters)}
+                {BuildWhereClause(filters, crossFilters, excludeDimension: "state")}
             ";
 
             var data = await ExecuteMDXQuery(mdxQuery);
             return ParseStateData(data);
         }
 
-        // Build WHERE clause from filters
+        // ============================================================================
+        // ✅ SỬA: Build WHERE clause với Cross-Filter Support
+        // ============================================================================
         private string BuildWhereClause(
             DashboardFilters filters,
+            Dictionary<string, string?>? crossFilters = null,
             bool excludeYear = false,
             bool excludeMarket = false,
-            bool excludeDepartment = false)
+            bool excludeDepartment = false,
+            string? excludeDimension = null)
         {
             var conditions = new List<string>();
 
-            // 1. Filter Years
+            // 1. Filter Years (from form filters)
             if (!excludeYear && filters.Years != null && filters.Years.Any())
             {
                 var members = string.Join(", ", filters.Years.Select(y => $"[Dim Date].[Year].&[{y}]"));
                 conditions.Add($"{{{members}}}");
             }
 
-            // 2. Filter Quarters
+            // 2. Filter Quarters (from form filters)
             if (filters.Quarters != null && filters.Quarters.Any())
             {
                 var members = string.Join(", ", filters.Quarters.Select(q => $"[Dim Date].[Quarter].&[{q}]"));
                 conditions.Add($"{{{members}}}");
             }
 
-            // 3. Filter Markets
+            // 3. Filter Markets (from form filters)
             if (!excludeMarket && filters.Markets != null && filters.Markets.Any())
             {
                 var members = string.Join(", ", filters.Markets.Select(m => $"[Fact Sales].[Market].&[{m}]"));
                 conditions.Add($"{{{members}}}");
             }
 
-            // 4. Filter Departments
+            // 4. Filter Departments (from form filters)
             if (!excludeDepartment && filters.Departments != null && filters.Departments.Any())
             {
                 var members = string.Join(", ", filters.Departments.Select(d => $"[Dim Department].[Department Name].&[{d}]"));
                 conditions.Add($"{{{members}}}");
+            }
+
+            // ✅ THÊM MỚI: 5. Cross-Filters (from chart interactions)
+            if (crossFilters != null && crossFilters.Any())
+            {
+                foreach (var filter in crossFilters)
+                {
+                    // Skip dimension đang được query (để chart vẫn hiển thị tất cả segments của nó)
+                    if (filter.Key == excludeDimension) continue;
+
+                    if (!string.IsNullOrEmpty(filter.Value))
+                    {
+                        var memberPath = filter.Key switch
+                        {
+                            "segment" => $"[Dim Customer].[Segment].&[{filter.Value}]",
+                            "status" => $"[Fact Sales].[Status].&[{filter.Value}]",
+                            "transactionType" => $"[Fact Sales].[Type Transaction].&[{filter.Value}]",
+                            "market" => $"[Fact Sales].[Market].&[{filter.Value}]",
+                            "year" => $"[Dim Date].[Year].&[{filter.Value}]",
+                            "department" => $"[Dim Department].[Department Name].&[{filter.Value}]",
+                            _ => null
+                        };
+
+                        if (memberPath != null)
+                        {
+                            conditions.Add($"{{{memberPath}}}");
+                        }
+                    }
+                }
             }
 
             if (!conditions.Any()) return "";
@@ -410,7 +531,10 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return $"WHERE ({result})";
         }
 
-        // Helper: Execute MDX Query
+        // ============================================================================
+        // Helper Methods
+        // ============================================================================
+
         private async Task<DataTable> ExecuteMDXQuery(string mdxQuery)
         {
             var table = new DataTable();
@@ -430,14 +554,12 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return table;
         }
 
-        // Helper: Clean column names
         private void CleanColumnNames(DataTable table)
         {
             foreach (DataColumn col in table.Columns)
             {
                 string originalName = col.ColumnName;
 
-                // Handle MEMBER_CAPTION format
                 if (originalName.Contains("MEMBER_CAPTION"))
                 {
                     var match = System.Text.RegularExpressions.Regex.Match(
@@ -454,7 +576,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         col.ColumnName = "Name";
                     }
                 }
-                // Handle [Measures].[...] format
                 else if (originalName.Contains("[Measures]"))
                 {
                     col.ColumnName = originalName
@@ -555,68 +676,4 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return result;
         }
     }
-    /*
-    // Models
-    public class DashboardFilters
-    {
-        public List<int>? Years { get; set; }
-        public List<int>? Quarters { get; set; }
-        public List<string>? Markets { get; set; }
-        public List<string>? Departments { get; set; }
-    }
-
-    public class DashboardViewModel
-    {
-        public decimal TotalProfit { get; set; }
-        public decimal TotalRevenue { get; set; }
-        public List<ChartDataPoint> ProfitBySegment { get; set; } = new();
-        public List<ChartDataPoint> OrderCountByStatus { get; set; } = new();
-        public List<ChartDataPoint> TransactionCountByType { get; set; } = new();
-        public List<MarketChartData> RevenueByMarket { get; set; } = new();
-        public List<YearChartData> RevenueByYear { get; set; } = new();
-        public List<DepartmentChartData> RevenueByDepartment { get; set; } = new();
-        public List<CategoryChartData> RevenueByCategory { get; set; } = new();
-        public List<StateChartData> ProfitByState { get; set; } = new();
-    }
-
-    public class ChartDataPoint
-    {
-        public string Label { get; set; } = "";
-        public decimal Value { get; set; }
-    }
-
-    public class MarketChartData
-    {
-        public string Market { get; set; } = "";
-        public decimal Revenue { get; set; }
-        public decimal Profit { get; set; }
-    }
-
-    public class YearChartData
-    {
-        public string Year { get; set; } = "";
-        public decimal Revenue { get; set; }
-        public decimal Profit { get; set; }
-    }
-
-    public class DepartmentChartData
-    {
-        public string Department { get; set; } = "";
-        public decimal Revenue { get; set; }
-        public decimal Profit { get; set; }
-    }
-
-    public class CategoryChartData
-    {
-        public string Category { get; set; } = "";
-        public decimal Revenue { get; set; }
-        public decimal Profit { get; set; }
-    }
-
-    public class StateChartData
-    {
-        public string State { get; set; } = "";
-        public decimal Revenue { get; set; }
-        public decimal Profit { get; set; }
-    }*/
 }

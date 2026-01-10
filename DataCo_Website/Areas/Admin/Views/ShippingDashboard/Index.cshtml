@@ -19,10 +19,6 @@
             margin-bottom: 8px;
         }
 
-            .filter-panel .form-label i {
-                margin-right: 5px;
-            }
-
         .filter-panel .form-select {
             border: none;
             border-radius: 6px;
@@ -63,6 +59,50 @@
                 color: white;
             }
 
+    .active-filters {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin: 3px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .filter-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .filter-badge i {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
     .metric-card {
         transition: transform 0.2s;
         border: none;
@@ -84,6 +124,7 @@
         height: 300px;
     }
 
+    /* Select2 fixes */
     .select2-container--bootstrap-5 .select2-selection--multiple {
         min-height: 42px !important;
         border: 2px solid #dee2e6 !important;
@@ -115,18 +156,13 @@
 </style>
 
 <div class="container-fluid">
-    <!-- Filters Panel -->
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h5 class="mb-1">
-                    <i class="fas fa-truck"></i> Shipping Dashboard Filters
-                </h5>
+                <h5 class="mb-1"><i class="fas fa-truck"></i> Shipping Dashboard Filters</h5>
                 <small>Lọc dữ liệu giao hàng theo năm, quý, trạng thái và phân khúc khách hàng</small>
             </div>
-            <button class="btn btn-toggle btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersPanel">
-                <i class="fas fa-chevron-down"></i> Toggle
-            </button>
+            <button class="btn btn-toggle btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersPanel"><i class="fas fa-chevron-down"></i> Toggle</button>
         </div>
 
         <div class="collapse show" id="filtersPanel">
@@ -135,13 +171,11 @@
                     <div class="col-md-3">
                         <label class="form-label"><i class="fas fa-calendar"></i> Year</label>
                         <select name="Years" class="form-select select2-multiple" multiple>
-                            @if (ViewBag.AvailableYears != null && (ViewBag.AvailableYears as List<int>).Any())
+                            @if (ViewBag.AvailableYears != null)
                             {
-                                @foreach (var year in ViewBag.AvailableYears as List<int>)
+                                @foreach (var year in ViewBag.AvailableYears)
                                 {
-                                    <option value="@year" selected="@(filters?.Years?.Contains(year) == true)">
-                                        @year
-                                    </option>
+                                    <option value="@year" selected="@(filters?.Years?.Contains(year) == true)">@year</option>
                                 }
                             }
                         </select>
@@ -152,245 +186,175 @@
                         <select name="Quarters" class="form-select select2-multiple" multiple>
                             @if (ViewBag.AvailableQuarters != null)
                             {
-                                @foreach (var quarter in ViewBag.AvailableQuarters as List<int>)
+                                @foreach (var quarter in ViewBag.AvailableQuarters)
                                 {
-                                    <option value="@quarter" selected="@(filters?.Quarters?.Contains(quarter) == true)">
-                                        Q@(quarter)
-                                    </option>
+                                    <option value="@quarter" selected="@(filters?.Quarters?.Contains(quarter) == true)">Q@(quarter)</option>
                                 }
                             }
                         </select>
                     </div>
 
-                    <div class="col-md-3">
-                        <label class="form-label"><i class="fas fa-shipping-fast"></i> Delivery Status</label>
-                        <select name="DeliveryStatus" class="form-select select2-multiple" multiple>
-                            @if (ViewBag.AvailableDeliveryStatus != null)
+                    <div class="col-md-4">
+                        <label class="form-label"><i class="fas fa-building"></i> Department</label>
+                        <select name="Departments" class="form-select select2-multiple" multiple>
+                            @if (ViewBag.AvailableDepartments != null)
                             {
-                                @foreach (var status in ViewBag.AvailableDeliveryStatus as List<string>)
+                                @foreach (var dept in ViewBag.AvailableDepartments)
                                 {
-                                    <option value="@status" selected="@(filters?.DeliveryStatus?.Contains(status) == true)">
-                                        @status
-                                    </option>
-                                }
-                            }
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label"><i class="fas fa-users"></i> Segment</label>
-                        <select name="Segments" class="form-select select2-multiple" multiple>
-                            @if (ViewBag.AvailableSegments != null)
-                            {
-                                @foreach (var segment in ViewBag.AvailableSegments as List<string>)
-                                {
-                                    <option value="@segment" selected="@(filters?.Segments?.Contains(segment) == true)">
-                                        @segment
-                                    </option>
+                                    <option value="@dept" selected="@(filters?.Departments?.Contains(dept) == true)">@dept</option>
                                 }
                             }
                         </select>
                     </div>
 
                     <div class="col-md-2 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-apply flex-fill">
-                            <i class="fas fa-search"></i> Apply
-                        </button>
-                        <button type="button" class="btn btn-clear flex-fill" onclick="clearFilters()">
-                            <i class="fas fa-times"></i> Clear
-                        </button>
+                        <button type="submit" class="btn btn-apply flex-fill"><i class="fas fa-search"></i> Apply</button>
+                        <button type="button" class="btn btn-clear flex-fill" onclick="clearFilters()"><i class="fas fa-times"></i> Clear</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Summary Metrics -->
+    <div id="activeFiltersPanel" class="active-filters" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong><i class="fas fa-filter"></i> Active Cross-Filters:</strong>
+                <span id="activeFiltersBadges"></span>
+            </div>
+            <button class="btn btn-sm btn-outline-warning" onclick="clearCrossFilters()"><i class="fas fa-times"></i> Clear All</button>
+        </div>
+    </div>
+
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card metric-card bg-primary text-white shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase mb-1">Total Shipments</h6>
-                            <h2 class="mb-0">
-                                @Model.TotalShipments.ToString("N0")
-                            </h2>
+                            <h2 class="mb-0" id="kpiTotal">@Model.TotalShipments.ToString("N0")</h2>
                         </div>
-                        <div>
-                            <i class="fas fa-box fa-3x opacity-50"></i>
-                        </div>
+                        <div><i class="fas fa-box fa-3x opacity-50"></i></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card metric-card bg-info text-white shadow">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase mb-1">Avg Days Actual</h6>
-                            <h2 class="mb-0">
-                                @Model.AverageDaysActual.ToString("F1")
-                            </h2>
-                        </div>
-                        <div>
-                            <i class="fas fa-calendar-check fa-3x opacity-50"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="card metric-card bg-success text-white shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Avg Days Scheduled</h6>
-                            <h2 class="mb-0">
-                                @Model.AverageDaysScheduled.ToString("F1")
-                            </h2>
+                            <h6 class="text-uppercase mb-1">Top Segment</h6>
+                            <h2 class="mb-0" style="font-size: 1.8rem;" id="kpiSegment">@Model.TopSegment</h2>
                         </div>
-                        <div>
-                            <i class="fas fa-clock fa-3x opacity-50"></i>
-                        </div>
+                        <div><i class="fas fa-users fa-3x opacity-50"></i></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card metric-card bg-danger text-white shadow">
+        <div class="col-md-4">
+            <div class="card metric-card bg-info text-white shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-uppercase mb-1">Late Delivery Rate</h6>
-                            <h2 class="mb-0">
-                                @Model.LateDeliveryRate.ToString("F1")%
-                            </h2>
+                            <h6 class="text-uppercase mb-1">Top Shipping Mode</h6>
+                            <h2 class="mb-0" style="font-size: 1.8rem;" id="kpiMode">@Model.TopShippingMode</h2>
                         </div>
-                        <div>
-                            <i class="fas fa-exclamation-triangle fa-3x opacity-50"></i>
-                        </div>
+                        <div><i class="fas fa-shipping-fast fa-3x opacity-50"></i></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Row 1: Delivery Status + Segment + Shipping Mode -->
     <div class="row mb-4">
         <div class="col-lg-4">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-shipping-fast"></i> Shipments by Delivery Status</h5>
-                </div>
+                <div class="card-header bg-primary text-white"><h5 class="mb-0"><i class="fas fa-shipping-fast"></i> By Delivery Status</h5></div>
                 <div class="card-body">
-                    <div class="chart-container-small">
-                        <canvas id="deliveryStatusChart"></canvas>
-                    </div>
+                    <div class="chart-container-small"><canvas id="deliveryStatusChart"></canvas></div>
                 </div>
             </div>
         </div>
-
         <div class="col-lg-4">
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-users"></i> Shipments by Segment</h5>
-                </div>
+                <div class="card-header bg-success text-white"><h5 class="mb-0"><i class="fas fa-users"></i> By Segment</h5></div>
                 <div class="card-body">
-                    <div class="chart-container-small">
-                        <canvas id="segmentChart"></canvas>
-                    </div>
+                    <div class="chart-container-small"><canvas id="segmentChart"></canvas></div>
                 </div>
             </div>
         </div>
-
         <div class="col-lg-4">
             <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-truck"></i> Shipments by Shipping Mode</h5>
-                </div>
+                <div class="card-header bg-info text-white"><h5 class="mb-0"><i class="fas fa-truck"></i> By Shipping Mode</h5></div>
                 <div class="card-body">
-                    <div class="chart-container-small">
-                        <canvas id="shippingModeChart"></canvas>
-                    </div>
+                    <div class="chart-container-small"><canvas id="shippingModeChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Row 2: Shipments by Year + Delivery Performance -->
     <div class="row mb-4">
         <div class="col-lg-6">
             <div class="card shadow">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0"><i class="fas fa-calendar"></i> Shipments by Year</h5>
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Seasonal Trend (By Quarter)</h5>
+                    <small>Biến động lượng hàng theo Quý (Tính trên tổng các năm đã chọn)</small>
                 </div>
                 <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="yearChart"></canvas>
-                    </div>
+                    <div class="chart-container"><canvas id="quarterTrendChart"></canvas></div>
                 </div>
             </div>
         </div>
-
         <div class="col-lg-6">
             <div class="card shadow">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Delivery Performance (Actual vs Scheduled)</h5>
+                <div class="card-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-layer-group"></i> Shipping Mode by Segment</h5>
+                    <small>Mỗi phân khúc khách hàng (Consumer, Corp...) thường chọn loại vận chuyển nào?</small>
                 </div>
                 <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
+                    <div class="chart-container"><canvas id="modeBySegmentChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Row 3: Department -->
     <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-lg-6">
             <div class="card shadow">
-                <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="fas fa-building"></i> Shipments by Department</h5>
-                </div>
+                <div class="card-header bg-dark text-white"><h5 class="mb-0"><i class="fas fa-calendar"></i> Shipments by Year</h5></div>
                 <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="departmentChart"></canvas>
-                    </div>
+                    <div class="chart-container"><canvas id="yearChart"></canvas></div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Row 4: Top 20 Categories -->
-    <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-lg-6">
             <div class="card shadow">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-tags"></i> Top 20 Categories by Shipments</h5>
-                </div>
+                <div class="card-header bg-secondary text-white"><h5 class="mb-0"><i class="fas fa-building"></i> Shipments by Department</h5></div>
                 <div class="card-body">
-                    <div style="position: relative; height: 600px;">
-                        <canvas id="categoryChart"></canvas>
-                    </div>
+                    <div class="chart-container"><canvas id="departmentChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Row 5: Top 20 States -->
     <div class="row mb-4">
+        <div class="col-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white"><h5 class="mb-0"><i class="fas fa-tags"></i> Top 20 Categories</h5></div>
+                <div class="card-body">
+                    <div style="height: 500px; position: relative;"><canvas id="categoryChart"></canvas></div>
+                </div>
+            </div>
+        </div>
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Top 20 States by Shipments</h5>
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Top 20 States</h5>
                 </div>
                 <div class="card-body">
-                    <div class="chart-container">
-                        <canvas id="stateChart"></canvas>
-                    </div>
+                    <div class="chart-container"><canvas id="stateChart"></canvas></div>
                 </div>
             </div>
         </div>
@@ -405,313 +369,211 @@
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <script>
-        // Initialize Select2
+        // --- STATE MANAGEMENT ---
+        const dashboardState = {
+            crossFilters: { deliveryStatus: null, segment: null, shippingMode: null },
+            charts: {}
+        };
+        const formatNumber = (val) => new Intl.NumberFormat('en-US').format(val);
+
         $(document).ready(function() {
-            $('.select2-multiple').select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Select options...',
-                allowClear: true
-            });
+            $('.select2-multiple').select2({ theme: 'bootstrap-5', width: '100%', placeholder: 'Select...', allowClear: true });
         });
 
-        // Clear filters
-        function clearFilters() {
-            $('.select2-multiple').val(null).trigger('change');
-            $('#filterForm').submit();
+        function clearFilters() { $('.select2-multiple').val(null).trigger('change'); $('#filterForm').submit(); }
+
+        function clearCrossFilters() {
+            dashboardState.crossFilters = { deliveryStatus: null, segment: null, shippingMode: null };
+            window.location.href = window.location.pathname;
         }
 
-        // Data from server
-        const shipmentsByDeliveryStatus = @Html.Raw(Json.Serialize(Model.ShipmentsByDeliveryStatus));
-        const shipmentsByYear = @Html.Raw(Json.Serialize(Model.ShipmentsByYear));
-        const shipmentsBySegment = @Html.Raw(Json.Serialize(Model.ShipmentsBySegment));
-        const shipmentsByShippingMode = @Html.Raw(Json.Serialize(Model.ShipmentsByShippingMode));
-        const deliveryPerformanceByYear = @Html.Raw(Json.Serialize(Model.DeliveryPerformanceByYear));
-        const topCategoriesByShipments = @Html.Raw(Json.Serialize(Model.TopCategoriesByShipments));
-        const topStatesByShipments = @Html.Raw(Json.Serialize(Model.TopStatesByShipments));
-        const shipmentsByDepartment = @Html.Raw(Json.Serialize(Model.ShipmentsByDepartment));
+        // --- FILTER LOGIC (CUMULATIVE) ---
+        function applyFilter(type, value) {
+            // 1. Update State (Ghi đè hoặc thêm mới filter vào Dictionary)
+            dashboardState.crossFilters[type] = value;
+            updateActiveFiltersDisplay();
 
-        const formatNumber = (value) => {
-            return new Intl.NumberFormat('en-US').format(value);
-        };
+            // 2. Collect current Form filters
+            const formFilters = {
+                years: $('.select2-multiple[name="Years"]').val(),
+                quarters: $('.select2-multiple[name="Quarters"]').val(),
+                departments: $('.select2-multiple[name="Departments"]').val()
+            };
 
-        const formatCompact = (value) => {
-            return new Intl.NumberFormat('en-US', {
-                notation: 'compact',
-                compactDisplay: 'short'
-            }).format(value);
-        };
-
-        // Chart 1: Delivery Status (Doughnut)
-        new Chart(document.getElementById('deliveryStatusChart'), {
-            type: 'doughnut',
-            data: {
-                labels: shipmentsByDeliveryStatus.map(d => d.label),
-                datasets: [{
-                    data: shipmentsByDeliveryStatus.map(d => d.value),
-                    backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545', '#6c757d', '#fd7e14', '#20c997', '#6f42c1']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${formatNumber(ctx.parsed)} (${pct}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        color: '#fff',
-                        font: { weight: 'bold', size: 11 },
-                        formatter: (value, ctx) => {
-                            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct > 5 ? pct + '%' : '';
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-
-        // Chart 2: Segment (Pie)
-        new Chart(document.getElementById('segmentChart'), {
-            type: 'pie',
-            data: {
-                labels: shipmentsBySegment.map(d => d.label),
-                datasets: [{
-                    data: shipmentsBySegment.map(d => d.value),
-                    backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${formatNumber(ctx.parsed)} (${pct}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        color: '#fff',
-                        font: { weight: 'bold', size: 14 },
-                        formatter: (value, ctx) => {
-                            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct + '%';
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-
-        // Chart 3: Shipping Mode (Doughnut)
-        new Chart(document.getElementById('shippingModeChart'), {
-            type: 'doughnut',
-            data: {
-                labels: shipmentsByShippingMode.map(d => d.label),
-                datasets: [{
-                    data: shipmentsByShippingMode.map(d => d.value),
-                    backgroundColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${formatNumber(ctx.parsed)} (${pct}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        color: '#fff',
-                        font: { weight: 'bold', size: 14 },
-                        formatter: (value, ctx) => {
-                            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct + '%';
-                        }
-                    }
-                }
-            },
-            plugins: [ChartDataLabels]
-        });
-
-        // Chart 4: Shipments by Year (Bar)
-        new Chart(document.getElementById('yearChart'), {
-            type: 'bar',
-            data: {
-                labels: shipmentsByYear.map(d => d.year),
-                datasets: [{
-                    label: 'Shipment Count',
-                    data: shipmentsByYear.map(d => d.shipmentCount),
-                    backgroundColor: '#ffc107',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: { callbacks: { label: (ctx) => `Count: ${formatNumber(ctx.parsed.y)}` } },
-                    datalabels: { display: false }
+            // 3. Send ALL filters to server
+            $.ajax({
+                url: '@Url.Action("GetCrossFilterData", "ShippingDashboard", new { area = "Admin" })',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    filters: dashboardState.crossFilters,
+                    formFilters: formFilters
+                }),
+                success: function(data) {
+                    updateDashboard(data);
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { callback: (value) => formatCompact(value) }
-                    }
-                }
-            }
+                error: function(xhr) { console.error(xhr); alert('Error updating dashboard.'); }
+            });
+        }
+
+        function removeCrossFilter(type) {
+            dashboardState.crossFilters[type] = null; // Remove logic
+            updateActiveFiltersDisplay();
+
+            // Re-apply remaining filters
+            const formFilters = {
+                years: $('.select2-multiple[name="Years"]').val(),
+                quarters: $('.select2-multiple[name="Quarters"]').val(),
+                departments: $('.select2-multiple[name="Departments"]').val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("GetCrossFilterData", "ShippingDashboard", new { area = "Admin" })',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ filters: dashboardState.crossFilters, formFilters: formFilters }),
+                success: function(data) { updateDashboard(data); }
+            });
+        }
+
+        function updateActiveFiltersDisplay() {
+            const active = Object.entries(dashboardState.crossFilters).filter(([k, v]) => v !== null);
+            const panel = document.getElementById('activeFiltersPanel');
+            if (active.length === 0) { panel.style.display = 'none'; return; }
+            panel.style.display = 'block';
+
+            const mapName = { deliveryStatus: 'Status', segment: 'Segment', shippingMode: 'Mode' };
+            document.getElementById('activeFiltersBadges').innerHTML = active.map(([k, v]) =>
+                `<span class="filter-badge" onclick="removeCrossFilter('${k}')">${mapName[k]}: ${v} <i class="fas fa-times"></i></span>`
+            ).join('');
+        }
+
+        // --- CHART INITIALIZATION ---
+        const initData = {
+            status: @Html.Raw(Json.Serialize(Model.ShipmentsByDeliveryStatus)),
+            segment: @Html.Raw(Json.Serialize(Model.ShipmentsBySegment)),
+            mode: @Html.Raw(Json.Serialize(Model.ShipmentsByShippingMode)),
+            quarter: @Html.Raw(Json.Serialize(Model.ShipmentsByQuarterTrend)),
+            modeSeg: @Html.Raw(Json.Serialize(Model.ShippingModeBySegment)),
+            year: @Html.Raw(Json.Serialize(Model.ShipmentsByYear)),
+            dept: @Html.Raw(Json.Serialize(Model.ShipmentsByDepartment)),
+            cat: @Html.Raw(Json.Serialize(Model.TopCategoriesByShipments)),
+            state: @Html.Raw(Json.Serialize(Model.TopStatesByShipments))
+        };
+
+        // 1. Status Chart
+        dashboardState.charts.status = new Chart(document.getElementById('deliveryStatusChart'), {
+            type: 'doughnut',
+            data: { labels: initData.status.map(d=>d.label), datasets: [{ data: initData.status.map(d=>d.value), backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545', '#6c757d'] }] },
+            options: {
+                maintainAspectRatio: false, plugins: { legend: {position:'bottom'}, datalabels: {color:'#fff', formatter: (v,c)=>{let s=c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return (v/s*100).toFixed(0)+'%'} } },
+                onClick: (e, el) => { if(el.length) applyFilter('deliveryStatus', dashboardState.charts.status.data.labels[el[0].index]); }
+            }, plugins: [ChartDataLabels]
         });
 
-        // Chart 5: Delivery Performance (Line)
-        new Chart(document.getElementById('performanceChart'), {
+        // 2. Segment Chart
+        dashboardState.charts.segment = new Chart(document.getElementById('segmentChart'), {
+            type: 'pie',
+            data: { labels: initData.segment.map(d=>d.label), datasets: [{ data: initData.segment.map(d=>d.value), backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56'] }] },
+            options: {
+                maintainAspectRatio: false, plugins: { legend: {position:'bottom'}, datalabels: {color:'#fff', formatter: (v,c)=>{let s=c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return (v/s*100).toFixed(0)+'%'} } },
+                onClick: (e, el) => { if(el.length) applyFilter('segment', dashboardState.charts.segment.data.labels[el[0].index]); }
+            }, plugins: [ChartDataLabels]
+        });
+
+        // 3. Mode Chart
+        dashboardState.charts.mode = new Chart(document.getElementById('shippingModeChart'), {
+            type: 'doughnut',
+            data: { labels: initData.mode.map(d=>d.label), datasets: [{ data: initData.mode.map(d=>d.value), backgroundColor: ['#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'] }] },
+            options: {
+                maintainAspectRatio: false, plugins: { legend: {position:'bottom'}, datalabels: {color:'#fff', formatter: (v,c)=>{let s=c.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return (v/s*100).toFixed(0)+'%'} } },
+                onClick: (e, el) => { if(el.length) applyFilter('shippingMode', dashboardState.charts.mode.data.labels[el[0].index]); }
+            }, plugins: [ChartDataLabels]
+        });
+
+        // 4. Quarter Trend
+        dashboardState.charts.quarter = new Chart(document.getElementById('quarterTrendChart'), {
             type: 'line',
             data: {
-                labels: deliveryPerformanceByYear.map(d => d.year),
-                datasets: [
-                    {
-                        label: 'Days Actual',
-                        data: deliveryPerformanceByYear.map(d => d.daysActual),
-                        borderColor: '#dc3545',
-                        backgroundColor: 'rgba(220, 53, 69, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Days Scheduled',
-                        data: deliveryPerformanceByYear.map(d => d.daysScheduled),
-                        borderColor: '#28a745',
-                        backgroundColor: 'rgba(40, 167, 69, 0.2)',
-                        fill: true,
-                        tension: 0.4
-                    }
-                ]
+                labels: initData.quarter.map(d=>d.label),
+                datasets: [{ label: 'Shipments', data: initData.quarter.map(d=>d.value), borderColor: '#667eea', backgroundColor: 'rgba(102, 126, 234, 0.1)', fill: true, tension: 0.3 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} days` } },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
+            options: { maintainAspectRatio: false, plugins: { legend: {display:false}, datalabels:{display:false} }, scales: { y: {beginAtZero:true} } }
         });
 
-        // Chart 6: Department (Horizontal Bar)
-        new Chart(document.getElementById('departmentChart'), {
+        // 5. Stacked Bar (Mode by Segment) - Transform Data
+        function getStackedData(rawData) {
+            if(!rawData || rawData.length === 0) return { labels: [], datasets: [] };
+            const segments = [...new Set(rawData.map(d => d.segment))];
+            const modes = [...new Set(rawData.map(d => d.shippingMode))];
+            const colors = {'Standard Class': '#4bc0c0', 'Second Class': '#36a2eb', 'First Class': '#ffcd56', 'Same Day': '#ff6384'};
+
+            const datasets = modes.map(mode => ({
+                label: mode,
+                data: segments.map(seg => {
+                    const item = rawData.find(x => x.segment === seg && x.shippingMode === mode);
+                    return item ? item.count : 0;
+                }),
+                backgroundColor: colors[mode] || '#ccc'
+            }));
+            return { labels: segments, datasets: datasets };
+        }
+
+        const stackedInit = getStackedData(initData.modeSeg);
+        dashboardState.charts.modeSeg = new Chart(document.getElementById('modeBySegmentChart'), {
             type: 'bar',
-            data: {
-                labels: shipmentsByDepartment.map(d => d.label),
-                datasets: [{
-                    label: 'Shipments',
-                    data: shipmentsByDepartment.map(d => d.value),
-                    backgroundColor: '#6c757d',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: (ctx) => `Count: ${formatNumber(ctx.parsed.x)}` } },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: { callback: (value) => formatCompact(value) }
-                    }
-                }
-            }
+            data: stackedInit,
+            options: { maintainAspectRatio: false, scales: { x: {stacked: true}, y: {stacked: true} }, plugins: { datalabels: { display: false } } }
         });
 
-        // Chart 7: Top Categories (Horizontal Bar)
-        new Chart(document.getElementById('categoryChart'), {
+        // 6. Year Chart
+        dashboardState.charts.year = new Chart(document.getElementById('yearChart'), {
             type: 'bar',
-            data: {
-                labels: topCategoriesByShipments.map(d => d.label),
-                datasets: [{
-                    label: 'Shipments',
-                    data: topCategoriesByShipments.map(d => d.value),
-                    backgroundColor: '#343a40',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: (ctx) => `Count: ${formatNumber(ctx.parsed.x)}` } },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: { callback: (value) => formatCompact(value) }
-                    }
-                }
-            }
+             data: { labels: initData.year.map(d=>d.year), datasets: [{ label: 'Shipments', data: initData.year.map(d=>d.shipmentCount), backgroundColor: '#343a40' }] },
+             options: { maintainAspectRatio: false, plugins: {legend: {display:false}, datalabels: {anchor:'end', align:'top'}} }
         });
 
-        // Chart 8: Top States (Horizontal Bar)
-        new Chart(document.getElementById('stateChart'), {
-            type: 'bar',
-            data: {
-                labels: topStatesByShipments.map(d => d.label),
-                datasets: [{
-                    label: 'Shipments',
-                    data: topStatesByShipments.map(d => d.value),
-                    backgroundColor: 'rgba(102, 126, 234, 0.8)',
-                    borderColor: 'rgba(102, 126, 234, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: (ctx) => `Count: ${formatNumber(ctx.parsed.x)}` } },
-                    datalabels: { display: false }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        ticks: { callback: (value) => formatCompact(value) }
-                    }
-                }
-            }
+        // 7. Other Charts
+        dashboardState.charts.dept = new Chart(document.getElementById('departmentChart'), {
+            type: 'bar', data: { labels: initData.dept.map(d=>d.label), datasets: [{ label: 'Count', data: initData.dept.map(d=>d.value), backgroundColor: '#6c757d' }] },
+            options: { indexAxis: 'y', maintainAspectRatio: false, plugins: {legend:false, datalabels:false} }
         });
+        dashboardState.charts.cat = new Chart(document.getElementById('categoryChart'), {
+            type: 'bar', data: { labels: initData.cat.map(d=>d.label), datasets: [{data: initData.cat.map(d=>d.value), backgroundColor: '#212529'}] },
+            options: { indexAxis: 'y', maintainAspectRatio: false, plugins: {legend: false, datalabels: false} }
+        });
+        dashboardState.charts.state = new Chart(document.getElementById('stateChart'), {
+            type: 'bar', data: { labels: initData.state.map(d=>d.label), datasets: [{data: initData.state.map(d=>d.value), backgroundColor: '#667eea'}] },
+            options: { indexAxis: 'y', maintainAspectRatio: false, plugins: {legend: false, datalabels: false} }
+        });
+
+        // --- UPDATE FUNCTION ---
+        function updateDashboard(data) {
+            // Update Text
+            $('#kpiTotal').text(formatNumber(data.totalShipments));
+            $('#kpiSegment').text(data.topSegment);
+            $('#kpiMode').text(data.topShippingMode);
+
+            // Update Simple Charts
+            const updateChart = (chart, labels, values) => {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = values;
+                chart.update();
+            };
+
+            updateChart(dashboardState.charts.status, data.shipmentsByDeliveryStatus.map(d=>d.label), data.shipmentsByDeliveryStatus.map(d=>d.value));
+            updateChart(dashboardState.charts.segment, data.shipmentsBySegment.map(d=>d.label), data.shipmentsBySegment.map(d=>d.value));
+            updateChart(dashboardState.charts.mode, data.shipmentsByShippingMode.map(d=>d.label), data.shipmentsByShippingMode.map(d=>d.value));
+            updateChart(dashboardState.charts.quarter, data.shipmentsByQuarterTrend.map(d=>d.label), data.shipmentsByQuarterTrend.map(d=>d.value));
+            updateChart(dashboardState.charts.year, data.shipmentsByYear.map(d=>d.year), data.shipmentsByYear.map(d=>d.shipmentCount));
+            updateChart(dashboardState.charts.cat, data.topCategoriesByShipments.map(d=>d.label), data.topCategoriesByShipments.map(d=>d.value));
+            updateChart(dashboardState.charts.state, data.topStatesByShipments.map(d=>d.label), data.topStatesByShipments.map(d=>d.value));
+            updateChart(dashboardState.charts.dept, data.shipmentsByDepartment.map(d=>d.label), data.shipmentsByDepartment.map(d=>d.value));
+
+            // Update Stacked Bar
+            const newStacked = getStackedData(data.shippingModeBySegment);
+            dashboardState.charts.modeSeg.data = newStacked;
+            dashboardState.charts.modeSeg.update();
+        }
     </script>
 }

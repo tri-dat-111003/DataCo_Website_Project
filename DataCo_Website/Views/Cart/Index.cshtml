@@ -242,24 +242,28 @@
                                                 <strong class="item-price" data-price="@item.Product.ProductPrice">$@item.Product.ProductPrice?.ToString("N2")</strong>
                                             </td>
                                             <td class="align-middle">
-                                                <div class="input-group" style="width: 120px;">
-                                                    <button class="btn btn-sm btn-outline-secondary update-quantity"
+                                                <div class="input-group input-group-sm quantity-group">
+                                                    <button class="btn btn-outline-secondary update-quantity"
                                                             data-id="@item.CartItemId"
                                                             data-action="decrease">
                                                         <i class="bi bi-dash"></i>
                                                     </button>
-                                                    <input type="number" class="form-control form-control-sm text-center quantity-input"
+
+                                                    <input type="number"
+                                                           class="form-control text-center quantity-input"
                                                            data-id="@item.CartItemId"
                                                            value="@item.Quantity"
                                                            min="1"
                                                            max="999">
-                                                    <button class="btn btn-sm btn-outline-secondary update-quantity"
+
+                                                    <button class="btn btn-outline-secondary update-quantity"
                                                             data-id="@item.CartItemId"
                                                             data-action="increase">
                                                         <i class="bi bi-plus"></i>
                                                     </button>
                                                 </div>
                                             </td>
+
                                             <td class="align-middle">
                                                 <strong class="text-primary item-total">$@itemTotal.ToString("N2")</strong>
                                             </td>

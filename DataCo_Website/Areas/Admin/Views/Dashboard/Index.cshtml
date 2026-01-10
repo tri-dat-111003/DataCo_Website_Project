@@ -84,7 +84,90 @@
         height: 300px;
     }
 
-    /* Select2 styling improvements */
+    /* ✅ CẢI TIẾN #2: Style cho active cross-filter badges */
+    .active-filters {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        animation: slideDown 0.3s ease;
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        margin: 3px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+        .filter-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .filter-badge i {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+    /* Loading overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        display: none;
+    }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Select2 styling */
     .select2-container--bootstrap-5 .select2-selection--multiple {
         min-height: 42px !important;
         border: 2px solid #dee2e6 !important;
@@ -115,8 +198,13 @@
             }
 </style>
 
+<!-- ✅ CẢI TIẾN #2: Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
 <div class="container-fluid">
-    <!-- Filters Panel with gradient background -->
+    <!-- Filters Panel -->
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
@@ -206,15 +294,28 @@
         </div>
     </div>
 
-    <!-- Summary Metrics -->
+    <!-- ✅ CẢI TIẾN #2: Active Cross-Filters Display -->
+    <div id="activeFiltersPanel" class="active-filters" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong><i class="fas fa-filter"></i> Active Cross-Filters:</strong>
+                <span id="activeFiltersBadges"></span>
+            </div>
+            <button class="btn btn-sm btn-outline-warning" onclick="clearCrossFilters()">
+                <i class="fas fa-times"></i> Clear All
+            </button>
+        </div>
+    </div>
+
+    <!-- ✅ CẢI TIẾN #1: Summary Metrics - THÊM Profit Margin % -->
     <div class="row mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card metric-card bg-success text-white shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase mb-1">Total Profit</h6>
-                            <h2 class="mb-0">
+                            <h2 class="mb-0" id="totalProfitValue">
                                 $@(Model.TotalProfit.ToString("N0"))
                             </h2>
                         </div>
@@ -225,18 +326,37 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card metric-card bg-primary text-white shadow">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-uppercase mb-1">Total Revenue</h6>
-                            <h2 class="mb-0">
+                            <h2 class="mb-0" id="totalRevenueValue">
                                 $@(Model.TotalRevenue.ToString("N0"))
                             </h2>
                         </div>
                         <div>
                             <i class="fas fa-chart-line fa-3x opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ✅ CẢI TIẾN #1: THÊM MỚI - KPI Profit Margin % -->
+        <div class="col-md-4">
+            <div class="card metric-card text-white shadow" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-1">Profit Margin</h6>
+                            <h2 class="mb-0" id="profitMarginValue">
+                                @(Model.ProfitMargin.ToString("N2"))%
+                            </h2>
+                            <small class="opacity-75">Tỷ suất lợi nhuận</small>
+                        </div>
+                        <div>
+                            <i class="fas fa-percentage fa-3x opacity-50"></i>
                         </div>
                     </div>
                 </div>
@@ -286,15 +406,16 @@
         </div>
     </div>
 
-    <!-- Row 2: Market + Year -->
+    <!-- ✅ CẢI TIẾN #1: Row 2: Market + Year -->
     <div class="row mb-4">
         <div class="col-lg-6">
             <div class="card shadow">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0"><i class="fas fa-globe"></i> Revenue and Profit by Market</h5>
+                    <h5 class="mb-0"><i class="fas fa-globe"></i> Revenue, Profit & Margin by Market</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
+                        <!-- ✅ CẢI TIẾN #1: Bar + Line combo (Profit Margin % overlay) -->
                         <canvas id="marketChart"></canvas>
                     </div>
                 </div>
@@ -304,10 +425,11 @@
         <div class="col-lg-6">
             <div class="card shadow">
                 <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0"><i class="fas fa-calendar"></i> Revenue and Profit by Year</h5>
+                    <h5 class="mb-0"><i class="fas fa-calendar"></i> Revenue and Profit Trend by Year</h5>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
+                        <!-- ✅ CẢI TIẾN #1: Line Chart (thay vì Bar) -->
                         <canvas id="yearChart"></canvas>
                     </div>
                 </div>
@@ -331,12 +453,13 @@
         </div>
     </div>
 
-    <!-- Row 4: Category (Top 20) -->
+    <!-- ✅ CẢI TIẾN #1: Row 4: Category - Scatter Plot -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-tags"></i> Top 20 Categories - Revenue and Profit</h5>
+                    <h5 class="mb-0"><i class="fas fa-tags"></i> Top 20 Categories - Revenue vs Profit Analysis (Scatter Plot)</h5>
+                    <small class="text-light">💡 Chấm ở góc dưới bên phải = Doanh thu cao nhưng lợi nhuận thấp → Cần tối ưu chi phí</small>
                 </div>
                 <div class="card-body">
                     <div style="position: relative; height: 600px;">
@@ -347,7 +470,7 @@
         </div>
     </div>
 
-    <!-- Row 5: State (Top 20) -->
+    <!-- Row 5: State -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow">
@@ -372,7 +495,32 @@
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
     <script>
-        // Initialize Select2 for multi-select
+        // ============================================================================
+        // ✅ CẢI TIẾN #2: CROSS-FILTERING SYSTEM - PRODUCTION VERSION
+        // ============================================================================
+
+        const dashboardState = {
+            crossFilters: {
+                segment: null,
+                status: null,
+                transactionType: null,
+                market: null,
+                year: null,
+                department: null
+            },
+            // ✅ FIX: Thêm form filters từ ViewBag
+            formFilters: {
+                years: @Html.Raw(Json.Serialize(filters?.Years ?? new List<int>())),
+                quarters: @Html.Raw(Json.Serialize(filters?.Quarters ?? new List<int>())),
+                markets: @Html.Raw(Json.Serialize(filters?.Markets ?? new List<string>())),
+                departments: @Html.Raw(Json.Serialize(filters?.Departments ?? new List<string>()))
+            },
+            originalData: {},
+            charts: {},
+            isUpdating: false
+        };
+
+        // Initialize Select2
         $(document).ready(function() {
             $('.select2-multiple').select2({
                 theme: 'bootstrap-5',
@@ -382,13 +530,207 @@
             });
         });
 
-        // Clear all filters
+        // Clear form filters
         function clearFilters() {
             $('.select2-multiple').val(null).trigger('change');
             $('#filterForm').submit();
         }
 
-        // Data from server - GIỮ NGUYÊN LOGIC TỪ CONTROLLER
+        // ✅ CẢI TIẾN #2: Clear cross-filters
+        function clearCrossFilters() {
+            Object.keys(dashboardState.crossFilters).forEach(key => {
+                dashboardState.crossFilters[key] = null;
+            });
+            updateAllCharts();
+            updateActiveFiltersDisplay();
+        }
+
+        // ✅ CẢI TIẾN #2: Remove specific cross-filter
+        function removeCrossFilter(filterType) {
+            dashboardState.crossFilters[filterType] = null;
+            updateAllCharts();
+            updateActiveFiltersDisplay();
+        }
+
+        // ✅ CẢI TIẾN #2: Update active filters display
+        function updateActiveFiltersDisplay() {
+            const activeFilters = Object.entries(dashboardState.crossFilters)
+                .filter(([key, value]) => value !== null);
+
+            const panel = document.getElementById('activeFiltersPanel');
+            const badgesContainer = document.getElementById('activeFiltersBadges');
+
+            if (activeFilters.length === 0) {
+                panel.style.display = 'none';
+                return;
+            }
+
+            panel.style.display = 'block';
+            const filterNames = {
+                segment: 'Segment',
+                status: 'Status',
+                transactionType: 'Transaction',
+                market: 'Market',
+                year: 'Year',
+                department: 'Department'
+            };
+
+            badgesContainer.innerHTML = activeFilters.map(([type, value]) =>
+                `<span class="filter-badge" onclick="removeCrossFilter('${type}')">
+                    ${filterNames[type]}: ${value}
+                    <i class="fas fa-times"></i>
+                </span>`
+            ).join('');
+        }
+
+        // ✅ CẢI TIẾN #2: Show/Hide loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // ✅ CẢI TIẾN #2: Fetch filtered data from API - PRODUCTION VERSION
+        async function fetchFilteredData(dataType) {
+            try {
+                const response = await fetch('@Url.Action("GetFilteredData", "Dashboard")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    body: JSON.stringify({
+                        dataType: dataType,
+                        filters: dashboardState.crossFilters,
+                        // ✅ FIX: Thêm form filters từ panel
+                        formFilters: dashboardState.formFilters
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching ${dataType}:`, error);
+                return null;
+            }
+        }
+
+        // ✅ CẢI TIẾN #2: Update all charts - PRODUCTION VERSION
+        async function updateAllCharts() {
+            if (dashboardState.isUpdating) return;
+
+            dashboardState.isUpdating = true;
+            showLoading();
+
+            try {
+                const hasFilters = Object.values(dashboardState.crossFilters).some(f => f !== null);
+
+                if (!hasFilters) {
+                    // Reset về original data
+                    updateChart(dashboardState.charts.segment, dashboardState.originalData.profitBySegment);
+                    updateChart(dashboardState.charts.status, dashboardState.originalData.orderCountByStatus);
+                    updateChart(dashboardState.charts.transaction, dashboardState.originalData.transactionCountByType);
+                    updateChart(dashboardState.charts.market, dashboardState.originalData.revenueByMarket);
+                    updateChart(dashboardState.charts.year, dashboardState.originalData.revenueByYear);
+                    updateChart(dashboardState.charts.department, dashboardState.originalData.revenueByDepartment);
+                    updateChart(dashboardState.charts.category, dashboardState.originalData.revenueByCategory);
+                    updateChart(dashboardState.charts.state, dashboardState.originalData.profitByState);
+                    updateKPIs(dashboardState.originalData.kpis);
+                } else {
+                    // Fetch filtered data từ API
+                    const [segment, status, transaction, market, year, department, category, state, kpis] = await Promise.all([
+                        fetchFilteredData('segment'),
+                        fetchFilteredData('status'),
+                        fetchFilteredData('transactionType'),
+                        fetchFilteredData('market'),
+                        fetchFilteredData('year'),
+                        fetchFilteredData('department'),
+                        fetchFilteredData('category'),
+                        fetchFilteredData('state'),
+                        fetchFilteredData('kpis')
+                    ]);
+
+                    updateChart(dashboardState.charts.segment, segment);
+                    updateChart(dashboardState.charts.status, status);
+                    updateChart(dashboardState.charts.transaction, transaction);
+                    updateChart(dashboardState.charts.market, market);
+                    updateChart(dashboardState.charts.year, year);
+                    updateChart(dashboardState.charts.department, department);
+                    updateChart(dashboardState.charts.category, category);
+                    updateChart(dashboardState.charts.state, state);
+                    updateKPIs(kpis);
+                }
+            } catch (error) {
+                console.error('Error updating charts:', error);
+                alert('Có lỗi xảy ra khi cập nhật dữ liệu. Vui lòng thử lại.');
+            } finally {
+                dashboardState.isUpdating = false;
+                hideLoading();
+            }
+        }
+
+        // ✅ CẢI TIẾN #2: Update KPIs
+        function updateKPIs(kpis) {
+            if (!kpis) return;
+
+            document.getElementById('totalProfitValue').textContent =
+                '$' + kpis.totalProfit.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            document.getElementById('totalRevenueValue').textContent =
+                '$' + kpis.totalRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            document.getElementById('profitMarginValue').textContent =
+                kpis.profitMargin.toFixed(2) + '%';
+        }
+
+        // ✅ CẢI TIẾN #2: Update chart helper
+        function updateChart(chart, newData) {
+            if (!chart || !newData) return;
+
+            try {
+                if (chart.config.type === 'scatter') {
+                    // Scatter plot (Category chart)
+                    chart.data.datasets[0].data = newData.map(d => ({
+                        x: d.revenue,
+                        y: d.profit,
+                        label: d.category
+                    }));
+                } else if (chart.config.type === 'bar' && chart.data.datasets.length > 2) {
+                    // Bar + Line combo (Market chart)
+                    chart.data.labels = newData.map(d => d.market);
+                    chart.data.datasets[0].data = newData.map(d => d.revenue);
+                    chart.data.datasets[1].data = newData.map(d => d.profit);
+                    chart.data.datasets[2].data = newData.map(d => d.profitMargin || 0);
+                } else if (chart.config.type === 'bar' && chart.data.datasets.length === 2) {
+                    // Multi-dataset bar (Department)
+                    chart.data.labels = newData.map(d => d.department);
+                    chart.data.datasets[0].data = newData.map(d => d.revenue);
+                    chart.data.datasets[1].data = newData.map(d => d.profit);
+                } else if (chart.config.type === 'line') {
+                    // Line chart (Year)
+                    chart.data.labels = newData.map(d => d.year);
+                    chart.data.datasets[0].data = newData.map(d => d.revenue);
+                    chart.data.datasets[1].data = newData.map(d => d.profit);
+                } else if (chart.config.type === 'bar' && chart.data.datasets.length === 1) {
+                    // Single dataset bar (State)
+                    chart.data.labels = newData.map(d => d.state);
+                    chart.data.datasets[0].data = newData.map(d => d.profit);
+                } else {
+                    // Simple charts (Pie, Doughnut)
+                    chart.data.labels = newData.map(d => d.label);
+                    chart.data.datasets[0].data = newData.map(d => d.value);
+                }
+
+                chart.update('none'); // Update without animation for better performance
+            } catch (error) {
+                console.error('Error updating chart:', error);
+            }
+        }
+
+        // Data from server
         const profitBySegment = @Html.Raw(Json.Serialize(Model.ProfitBySegment));
         const orderCountByStatus = @Html.Raw(Json.Serialize(Model.OrderCountByStatus));
         const transactionCountByType = @Html.Raw(Json.Serialize(Model.TransactionCountByType));
@@ -398,57 +740,85 @@
         const revenueByCategory = @Html.Raw(Json.Serialize(Model.RevenueByCategory));
         const profitByState = @Html.Raw(Json.Serialize(Model.ProfitByState));
 
-        // Format currency
-        const formatCurrency = (value) => {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(value);
+        // ✅ CẢI TIẾN #2: Save original data
+        dashboardState.originalData = {
+            profitBySegment,
+            orderCountByStatus,
+            transactionCountByType,
+            revenueByMarket,
+            revenueByYear,
+            revenueByDepartment,
+            revenueByCategory,
+            profitByState,
+            kpis: {
+                totalProfit: @Model.TotalProfit,
+                totalRevenue: @Model.TotalRevenue,
+                profitMargin: @Model.ProfitMargin
+            }
         };
 
-        const formatCompact = (value) => {
-            return new Intl.NumberFormat('en-US', {
-                notation: 'compact',
-                compactDisplay: 'short'
-            }).format(value);
-        };
+        // Format helpers
+        function formatCurrency(value) {
+            return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        }
 
-        // Chart 1: Profit by Segment (Pie)
-        new Chart(document.getElementById('segmentChart'), {
-            type: 'pie',
+        function formatCompact(value) {
+            if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+            if (value >= 1000) return '$' + (value / 1000).toFixed(1) + 'K';
+            return '$' + value.toFixed(0);
+        }
+
+        // ✅ CẢI TIẾN #2: Handle chart click - Apply cross-filter
+        function handleChartClick(dataType, clickedLabel) {
+            if (clickedLabel) {
+                dashboardState.crossFilters[dataType] = clickedLabel;
+                updateAllCharts();
+                updateActiveFiltersDisplay();
+            }
+        }
+
+        // Chart 1: Segment
+        dashboardState.charts.segment = new Chart(document.getElementById('segmentChart'), {
+            type: 'doughnut',
             data: {
                 labels: profitBySegment.map(d => d.label),
                 datasets: [{
+                    label: 'Profit',
                     data: profitBySegment.map(d => d.value),
-                    backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff']
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                    borderColor: '#fff',
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const chart = elements[0].element.$context.chart;
+                        const clickedLabel = chart.data.labels[elements[0].index];
+                        handleChartClick('segment', clickedLabel);
+                    }
+                },
                 plugins: {
-                    legend: { position: 'bottom' },
+                    legend: {
+                        position: 'bottom',
+                        onClick: (e, legendItem, legend) => {
+                            const clickedLabel = legend.chart.data.labels[legendItem.index];
+                            handleChartClick('segment', clickedLabel);
+                        }
+                    },
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${formatCurrency(ctx.parsed)} (${pct}%)`;
-                            }
+                            label: (ctx) => `${ctx.label}: ${formatCurrency(ctx.parsed)}`
                         }
                     },
                     datalabels: {
                         color: '#fff',
-                        font: {
-                            weight: 'bold',
-                            size: 14
-                        },
+                        font: { weight: 'bold', size: 14 },
                         formatter: (value, ctx) => {
                             const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct + '%';
+                            return ((value / total) * 100).toFixed(1) + '%';
                         }
                     }
                 }
@@ -456,40 +826,48 @@
             plugins: [ChartDataLabels]
         });
 
-        // Chart 2: Order Count by Status (Doughnut)
-        new Chart(document.getElementById('statusChart'), {
-            type: 'doughnut',
+        // Chart 2: Status
+        dashboardState.charts.status = new Chart(document.getElementById('statusChart'), {
+            type: 'pie',
             data: {
                 labels: orderCountByStatus.map(d => d.label),
                 datasets: [{
+                    label: 'Count',
                     data: orderCountByStatus.map(d => d.value),
-                    backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#6c757d', '#dc3545', '#fd7e14', '#20c997', '#6f42c1']
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d', '#17a2b8', '#007bff', '#6610f2'],
+                    borderColor: '#fff',
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const chart = elements[0].element.$context.chart;
+                        const clickedLabel = chart.data.labels[elements[0].index];
+                        handleChartClick('status', clickedLabel);
+                    }
+                },
                 plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                    legend: {
+                        position: 'bottom',
+                        onClick: (e, legendItem, legend) => {
+                            const clickedLabel = legend.chart.data.labels[legendItem.index];
+                            handleChartClick('status', clickedLabel);
+                        }
+                    },
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${ctx.parsed.toLocaleString()} (${pct}%)`;
-                            }
+                            label: (ctx) => `${ctx.label}: ${ctx.parsed.toLocaleString()} orders`
                         }
                     },
                     datalabels: {
                         color: '#fff',
-                        font: {
-                            weight: 'bold',
-                            size: 11
-                        },
+                        font: { weight: 'bold', size: 14 },
                         formatter: (value, ctx) => {
                             const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct > 5 ? pct + '%' : '';
+                            return ((value / total) * 100).toFixed(1) + '%';
                         }
                     }
                 }
@@ -497,40 +875,48 @@
             plugins: [ChartDataLabels]
         });
 
-        // Chart 3: Transaction Type (Doughnut)
-        new Chart(document.getElementById('transactionChart'), {
-            type: 'doughnut',
+        // Chart 3: Transaction Type
+        dashboardState.charts.transaction = new Chart(document.getElementById('transactionChart'), {
+            type: 'pie',
             data: {
                 labels: transactionCountByType.map(d => d.label),
                 datasets: [{
+                    label: 'Count',
                     data: transactionCountByType.map(d => d.value),
-                    backgroundColor: ['#17a2b8', '#28a745', '#ffc107', '#dc3545']
+                    backgroundColor: ['#007bff', '#6610f2', '#e83e8c', '#fd7e14', '#20c997'],
+                    borderColor: '#fff',
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const chart = elements[0].element.$context.chart;
+                        const clickedLabel = chart.data.labels[elements[0].index];
+                        handleChartClick('transactionType', clickedLabel);
+                    }
+                },
                 plugins: {
-                    legend: { position: 'bottom' },
+                    legend: {
+                        position: 'bottom',
+                        onClick: (e, legendItem, legend) => {
+                            const clickedLabel = legend.chart.data.labels[legendItem.index];
+                            handleChartClick('transactionType', clickedLabel);
+                        }
+                    },
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => {
-                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                const pct = ((ctx.parsed / total) * 100).toFixed(1);
-                                return `${ctx.label}: ${ctx.parsed.toLocaleString()} (${pct}%)`;
-                            }
+                            label: (ctx) => `${ctx.label}: ${ctx.parsed.toLocaleString()} transactions`
                         }
                     },
                     datalabels: {
                         color: '#fff',
-                        font: {
-                            weight: 'bold',
-                            size: 14
-                        },
+                        font: { weight: 'bold', size: 14 },
                         formatter: (value, ctx) => {
                             const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                            const pct = ((value / total) * 100).toFixed(1);
-                            return pct + '%';
+                            return ((value / total) * 100).toFixed(1) + '%';
                         }
                     }
                 }
@@ -538,23 +924,39 @@
             plugins: [ChartDataLabels]
         });
 
-        // Chart 4: Revenue by Market (Grouped Bar)
-        new Chart(document.getElementById('marketChart'), {
+        // ✅ CẢI TIẾN #1: Chart 4: Market (Bar + Line combo với Profit Margin %)
+        dashboardState.charts.market = new Chart(document.getElementById('marketChart'), {
             type: 'bar',
             data: {
                 labels: revenueByMarket.map(d => d.market),
                 datasets: [
                     {
+                        type: 'bar',
                         label: 'Revenue',
                         data: revenueByMarket.map(d => d.revenue),
                         backgroundColor: '#36a2eb',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        yAxisID: 'y'
                     },
                     {
+                        type: 'bar',
                         label: 'Profit',
                         data: revenueByMarket.map(d => d.profit),
                         backgroundColor: '#4bc0c0',
-                        borderWidth: 1
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        type: 'line',
+                        label: 'Profit Margin %',
+                        data: revenueByMarket.map(d => d.profitMargin),
+                        borderColor: '#ff6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        yAxisID: 'y1',
+                        tension: 0.4
                     }
                 ]
             },
@@ -563,37 +965,66 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: { position: 'top' },
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y)}` } },
-                    datalabels: {
-                        display: false
-                    }
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                if (ctx.dataset.label === 'Profit Margin %') {
+                                    return `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`;
+                                }
+                                return `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y)}`;
+                            }
+                        }
+                    },
+                    datalabels: { display: false }
                 },
                 scales: {
                     y: {
+                        type: 'linear',
+                        position: 'left',
                         beginAtZero: true,
-                        ticks: { callback: (value) => formatCompact(value) }
+                        ticks: { callback: (value) => formatCompact(value) },
+                        title: { display: true, text: 'Revenue & Profit ($)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { callback: (value) => value + '%' },
+                        title: { display: true, text: 'Profit Margin (%)' },
+                        grid: { drawOnChartArea: false }
                     }
                 }
             }
         });
 
-        // Chart 5: Revenue by Year (Bar)
-        new Chart(document.getElementById('yearChart'), {
-            type: 'bar',
+        // ✅ CẢI TIẾN #1: Chart 5: Year (Line Chart)
+        dashboardState.charts.year = new Chart(document.getElementById('yearChart'), {
+            type: 'line',
             data: {
                 labels: revenueByYear.map(d => d.year),
                 datasets: [
                     {
                         label: 'Revenue',
                         data: revenueByYear.map(d => d.revenue),
-                        backgroundColor: '#007bff',
-                        borderWidth: 1
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        fill: true
                     },
                     {
                         label: 'Profit',
                         data: revenueByYear.map(d => d.profit),
-                        backgroundColor: '#28a745',
-                        borderWidth: 1
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        fill: true
                     }
                 ]
             },
@@ -603,9 +1034,7 @@
                 plugins: {
                     legend: { position: 'top' },
                     tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y)}` } },
-                    datalabels: {
-                        display: false
-                    }
+                    datalabels: { display: false }
                 },
                 scales: {
                     y: {
@@ -616,8 +1045,8 @@
             }
         });
 
-        // Chart 6: Revenue by Department (Horizontal Bar)
-        new Chart(document.getElementById('departmentChart'), {
+        // Chart 6: Department
+        dashboardState.charts.department = new Chart(document.getElementById('departmentChart'), {
             type: 'bar',
             data: {
                 labels: revenueByDepartment.map(d => d.department),
@@ -643,9 +1072,7 @@
                 plugins: {
                     legend: { position: 'top' },
                     tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.x)}` } },
-                    datalabels: {
-                        display: false
-                    }
+                    datalabels: { display: false }
                 },
                 scales: {
                     x: {
@@ -656,48 +1083,62 @@
             }
         });
 
-        // Chart 7: Revenue by Category (Horizontal Bar - Top 20)
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'bar',
+        // ✅ CẢI TIẾN #1: Chart 7: Category (Scatter Plot)
+        dashboardState.charts.category = new Chart(document.getElementById('categoryChart'), {
+            type: 'scatter',
             data: {
-                labels: revenueByCategory.map(d => d.category),
-                datasets: [
-                    {
-                        label: 'Revenue',
-                        data: revenueByCategory.map(d => d.revenue),
-                        backgroundColor: '#343a40',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Profit',
-                        data: revenueByCategory.map(d => d.profit),
-                        backgroundColor: '#17a2b8',
-                        borderWidth: 1
-                    }
-                ]
+                datasets: [{
+                    label: 'Categories',
+                    data: revenueByCategory.map(d => ({
+                        x: d.revenue,
+                        y: d.profit,
+                        label: d.category
+                    })),
+                    backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                    borderColor: '#667eea',
+                    borderWidth: 2,
+                    pointRadius: 8,
+                    pointHoverRadius: 12
+                }]
             },
             options: {
-                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'top' },
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.x)}` } },
-                    datalabels: {
-                        display: false
-                    }
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => {
+                                const point = ctx.raw;
+                                const margin = point.x > 0 ? ((point.y / point.x) * 100).toFixed(2) : 0;
+                                return [
+                                    `Category: ${point.label}`,
+                                    `Revenue: ${formatCurrency(point.x)}`,
+                                    `Profit: ${formatCurrency(point.y)}`,
+                                    `Margin: ${margin}%`
+                                ];
+                            }
+                        }
+                    },
+                    datalabels: { display: false }
                 },
                 scales: {
                     x: {
                         beginAtZero: true,
+                        title: { display: true, text: 'Revenue ($)', font: { size: 14, weight: 'bold' } },
+                        ticks: { callback: (value) => formatCompact(value) }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Profit ($)', font: { size: 14, weight: 'bold' } },
                         ticks: { callback: (value) => formatCompact(value) }
                     }
                 }
             }
         });
 
-        // Chart 8: Profit by State (Horizontal Bar - Top 20)
-        new Chart(document.getElementById('stateChart'), {
+        // Chart 8: State
+        dashboardState.charts.state = new Chart(document.getElementById('stateChart'), {
             type: 'bar',
             data: {
                 labels: profitByState.map(d => d.state),
@@ -716,9 +1157,7 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: { callbacks: { label: (ctx) => `Profit: ${formatCurrency(ctx.parsed.x)}` } },
-                    datalabels: {
-                        display: false
-                    }
+                    datalabels: { display: false }
                 },
                 scales: {
                     x: {
