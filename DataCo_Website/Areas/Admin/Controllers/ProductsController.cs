@@ -29,7 +29,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         {
             const int pageSize = 10;
 
-            // Hiển thị tất cả products (bao gồm đã vô hiệu hóa)
+            // Hiển thị tất cả products 
             var query = _context.Products
                 .Include(p => p.Category)
                     .ThenInclude(c => c.Department)
@@ -80,7 +80,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(10485760)] // 10MB limit
-        public async Task<IActionResult> Create([Bind("ProductName,CategoryId,ProductPrice,Cost,Description")] Product product, IFormFile? imageFile)
+        public async Task<IActionResult> Create([Bind("ProductName,CategoryId,ProductPrice,Cost,Description,Stock")] Product product, IFormFile? imageFile)
         {
             ModelState.Remove("Description");
 
@@ -105,11 +105,11 @@ namespace DataCo_Website.Areas.Admin.Controllers
                     product.Image = uniqueFileName;
                 }
 
-                // Nếu không nhập cost, tự động set = 50% giá bán
+                // set cost value
                 if (!product.Cost.HasValue && product.ProductPrice.HasValue)
                     product.Cost = product.ProductPrice * 0.5;
 
-                product.IsActive = true; // Mặc định active
+                product.IsActive = true;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "✅ Tạo sản phẩm thành công!";
@@ -138,12 +138,11 @@ namespace DataCo_Website.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(10485760)]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,CategoryId,ProductPrice,Cost,Description,IsActive")] Product product, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,CategoryId,ProductPrice,Cost,Description,IsActive,Stock")] Product product, IFormFile? imageFile)
         {
             if (id != product.ProductId)
                 return NotFound();
 
-            // Remove validation
             ModelState.Remove("Description");
             ModelState.Remove("Image");
             ModelState.Remove("imageFile");
@@ -153,7 +152,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 try
                 {
                     var existingProduct = await _context.Products
-                        .AsTracking() // ← QUAN TRỌNG: Bật tracking
+                        .AsTracking()
                         .FirstOrDefaultAsync(p => p.ProductId == id);
 
                     if (existingProduct == null)
@@ -166,6 +165,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                     existingProduct.Cost = product.Cost;
                     existingProduct.IsActive = product.IsActive;
                     existingProduct.Description = product.Description;
+                    existingProduct.Stock = product.Stock; 
 
                     // Xử lý upload hình ảnh mới
                     if (imageFile != null && imageFile.Length > 0)
@@ -194,7 +194,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
                         existingProduct.Image = uniqueFileName;
                     }
 
-                    // ✅ EF sẽ tự động detect changes vì entity đang được track
                     await _context.SaveChangesAsync();
 
                     TempData["Success"] = "✅ Cập nhật sản phẩm thành công!";
@@ -246,7 +245,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
 
             try
             {
-                // XÓA MỀM: Set IsActive = false
+                // Set IsActive = false
                 product.IsActive = false;
                 _context.Update(product);
                 await _context.SaveChangesAsync();
@@ -277,18 +276,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Kiểm tra category và department có active không
-            if (product.Category != null && !product.Category.IsActive)
-            {
-                TempData["Error"] = $"❌ Không thể kích hoạt sản phẩm vì danh mục '{product.Category.CategoryName}' đã bị vô hiệu hóa!";
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (product.Category?.Department != null && !product.Category.Department.IsActive)
-            {
-                TempData["Error"] = $"❌ Không thể kích hoạt sản phẩm vì phòng ban '{product.Category.Department.DepartmentName}' đã bị vô hiệu hóa!";
-                return RedirectToAction(nameof(Index));
-            }
 
             try
             {
@@ -306,17 +293,56 @@ namespace DataCo_Website.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Helper method 
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
 
-        // Helper method để load chỉ categories active thuộc departments active
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStock(int id, int stock)
+        {
+            if (stock < 0)
+            {
+                return Json(new { success = false, message = "Số lượng không hợp lệ" });
+            }
+
+            try
+            {
+                var product = await _context.Products
+                    .AsTracking()
+                    .FirstOrDefaultAsync(p => p.ProductId == id);
+
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
+                }
+
+                // Cập nhật Stock
+                product.Stock = stock;
+
+                // Đánh dấu entity đã modified 
+                _context.Entry(product).State = EntityState.Modified;
+
+                // Lưu thay đổi
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Cập nhật tồn kho thành công" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+            }
+        }
         private async Task LoadActiveCategoriesAsync(byte? selectedCategoryId = null)
         {
             var categories = await _context.Categories
                 .Include(c => c.Department)
-                .Where(c => c.IsActive && c.Department != null && c.Department.IsActive)
+                .Where(c =>
+                    (c.IsActive && c.Department != null && c.Department.IsActive)
+                    || c.CategoryId == selectedCategoryId
+                )
                 .OrderBy(c => c.CategoryName)
                 .ToListAsync();
 
@@ -327,5 +353,6 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 selectedCategoryId
             );
         }
+
     }
 }

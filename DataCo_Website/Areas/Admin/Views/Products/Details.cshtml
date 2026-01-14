@@ -30,7 +30,7 @@
                     <div class="row">
                         <!-- Left Column: Image -->
                         <div class="col-md-5 mb-4 mb-md-0">
-                            <div class="sticky-top" style="top: 20px;">
+                            <div class="product-image-sticky">
                                 <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
                                     <div class="card-body p-4 text-center">
                                         @if (!string.IsNullOrEmpty(Model.Image))
@@ -72,7 +72,7 @@
                                 <!-- Product Name -->
                                 <div class="mb-4">
                                     <h3 class="text-dark mb-1">@Model.ProductName</h3>
-                                    <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
                                         @if (Model.IsActive)
                                         {
                                             <span class="badge bg-success">
@@ -91,15 +91,27 @@
                                                 <i class="fas fa-folder"></i> @Model.Category.CategoryName
                                             </span>
                                         }
+                                        @if (Model.Stock <= 0)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times-circle"></i> Hết hàng
+                                            </span>
+                                        }
+                                        else if (Model.Stock < 10)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-exclamation-triangle"></i> Sắp hết
+                                            </span>
+                                        }
                                     </div>
                                 </div>
 
                                 <hr>
 
-                                <!-- Price -->
+                                <!-- Price & Stock -->
                                 <div class="mb-4 p-4 rounded" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
+                                    <div class="row">
+                                        <div class="col-6">
                                             <small class="text-muted d-block mb-1">
                                                 <i class="fas fa-money-bill-wave"></i> Giá bán
                                             </small>
@@ -107,19 +119,13 @@
                                                 $@(Model.ProductPrice?.ToString("N2") ?? "0.00")
                                             </h2>
                                         </div>
-                                        <div class="text-end">
-                                            @if (Model.IsActive)
-                                            {
-                                                <span class="badge bg-success px-3 py-2">
-                                                    <i class="fas fa-check-circle"></i> Còn hàng
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-secondary px-3 py-2">
-                                                    <i class="fas fa-ban"></i> Đã vô hiệu
-                                                </span>
-                                            }
+                                        <div class="col-6 text-end">
+                                            <small class="text-muted d-block mb-1">
+                                                <i class="fas fa-boxes"></i> Tồn kho
+                                            </small>
+                                            <h2 class="mb-0 fw-bold @(Model.Stock <= 0 ? "text-danger" : Model.Stock < 10 ? "text-warning" : "text-primary")">
+                                                @Model.Stock
+                                            </h2>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +190,31 @@
                                                     </td>
                                                     <td class="text-primary fw-bold">
                                                         $@(Model.Cost?.ToString("N2") ?? "0.00")
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-muted">
+                                                        <i class="fas fa-boxes"></i> Tồn kho
+                                                    </td>
+                                                    <td>
+                                                        @if (Model.Stock <= 0)
+                                                        {
+                                                            <span class="badge bg-danger fs-6">
+                                                                <i class="fas fa-times-circle"></i> Hết hàng (0)
+                                                            </span>
+                                                        }
+                                                        else if (Model.Stock < 10)
+                                                        {
+                                                            <span class="badge bg-warning text-dark fs-6">
+                                                                <i class="fas fa-exclamation-triangle"></i> @Model.Stock (Sắp hết)
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="badge bg-success fs-6">
+                                                                <i class="fas fa-box"></i> @Model.Stock
+                                                            </span>
+                                                        }
                                                     </td>
                                                 </tr>
                                                 @if (Model.ProfitMarginPercent.HasValue)
@@ -320,6 +351,11 @@
     </script>
 
     <style>
+        .product-image-sticky {
+            position: sticky;
+            top: 140px;
+        }
+
         .card {
             border-radius: 15px;
             overflow: hidden;
@@ -383,9 +419,12 @@
             }
 
         @@media (max-width: 768px) {
-            .sticky-top {
-                position: relative !important;
-            }
+            .sticky-top
+
+        {
+            position: relative !important;
+        }
+
         }
     </style>
 }

@@ -76,6 +76,51 @@
                                     </small>
                                 </div>
 
+                                <!-- Stock Quantity -->
+                                <div class="mb-4">
+                                    <label asp-for="Stock" class="form-label fw-bold">
+                                        <i class="fas fa-boxes"></i> Số Lượng Tồn Kho <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text"><i class="fas fa-box"></i></span>
+                                        <input asp-for="Stock" type="number" class="form-control" min="0" id="stockInput" />
+                                    </div>
+                                    <span asp-validation-for="Stock" class="text-danger small"></span>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-info-circle"></i> Cập nhật số lượng sản phẩm hiện có trong kho
+                                    </small>
+                                    @if (Model.Stock <= 0)
+                                    {
+                                        <div class="alert alert-danger mt-2 mb-0">
+                                            <i class="fas fa-exclamation-triangle"></i> <strong>Hết hàng!</strong> Sản phẩm sẽ không thể được thêm vào giỏ.
+                                        </div>
+                                    }
+                                    else if (Model.Stock < 10)
+                                    {
+                                        <div class="alert alert-warning mt-2 mb-0">
+                                            <i class="fas fa-exclamation-triangle"></i> <strong>Sắp hết hàng!</strong> Chỉ còn @Model.Stock sản phẩm.
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- IsActive Status -->
+                                <div class="mb-4">
+                                    <label asp-for="IsActive" class="form-label fw-bold">
+                                        <i class="fas fa-toggle-on"></i> Trạng Thái
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" style="width: 3em; height: 1.5em;">
+                                        <label class="form-check-label ms-2" for="isActiveSwitch" id="statusLabel">
+                                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">
+                                                @(Model.IsActive ? "Đang hoạt động" : "Đã vô hiệu hóa")
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-info-circle"></i> Tắt để ẩn sản phẩm khỏi giao diện người dùng
+                                    </small>
+                                </div>
+
                                 <!-- Description with Rich Text Editor -->
                                 <div class="mb-4">
                                     <label asp-for="Description" class="form-label fw-bold">
@@ -243,6 +288,40 @@
                 descriptionTextarea.value = htmlContent;
             }
         });
+
+        // Update status label when switch changes
+        document.getElementById('isActiveSwitch').addEventListener('change', function() {
+            const label = document.getElementById('statusLabel');
+            if (this.checked) {
+                label.innerHTML = '<span class="badge bg-success">Đang hoạt động</span>';
+            } else {
+                label.innerHTML = '<span class="badge bg-secondary">Đã vô hiệu hóa</span>';
+            }
+        });
+
+        // Stock input validation and warning
+        document.getElementById('stockInput').addEventListener('input', function() {
+            const value = parseInt(this.value);
+            const alertContainer = this.closest('.mb-4').querySelector('.alert');
+
+            // Remove existing alert
+            if (alertContainer) {
+                alertContainer.remove();
+            }
+
+            // Add new alert based on stock value
+            if (value <= 0) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger mt-2 mb-0';
+                alert.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <strong>Hết hàng!</strong> Sản phẩm sẽ không thể được thêm vào giỏ.';
+                this.parentElement.parentElement.appendChild(alert);
+            } else if (value < 10) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-warning mt-2 mb-0';
+                alert.innerHTML = `<i class="fas fa-exclamation-triangle"></i> <strong>Sắp hết hàng!</strong> Chỉ còn ${value} sản phẩm.`;
+                this.parentElement.parentElement.appendChild(alert);
+            }
+        });
     </script>
 
     <script>
@@ -311,15 +390,23 @@
         }
 
         @@keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+            from
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
         }
     </style>
 }

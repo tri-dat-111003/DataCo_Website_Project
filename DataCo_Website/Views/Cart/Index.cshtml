@@ -27,6 +27,10 @@
             || !ci.Product.Category.Department.IsActive)
         .ToList();
 
+    // ⭐ PHÂN LOẠI SẢN PHẨM HẾT HÀNG
+    var outOfStockItems = activeItems
+        .Where(ci => ci.Status == "OutOfStock")
+        .ToList();
     // ✅ ITEMS ĐÃ CHỌN (Status = "Selected")
     var selectedItems = activeItems.Where(ci => ci.Status == "Selected").ToList();
 
@@ -63,6 +67,24 @@
         </div>
     }
 
+    <!-- ⭐ CẢNH BÁO SẢN PHẨM HẾT HÀNG -->
+    @if (outOfStockItems.Any())
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo hết hàng!
+            </h5>
+            <p>
+                Có <strong>@outOfStockItems.Count sản phẩm</strong> trong giỏ hàng <strong>đang hết hàng</strong>.
+                Số lượng trong kho không đủ để đáp ứng số lượng bạn đã chọn.
+            </p>
+            <hr>
+            <small class="mb-0">
+                Vui lòng giảm số lượng hoặc xóa sản phẩm này khỏi giỏ hàng.
+            </small>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
     <!-- ⭐ CẢNH BÁO SẢN PHẨM INACTIVE -->
     @if (inactiveItems.Any())
     {
@@ -237,6 +259,14 @@
                                             <td class="align-middle">
                                                 <strong>@item.Product.ProductName</strong>
                                                 <div class="text-muted small">@item.Product.Category?.CategoryName</div>
+                                                @if (item.Status == "OutOfStock")
+                                                {
+                                                    <div class="mt-1">
+                                                        <span class="badge bg-warning text-dark">
+                                                            <i class="bi bi-exclamation-triangle"></i> Hết hàng - Còn @item.Product.Stock trong kho
+                                                        </span>
+                                                    </div>
+                                                }
                                             </td>
                                             <td class="align-middle">
                                                 <strong class="item-price" data-price="@item.Product.ProductPrice">$@item.Product.ProductPrice?.ToString("N2")</strong>

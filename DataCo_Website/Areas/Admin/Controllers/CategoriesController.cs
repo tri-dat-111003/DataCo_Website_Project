@@ -204,11 +204,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (category.Department != null && !category.Department.IsActive)
-            {
-                TempData["Error"] = $"❌ Không thể kích hoạt danh mục vì phòng ban '{category.Department.DepartmentName}' đã bị vô hiệu hóa!";
-                return RedirectToAction(nameof(Index));
-            }
+            
 
             try
             {

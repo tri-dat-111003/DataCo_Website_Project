@@ -29,7 +29,16 @@ public partial class Product
     [Display(Name = "Image URL")]
     public string? Image { get; set; }
     public bool IsActive { get; set; } = true;
-    // Không map cột này, chỉ để upload file từ form
+
+    [Display(Name = "Stock Quantity")]
+    [Required(ErrorMessage = "Vui lòng nhập số lượng tồn kho")]
+    [Range(0, int.MaxValue, ErrorMessage = "Số lượng phải >= 0")]
+    public int Stock { get; set; } = 0;
+
+    [NotMapped]
+    [Display(Name = "In Stock")]
+    public bool InStock => Stock > 0;
+    
     [NotMapped]
     [Display(Name = "Upload Image")]
     public IFormFile? ImageFile { get; set; }

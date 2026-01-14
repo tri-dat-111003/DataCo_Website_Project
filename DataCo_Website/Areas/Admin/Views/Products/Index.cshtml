@@ -20,6 +20,14 @@
     </div>
 }
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <div class="card">
     <div class="table-responsive">
         <table class="table table-hover">
@@ -27,11 +35,12 @@
                 <tr>
                     <th style="width: 60px;">ID</th>
                     <th style="width: 100px;" class="text-center">Hình</th>
-                    <th style="width: 250px;">Tên Sản Phẩm</th>
-                    <th style="width: 150px;">Danh Mục</th>
+                    <th style="width: 200px;">Tên Sản Phẩm</th>
+                    <th style="width: 130px;">Danh Mục</th>
                     <th style="width: 100px;" class="text-end">Giá</th>
+                    <th style="width: 120px;" class="text-center">Tồn Kho</th>
                     <th style="width: 100px;">Trạng thái</th>
-                    <th style="width: 120px;" class="text-center">Thao tác</th>
+                    <th style="width: 150px;" class="text-center">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,13 +64,12 @@
                                 }
                             </td>
                             <td>
-                                <strong class="text-truncate d-inline-block" style="max-width: 230px;" title="@item.ProductName">
+                                <strong class="text-truncate d-inline-block" style="max-width: 180px;" title="@item.ProductName">
                                     @item.ProductName
                                 </strong>
                                 @if (!item.IsActive)
                                 {
                                     <br>
-                        
                                     <small class="badge bg-secondary mt-1">Đã vô hiệu</small>
                                 }
                             </td>
@@ -81,7 +89,6 @@
                                     @if (!item.Category.IsActive || (item.Category.Department != null && !item.Category.Department.IsActive))
                                     {
                                         <br>
-                        
                                         <small class="text-danger"><i class="fas fa-exclamation-triangle"></i></small>
                                     }
                                 }
@@ -92,6 +99,39 @@
                             </td>
                             <td class="text-end">
                                 <strong class="text-success">$@(item.ProductPrice?.ToString("N2") ?? "0.00")</strong>
+                            </td>
+                            <td class="text-center">
+                                <div class="stock-edit-container" data-product-id="@item.ProductId">
+                                    @if (item.Stock <= 0)
+                                    {
+                                        <span class="badge bg-danger stock-badge" style="cursor: pointer;" title="Click để cập nhật">
+                                            <i class="fas fa-times-circle"></i> Hết hàng
+                                        </span>
+                                    }
+                                    else if (item.Stock < 10)
+                                    {
+                                        <span class="badge bg-warning text-dark stock-badge" style="cursor: pointer;" title="Click để cập nhật">
+                                            <i class="fas fa-exclamation-triangle"></i> @item.Stock
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success stock-badge" style="cursor: pointer;" title="Click để cập nhật">
+                                            <i class="fas fa-box"></i> @item.Stock
+                                        </span>
+                                    }
+                                    <div class="stock-edit-form" style="display: none;">
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" class="form-control stock-input" value="@item.Stock" min="0" style="width: 30px;">
+                                            <button class="btn btn-success btn-sm save-stock" type="button">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm cancel-stock" type="button">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 @if (item.IsActive)
@@ -143,7 +183,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="8" class="text-center text-muted py-4">
                             <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
                             <p class="mb-0">Chưa có sản phẩm nào</p>
                         </td>
@@ -217,6 +257,155 @@
             <li>Vô hiệu hóa sản phẩm sẽ làm sản phẩm <strong>không hiển thị</strong> trên giao diện user.</li>
             <li>Không thể kích hoạt lại sản phẩm nếu danh mục hoặc phòng ban đã bị vô hiệu hóa.</li>
             <li>Dữ liệu sản phẩm vẫn được giữ nguyên, có thể kích hoạt lại bất cứ lúc nào.</li>
+            <li><strong>Click vào số lượng tồn kho</strong> để cập nhật nhanh.</li>
         </ul>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Click vào badge để hiện form edit
+            $('.stock-badge').on('click', function() {
+                const container = $(this).closest('.stock-edit-container');
+                container.find('.stock-badge').hide();
+                container.find('.stock-edit-form').show();
+                container.find('.stock-input').focus().select();
+            });
+
+            // Cancel button
+            $('.cancel-stock').on('click', function() {
+                const container = $(this).closest('.stock-edit-container');
+                container.find('.stock-edit-form').hide();
+                container.find('.stock-badge').show();
+            });
+
+            // Save button
+            $('.save-stock').on('click', function() {
+                const container = $(this).closest('.stock-edit-container');
+                const productId = container.data('product-id');
+                const newStock = parseInt(container.find('.stock-input').val());
+
+                if (isNaN(newStock) || newStock < 0) {
+                    alert('Vui lòng nhập số lượng hợp lệ (>= 0)');
+                    return;
+                }
+
+                // Disable buttons
+                const saveBtn = $(this);
+                const cancelBtn = container.find('.cancel-stock');
+                saveBtn.prop('disabled', true);
+                cancelBtn.prop('disabled', true);
+                saveBtn.html('<i class="fas fa-spinner fa-spin"></i>');
+
+                $.ajax({
+                    url: '@Url.Action("UpdateStock", "Products", new { area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        id: productId,
+                        stock: newStock,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Cập nhật badge
+                            let badgeClass = 'bg-success';
+                            let icon = '<i class="fas fa-box"></i>';
+                            let text = newStock;
+
+                            if (newStock <= 0) {
+                                badgeClass = 'bg-danger';
+                                icon = '<i class="fas fa-times-circle"></i>';
+                                text = 'Hết hàng';
+                            } else if (newStock < 10) {
+                                badgeClass = 'bg-warning text-dark';
+                                icon = '<i class="fas fa-exclamation-triangle"></i>';
+                            }
+
+                            const newBadge = `<span class="badge ${badgeClass} stock-badge" style="cursor: pointer;" title="Click để cập nhật">
+                                ${icon} ${text}
+                            </span>`;
+
+                            container.find('.stock-badge').replaceWith(newBadge);
+                            container.find('.stock-edit-form').hide();
+                            container.find('.stock-badge').show();
+
+                            // Re-bind click event
+                            container.find('.stock-badge').on('click', function() {
+                                container.find('.stock-badge').hide();
+                                container.find('.stock-edit-form').show();
+                                container.find('.stock-input').focus().select();
+                            });
+
+                            // Show success message
+                            showToast('success', response.message || 'Cập nhật tồn kho thành công');
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra');
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi cập nhật tồn kho');
+                    },
+                    complete: function() {
+                        saveBtn.prop('disabled', false);
+                        cancelBtn.prop('disabled', false);
+                        saveBtn.html('<i class="fas fa-check"></i>');
+                    }
+                });
+            });
+
+            // Enter key to save
+            $('.stock-input').on('keypress', function(e) {
+                if (e.which === 13) {
+                    $(this).closest('.stock-edit-container').find('.save-stock').click();
+                }
+            });
+
+            // Escape key to cancel
+            $('.stock-input').on('keyup', function(e) {
+                if (e.which === 27) {
+                    $(this).closest('.stock-edit-container').find('.cancel-stock').click();
+                }
+            });
+        });
+
+        function showToast(type, message) {
+            const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+            const toast = `
+                <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+                    <div class="toast show ${bgClass} text-white" role="alert">
+                        <div class="toast-body">
+                            <i class="fas fa-check-circle"></i> ${message}
+                        </div>
+                    </div>
+                </div>
+            `;
+            $('body').append(toast);
+            setTimeout(function() {
+                $('.toast').fadeOut(function() {
+                    $(this).parent().remove();
+                });
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        .stock-edit-container {
+            position: relative;
+            min-width: 100px;
+        }
+
+        .stock-badge {
+            transition: all 0.2s;
+        }
+
+            .stock-badge:hover {
+                transform: scale(1.1);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+
+        .stock-input {
+            text-align: center;
+        }
+    </style>
+}

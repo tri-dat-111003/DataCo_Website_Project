@@ -34,6 +34,15 @@ namespace DataCo_Website.Controllers
 
             var cart = await GetOrCreateCartAsync(user.CustomerId.Value);
 
+            // ⭐ KIỂM TRA SẢN PHẨM HẾT HÀNG
+            foreach (var item in cart.CartItems)
+            {
+                if (item.Product != null && item.Product.Stock < item.Quantity)
+                {
+                    item.Status = "OutOfStock"; // Đánh dấu hết hàng
+                }
+            }
+
             return View(cart);
         }
 
@@ -48,9 +57,16 @@ namespace DataCo_Website.Controllers
                 return Json(new { success = false, message = "Vui lòng đăng nhập" });
             }
 
-            // Kiểm tra product active
+            if (quantity <= 0)
+            {
+                return Json(new { success = false, message = "Số lượng không hợp lệ" });
+            }
+
+            // ✅ KHÔNG CẦN LOCK - Chỉ kiểm tra loosely, lock chặt ở checkout
             var product = await _context.Products
                 .AsNoTracking()
+                .Include(p => p.Category)
+                    .ThenInclude(c => c.Department)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             if (product == null)
@@ -63,18 +79,19 @@ namespace DataCo_Website.Controllers
                 return Json(new { success = false, message = "Sản phẩm hiện không còn khả dụng" });
             }
 
-            // Kiểm tra Category và Department active
-            var category = await _context.Categories
-                .AsNoTracking()
-                .Include(c => c.Department)
-                .FirstOrDefaultAsync(c => c.CategoryId == product.CategoryId);
+            // ✅ KIỂM TRA STOCK LOOSELY - Không cần chính xác tuyệt đối
+            if (product.Stock <= 0)
+            {
+                return Json(new { success = false, message = "Sản phẩm đã hết hàng" });
+            }
 
-            if (category == null || !category.IsActive || category.Department == null || !category.Department.IsActive)
+            // Kiểm tra Category và Department active
+            if (product.Category == null || !product.Category.IsActive ||
+                product.Category.Department == null || !product.Category.Department.IsActive)
             {
                 return Json(new { success = false, message = "Sản phẩm hiện không còn khả dụng" });
             }
 
-            // ⭐ QUAN TRỌNG: Query cart RIÊNG để tránh tracking conflict
             var cart = await _context.Carts
                 .FirstOrDefaultAsync(c => c.CustomerId == user.CustomerId.Value);
 
@@ -90,15 +107,12 @@ namespace DataCo_Website.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Tạo session nếu chưa có VÀ gán session mới cho các items cũ
             if (string.IsNullOrEmpty(cart.CurrentSessionId))
             {
                 cart.CurrentSessionId = GenerateSessionId();
                 _context.Entry(cart).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                // ⭐ THÊM MỚI: Gán session mới cho items cũ có SessionId = null
-                // Đây là items còn lại sau checkout trước đó
                 var orphanItems = await _context.CartItems
                     .Where(ci => ci.CartId == cart.CartId
                               && ci.Status != "CheckedOut"
@@ -109,16 +123,14 @@ namespace DataCo_Website.Controllers
                 {
                     foreach (var item in orphanItems)
                     {
-                        item.SessionId = cart.CurrentSessionId; // Gán session mới
+                        item.SessionId = cart.CurrentSessionId;
                         item.UpdatedDate = DateTime.Now;
                         _context.Entry(item).State = EntityState.Modified;
                     }
-
                     await _context.SaveChangesAsync();
                 }
             }
 
-            // ⭐ QUAN TRỌNG: Query CartItem RIÊNG để tránh tracking conflict
             var existingItem = await _context.CartItems
                 .FirstOrDefaultAsync(ci =>
                     ci.CartId == cart.CartId
@@ -126,16 +138,27 @@ namespace DataCo_Website.Controllers
                     && ci.SessionId == cart.CurrentSessionId
                     && ci.Status != "CheckedOut");
 
+            int newQuantity = quantity;
             if (existingItem != null)
             {
-                // CỘNG DỒN số lượng
-                existingItem.Quantity += quantity;
+                newQuantity = existingItem.Quantity + quantity;
+            }
+
+            // ✅ WARNING nếu vượt quá stock - nhưng vẫn cho thêm vào giỏ
+            string warningMessage = "";
+            if (newQuantity > product.Stock)
+            {
+                warningMessage = $" (Lưu ý: Chỉ còn {product.Stock} sản phẩm)";
+            }
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity = newQuantity;
                 existingItem.UpdatedDate = DateTime.Now;
                 _context.Entry(existingItem).State = EntityState.Modified;
             }
             else
             {
-                // Tạo mới
                 var cartItem = new CartItem
                 {
                     CartId = cart.CartId,
@@ -153,14 +176,78 @@ namespace DataCo_Website.Controllers
 
             await _context.SaveChangesAsync();
 
-            // ⭐ Trả về số loại sản phẩm (không phải tổng số lượng)
             var itemCount = await _context.CartItems
                 .Where(ci => ci.CartId == cart.CartId
                     && ci.SessionId == cart.CurrentSessionId
                     && ci.Status != "CheckedOut")
                 .CountAsync();
 
-            return Json(new { success = true, message = "Đã thêm vào giỏ hàng", cartCount = itemCount });
+            return Json(new
+            {
+                success = true,
+                message = "Đã thêm vào giỏ hàng" + warningMessage,
+                cartCount = itemCount
+            });
+        }
+
+        // ==================== POST: Cart/UpdateQuantity ====================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateQuantity(int cartItemId, int quantity)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || user.CustomerId == null)
+            {
+                return Json(new { success = false, message = "Vui lòng đăng nhập" });
+            }
+
+            if (quantity < 0)
+            {
+                return Json(new { success = false, message = "Số lượng không hợp lệ" });
+            }
+
+            var cartItem = await _context.CartItems
+                .Include(ci => ci.Cart)
+                .Include(ci => ci.Product)
+                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId
+                    && ci.Cart.CustomerId == user.CustomerId.Value
+                    && ci.Status != "CheckedOut");
+
+            if (cartItem == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
+            }
+
+            if (quantity == 0)
+            {
+                _context.CartItems.Remove(cartItem);
+            }
+            else
+            {
+                // ✅ WARNING nếu vượt stock nhưng vẫn cho update
+                string warningMessage = "";
+                if (cartItem.Product != null && quantity > cartItem.Product.Stock)
+                {
+                    warningMessage = $" (Chỉ còn {cartItem.Product.Stock} sản phẩm)";
+                }
+
+                cartItem.Quantity = quantity;
+                cartItem.UpdatedDate = DateTime.Now;
+                _context.Entry(cartItem).State = EntityState.Modified;
+
+                if (!string.IsNullOrEmpty(warningMessage))
+                {
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, warning = true, message = warningMessage.Trim() });
+                }
+            }
+
+            cartItem.Cart.UpdatedDate = DateTime.Now;
+            _context.Entry(cartItem.Cart).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true });
         }
 
         // ==================== POST: Cart/ToggleSelect ====================
@@ -176,6 +263,7 @@ namespace DataCo_Website.Controllers
 
             var cartItem = await _context.CartItems
                 .Include(ci => ci.Cart)
+                .Include(ci => ci.Product)
                 .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId
                     && ci.Cart.CustomerId == user.CustomerId.Value);
 
@@ -184,52 +272,19 @@ namespace DataCo_Website.Controllers
                 return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
             }
 
-            // ⭐ QUAN TRỌNG: Đổi status và đánh dấu Modified
+            // ⭐ KIỂM TRA STOCK KHI CHỌN
+            if (isSelected && cartItem.Product != null && cartItem.Product.Stock < cartItem.Quantity)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = $"Sản phẩm chỉ còn {cartItem.Product.Stock} trong kho"
+                });
+            }
+
             cartItem.Status = isSelected ? "Selected" : "InCart";
             cartItem.UpdatedDate = DateTime.Now;
             _context.Entry(cartItem).State = EntityState.Modified;
-
-            cartItem.Cart.UpdatedDate = DateTime.Now;
-            _context.Entry(cartItem.Cart).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true });
-        }
-
-        // ==================== POST: Cart/UpdateQuantity ====================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateQuantity(int cartItemId, int quantity)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null || user.CustomerId == null)
-            {
-                return Json(new { success = false, message = "Vui lòng đăng nhập" });
-            }
-
-            var cartItem = await _context.CartItems
-                .Include(ci => ci.Cart)
-                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId
-                    && ci.Cart.CustomerId == user.CustomerId.Value
-                    && ci.Status != "CheckedOut");
-
-            if (cartItem == null)
-            {
-                return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
-            }
-
-            if (quantity <= 0)
-            {
-                _context.CartItems.Remove(cartItem);
-            }
-            else
-            {
-                // ⭐ QUAN TRỌNG: Update và đánh dấu Modified
-                cartItem.Quantity = quantity;
-                cartItem.UpdatedDate = DateTime.Now;
-                _context.Entry(cartItem).State = EntityState.Modified;
-            }
 
             cartItem.Cart.UpdatedDate = DateTime.Now;
             _context.Entry(cartItem.Cart).State = EntityState.Modified;
@@ -293,6 +348,17 @@ namespace DataCo_Website.Controllers
                 return RedirectToAction("Index");
             }
 
+            // ⭐ KIỂM TRA STOCK
+            var outOfStockItems = selectedItems
+                .Where(ci => ci.Product != null && ci.Product.Stock < ci.Quantity)
+                .ToList();
+
+            if (outOfStockItems.Any())
+            {
+                TempData["Error"] = "Một số sản phẩm đã hết hàng hoặc không đủ số lượng";
+                return RedirectToAction("Index");
+            }
+
             var hasInactiveProducts = selectedItems.Any(ci =>
                 !ci.Product.IsActive ||
                 !ci.Product.Category.IsActive ||
@@ -313,13 +379,13 @@ namespace DataCo_Website.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessCheckout(
-        string shippingAddress,
-        string paymentMethod,
-        string orderRegion,
-        string orderCountry,
-        string orderState,
-        string orderCity,
-        string shippingMode)
+            string shippingAddress,
+            string paymentMethod,
+            string orderRegion,
+            string orderCountry,
+            string orderState,
+            string orderCity,
+            string shippingMode)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null || user.CustomerId == null)
@@ -327,18 +393,19 @@ namespace DataCo_Website.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // ✅ VALIDATION
             if (string.IsNullOrWhiteSpace(shippingAddress) ||
                 string.IsNullOrWhiteSpace(orderCountry) ||
                 string.IsNullOrWhiteSpace(shippingMode) ||
-                string.IsNullOrWhiteSpace(paymentMethod))
+                string.IsNullOrWhiteSpace(paymentMethod) ||
+                // THÊM 2 DÒNG NÀY ĐỂ CHẶN LỖI NULL
+                string.IsNullOrWhiteSpace(orderState) ||
+                string.IsNullOrWhiteSpace(orderCity))
             {
                 TempData["Error"] = "Vui lòng điền đầy đủ thông tin giao hàng!";
                 return RedirectToAction("Checkout");
             }
 
-            var (regionFromApi, marketFromApi) =
-                await GetRegionAndMarketFromApiAsync(orderCountry);
+            var (regionFromApi, marketFromApi) = await GetRegionAndMarketFromApiAsync(orderCountry);
 
             var strategy = _context.Database.CreateExecutionStrategy();
 
@@ -350,7 +417,6 @@ namespace DataCo_Website.Controllers
                     {
                         var cart = await GetOrCreateCartAsync(user.CustomerId.Value);
 
-                        // ✅ LẤY ITEMS ĐƯỢC CHỌN
                         var selectedItems = cart.CartItems
                             .Where(ci => ci.Status == "Selected"
                                       && ci.SessionId == cart.CurrentSessionId)
@@ -362,17 +428,45 @@ namespace DataCo_Website.Controllers
                             return RedirectToAction("Index");
                         }
 
-                        // ✅ CHECK ACTIVE
-                        var inactiveItems = selectedItems
-                            .Where(ci => !ci.Product.IsActive
-                                || !ci.Product.Category.IsActive
-                                || !ci.Product.Category.Department.IsActive)
+                        // ✅ FIX DEADLOCK: Sắp xếp ProductId từ nhỏ đến lớn
+                        var productIds = selectedItems
+                            .Select(ci => ci.ProductId)
+                            .Distinct()
+                            .OrderBy(id => id) // ⭐ QUAN TRỌNG: Tránh deadlock
                             .ToList();
 
-                        if (inactiveItems.Any())
+                        // ✅ PESSIMISTIC LOCKING - LOCK THEO THỨ TỰ
+                        var productIdParams = string.Join(",", productIds);
+                        var products = await _context.Products
+                            .FromSqlRaw($"SELECT * FROM Product WITH (UPDLOCK, ROWLOCK) WHERE Product_Id IN ({productIdParams})")
+                            .Include(p => p.Category)
+                                .ThenInclude(c => c.Department)
+                            .ToListAsync();
+
+                        // ✅ KIỂM TRA TỪNG SẢN PHẨM
+                        var stockErrors = new List<string>();
+                        foreach (var cartItem in selectedItems)
                         {
-                            TempData["Error"] =
-                                $"Có {inactiveItems.Count} sản phẩm không còn khả dụng";
+                            var product = products.FirstOrDefault(p => p.ProductId == cartItem.ProductId);
+
+                            if (product == null || !product.IsActive ||
+                                !product.Category.IsActive ||
+                                !product.Category.Department.IsActive)
+                            {
+                                stockErrors.Add($"{cartItem.Product?.ProductName}: Không còn khả dụng");
+                                continue;
+                            }
+
+                            if (product.Stock < cartItem.Quantity)
+                            {
+                                stockErrors.Add($"{product.ProductName}: Chỉ còn {product.Stock} sản phẩm (Bạn đặt {cartItem.Quantity})");
+                            }
+                        }
+
+                        if (stockErrors.Any())
+                        {
+                            await transaction.RollbackAsync();
+                            TempData["Error"] = "❌ Không thể thanh toán:\n• " + string.Join("\n• ", stockErrors);
                             return RedirectToAction("Index");
                         }
 
@@ -394,22 +488,18 @@ namespace DataCo_Website.Controllers
                         };
 
                         _context.Orders.Add(order);
-                        await _context.SaveChangesAsync(); // lấy OrderId
+                        await _context.SaveChangesAsync();
 
-                        // ✅ TẠO ORDER ITEMS
+                        // ✅ TẠO ORDER ITEMS VÀ TRỪ STOCK
                         foreach (var cartItem in selectedItems)
                         {
-                            var product = cartItem.Product;
-                            int departmentId =
-                                product?.Category?.DepartmentId ?? 1;
+                            var product = products.First(p => p.ProductId == cartItem.ProductId);
+                            int departmentId = product?.Category?.DepartmentId ?? 1;
 
-                            double sales =
-                                cartItem.Quantity * (product?.ProductPrice ?? 0);
-                            double cost =
-                                (product?.Cost ?? 0) * cartItem.Quantity;
+                            double sales = cartItem.Quantity * (product?.ProductPrice ?? 0);
+                            double cost = (product?.Cost ?? 0) * cartItem.Quantity;
                             double profit = sales - cost;
-                            double profitRatio =
-                                sales > 0 ? profit / sales : 0;
+                            double profitRatio = sales > 0 ? profit / sales : 0;
 
                             _context.OrderItems.Add(new OrderItem
                             {
@@ -423,11 +513,15 @@ namespace DataCo_Website.Controllers
                                 ProfitRatio = profitRatio,
                                 DepartmentId = departmentId
                             });
+
+                            // ⭐ TRỪ STOCK
+                            product.Stock -= cartItem.Quantity;
+                            _context.Entry(product).State = EntityState.Modified;
                         }
 
                         await _context.SaveChangesAsync();
 
-                        // ✅ TẠO SHIPPING
+                        // TẠO SHIPPING
                         int daysForShipment = GetDaysForShipment(shippingMode);
                         var shipping = new Shipping
                         {
@@ -444,7 +538,7 @@ namespace DataCo_Website.Controllers
                         _context.Shippings.Add(shipping);
                         await _context.SaveChangesAsync();
 
-                        // ✅ UPDATE CART ITEMS ĐÃ MUA
+                        // UPDATE CART ITEMS
                         foreach (var cartItem in selectedItems)
                         {
                             cartItem.Status = "CheckedOut";
@@ -453,17 +547,11 @@ namespace DataCo_Website.Controllers
                             _context.Entry(cartItem).State = EntityState.Modified;
                         }
 
-                        // ⭐ CHỈ SAVE – KHÔNG RESET SESSION
                         await _context.SaveChangesAsync();
-
                         await transaction.CommitAsync();
 
                         TempData["Success"] = "Đặt hàng thành công!";
-
-                        return RedirectToAction(
-                            "OrderConfirmation",
-                            "Order",
-                            new { orderId = order.OrderId });
+                        return RedirectToAction("OrderConfirmation", "Order", new { orderId = order.OrderId });
                     }
                     catch (Exception ex)
                     {
@@ -474,7 +562,6 @@ namespace DataCo_Website.Controllers
                 }
             });
         }
-
 
         // ==================== GET: Cart/MyOrders ====================
         public async Task<IActionResult> MyOrders(int page = 1)
@@ -592,13 +679,11 @@ namespace DataCo_Website.Controllers
                     response.EnsureSuccessStatusCode();
 
                     var json = await response.Content.ReadAsStringAsync();
-
                     using var doc = JsonDocument.Parse(json);
                     var root = doc.RootElement[0];
 
                     string region = root.GetProperty("region").GetString() ?? "Unknown";
                     string subregion = root.TryGetProperty("subregion", out var sr) ? sr.GetString() ?? "Unknown" : "Unknown";
-
                     string market = GetMarketFromRegion(region, subregion);
 
                     return (region, market);
@@ -637,18 +722,18 @@ namespace DataCo_Website.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCartBySlug(
-        string departmentSlug,
-        string categorySlug,
-        string productSlug,
-        int quantity = 1)
+            string departmentSlug,
+            string categorySlug,
+            string productSlug,
+            int quantity = 1)
         {
             departmentSlug = Uri.UnescapeDataString(departmentSlug).ToLowerInvariant().Trim();
             categorySlug = Uri.UnescapeDataString(categorySlug).ToLowerInvariant().Trim();
             productSlug = Uri.UnescapeDataString(productSlug).ToLowerInvariant().Trim();
 
             var product = await _context.Products
-                .Include(p => p.Category)              // ⭐ THÊM DÒNG NÀY
-                    .ThenInclude(c => c.Department)    // ⭐ THÊM DÒNG NÀY
+                .Include(p => p.Category)
+                    .ThenInclude(c => c.Department)
                 .FirstOrDefaultAsync(p =>
                     p.IsActive
                     && p.ProductName.ToLower().Trim() == productSlug
@@ -660,7 +745,6 @@ namespace DataCo_Website.Controllers
             if (product == null)
                 return Json(new { success = false, message = "Sản phẩm không tồn tại" });
 
-            // Gọi lại AddToCart cũ - REUSE CODE
             return await AddToCart(product.ProductId, quantity);
         }
     }

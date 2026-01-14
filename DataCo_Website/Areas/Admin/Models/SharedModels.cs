@@ -16,17 +16,17 @@
         public List<string>? Departments { get; set; }
     }
 
-    // ✅ THÊM MỚI: Cross-filter request model
+    // Cross-filter request model
     public class CrossFilterRequest
     {
         public string DataType { get; set; } = "";
         public Dictionary<string, string?> Filters { get; set; } = new();
 
-        // ✅ FIX: Thêm form filters từ panel
+        // Thêm form filters từ panel
         public FormFiltersData? FormFilters { get; set; }
     }
 
-    // ✅ FIX: Form filters data structure
+    // Form filters data structure
     public class FormFiltersData
     {
         public List<int>? Years { get; set; }
@@ -35,7 +35,7 @@
         public List<string>? Departments { get; set; }
     }
 
-    // ✅ THÊM MỚI: Cross-filter response cho KPIs
+    // Cross-filter response cho KPIs
     public class KpiResponse
     {
         public decimal TotalProfit { get; set; }
@@ -48,7 +48,7 @@
         public decimal TotalProfit { get; set; }
         public decimal TotalRevenue { get; set; }
 
-        // ✅ CẢI TIẾN #1: Profit Margin % - Chỉ số đo lường hiệu quả kinh doanh
+        // Profit Margin % - Chỉ số đo lường hiệu quả kinh doanh
         public decimal ProfitMargin { get; set; }
 
         public List<ChartDataPoint> ProfitBySegment { get; set; } = new();
@@ -67,7 +67,7 @@
         public decimal Revenue { get; set; }
         public decimal Profit { get; set; }
 
-        // ✅ CẢI TIẾN #1: Profit Margin cho từng Market (dùng cho line overlay)
+        // Profit Margin cho từng Market (dùng cho line overlay)
         public decimal ProfitMargin => Revenue > 0 ? Math.Round((Profit / Revenue) * 100, 2) : 0;
     }
 
@@ -91,7 +91,7 @@
         public decimal Revenue { get; set; }
         public decimal Profit { get; set; }
 
-        // ✅ CẢI TIẾN #1: ProfitMargin cho Scatter Plot tooltip
+        // ProfitMargin cho Scatter Plot tooltip
         public decimal ProfitMargin => Revenue > 0 ? Math.Round((Profit / Revenue) * 100, 2) : 0;
     }
 

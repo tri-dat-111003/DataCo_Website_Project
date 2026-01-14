@@ -8,6 +8,10 @@
         .Where(ci => ci.Status == "Selected" && ci.SessionId == Model.CurrentSessionId)
         .ToList();
 
+    // ⭐ KIỂM TRA SẢN PHẨM HẾT HÀNG
+    var outOfStockItems = selectedItems
+        .Where(ci => ci.Status == "OutOfStock")
+        .ToList();
     // GOM NHÓM THEO DEPARTMENT
     var itemsByDepartment = selectedItems
         .GroupBy(ci => new
@@ -32,6 +36,32 @@
     {
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             @TempData["Warning"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-x-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- ⭐ CẢNH BÁO SẢN PHẨM HẾT HÀNG -->
+    @if (outOfStockItems.Any())
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-exclamation-triangle-fill"></i> Không thể thanh toán!
+            </h5>
+            <p>
+                Có <strong>@outOfStockItems.Count sản phẩm</strong> trong đơn hàng <strong>đang hết hàng</strong>.
+                Số lượng trong kho không đủ để hoàn tất đơn hàng này.
+            </p>
+            <hr>
+            <p class="mb-0">
+                Vui lòng quay lại <a asp-action="Index" class="alert-link">giỏ hàng</a> để điều chỉnh số lượng hoặc xóa sản phẩm hết hàng.
+            </p>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
@@ -82,6 +112,14 @@
                                             <td class="align-middle">
                                                 <strong>@item.Product.ProductName</strong>
                                                 <div class="text-muted small">@item.Product.Category?.CategoryName</div>
+                                                @if (item.Status == "OutOfStock")
+                                                {
+                                                    <div class="mt-1">
+                                                        <span class="badge bg-danger">
+                                                            <i class="bi bi-exclamation-triangle"></i> Hết hàng - Còn @item.Product.Stock
+                                                        </span>
+                                                    </div>
+                                                }
                                             </td>
                                             <td class="align-middle text-end">
                                                 <div class="text-muted small">$@item.Product.ProductPrice?.ToString("N2") x @item.Quantity</div>
@@ -277,7 +315,7 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="btn btn-primary btn-lg" @(outOfStockItems.Any() ? "disabled" : "")>
                                 <i class="bi bi-check-circle"></i> Xác nhận đặt hàng
                             </button>
                             <a asp-action="Index" class="btn btn-outline-secondary">
@@ -479,28 +517,53 @@
 
         // ✅ XÁC NHẬN TRƯỚC KHI ĐẶT HÀNG
         document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            const country = document.getElementById('orderCountry').value;
-            const state = document.getElementById('orderState').value;
-            const city = document.getElementById('orderCity').value;
-            const address = document.querySelector('textarea[name="shippingAddress"]').value.trim();
+            // 1. Lấy Elements
+            const countryEl = document.getElementById('orderCountry');
+            const stateEl = document.getElementById('orderState');
+            const cityEl = document.getElementById('orderCity');
+            const addressEl = document.querySelector('textarea[name="shippingAddress"]');
 
-            if (!country || !state || !city || !address) {
+            // 2. Validate dữ liệu client-side
+            if (!countryEl.value || !stateEl.value || !cityEl.value || !addressEl.value.trim()) {
                 alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng!');
                 e.preventDefault();
                 return false;
             }
 
+            // 3. Kiểm tra shipping và payment (giữ nguyên code cũ của bạn)
+            const shippingChecked = document.querySelector('input[name="shippingMode"]:checked');
+            const paymentChecked = document.querySelector('input[name="paymentMethod"]:checked');
+
+            if (!shippingChecked) {
+                alert('Vui lòng chọn hình thức vận chuyển!');
+                e.preventDefault();
+                return false;
+            }
+
+            if (!paymentChecked) {
+                alert('Vui lòng chọn phương thức thanh toán!');
+                e.preventDefault();
+                return false;
+            }
+
+            // 4. Confirm
             if (!confirm('Bạn có chắc muốn đặt hàng?')) {
                 e.preventDefault();
                 return false;
             }
-                // ⭐ QUAN TRỌNG: BỎ DISABLED ĐỂ GỬI ĐƯỢC DỮ LIỆU VỀ SERVER ⭐
-        state.disabled = false;
-        city.disabled = false;
 
-        // Đảm bảo Region/Market cũng được gửi (dù chúng là readonly thì vẫn gửi được, nhưng cứ chắc chắn)
-        document.getElementById("orderRegion").readOnly = false;
-        document.getElementById("orderMarket").readOnly = false;
+            // 5. ⭐ QUAN TRỌNG: Mở khóa inputs để Form gửi được dữ liệu
+            // Sử dụng removeAttribute để chắc chắn hơn là set property
+            stateEl.removeAttribute('disabled');
+            cityEl.removeAttribute('disabled');
+
+            const regionEl = document.getElementById("orderRegion");
+            const marketEl = document.getElementById("orderMarket");
+            if(regionEl) regionEl.readOnly = false; // Một số trình duyệt chặn readonly
+            if(marketEl) marketEl.readOnly = false;
+
+            // Để browser tự submit form sau khi mở khóa
+            return true;
         });
     </script>
 }

@@ -35,7 +35,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 // Current filters
                 ViewBag.Filters = filters;
 
-                // ✅ CẢI TIẾN #1: Tính Profit và Revenue trước để tính Profit Margin
+                // Tính Profit và Revenue trước để tính Profit Margin
                 var totalProfit = await GetTotalProfit(filters);
                 var totalRevenue = await GetTotalRevenue(filters);
 
@@ -45,7 +45,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                     TotalProfit = totalProfit,
                     TotalRevenue = totalRevenue,
 
-                    // ✅ CẢI TIẾN #1: Tính Profit Margin %
+                    // Tính Profit Margin %
                     ProfitMargin = totalRevenue > 0 ? Math.Round((totalProfit / totalRevenue) * 100, 2) : 0,
 
                     // Charts data
@@ -70,7 +70,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // ============================================================================
-        // ✅ THÊM MỚI: API endpoint cho Cross-Filtering (PRODUCTION-READY)
+        // API endpoint cho Cross-Filtering
         // ============================================================================
         [HttpPost]
         public async Task<IActionResult> GetFilteredData([FromBody] CrossFilterRequest request)
@@ -79,7 +79,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
             {
                 _logger.LogInformation($"GetFilteredData called for dataType: {request.DataType}");
 
-                // ✅ FIX: Build filters từ FormFilters trong request thay vì empty DashboardFilters
+                // Build filters từ FormFilters trong request thay vì empty DashboardFilters
                 var filters = new DashboardFilters
                 {
                     Years = request.FormFilters?.Years,
@@ -114,7 +114,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
             }
         }
 
-        // ✅ THÊM MỚI: Get KPIs với cross-filters
+        // Get KPIs với cross-filters
         private async Task<KpiResponse> GetKPIsWithCrossFilters(DashboardFilters filters, Dictionary<string, string?> crossFilters)
         {
             var profit = await GetTotalProfit(filters, crossFilters);
@@ -128,7 +128,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
             };
         }
 
-        // ✅ THÊM MỚI: Build cross-filter dictionary
+        // Build cross-filter dictionary
         private Dictionary<string, string?> BuildCrossFilters(Dictionary<string, string?> filters)
         {
             var crossFilters = new Dictionary<string, string?>();
@@ -450,7 +450,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
         }
 
         // ============================================================================
-        // ✅ SỬA: Build WHERE clause với Cross-Filter Support
+        // Build WHERE clause với Cross-Filter Support
         // ============================================================================
         private string BuildWhereClause(
             DashboardFilters filters,
@@ -490,7 +490,7 @@ namespace DataCo_Website.Areas.Admin.Controllers
                 conditions.Add($"{{{members}}}");
             }
 
-            // ✅ THÊM MỚI: 5. Cross-Filters (from chart interactions)
+            // 5. Cross-Filters (from chart interactions)
             if (crossFilters != null && crossFilters.Any())
             {
                 foreach (var filter in crossFilters)

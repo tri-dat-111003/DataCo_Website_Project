@@ -78,6 +78,21 @@
                                     </small>
                                 </div>
 
+                                <!-- Stock Quantity -->
+                                <div class="mb-4">
+                                    <label asp-for="Stock" class="form-label fw-bold">
+                                        <i class="fas fa-boxes"></i> Số Lượng Tồn Kho <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text"><i class="fas fa-box"></i></span>
+                                        <input asp-for="Stock" type="number" class="form-control" placeholder="Nhập số lượng..." min="0" value="0" />
+                                    </div>
+                                    <span asp-validation-for="Stock" class="text-danger small"></span>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-info-circle"></i> Nhập số lượng sản phẩm hiện có trong kho
+                                    </small>
+                                </div>
+
                                 <!-- Description with Rich Text Editor -->
                                 <div class="mb-4">
                                     <label asp-for="Description" class="form-label fw-bold">
@@ -243,15 +258,18 @@
         }
 
         @@keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+            from
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         }
     </style>
 }

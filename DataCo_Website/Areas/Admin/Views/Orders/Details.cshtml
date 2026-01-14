@@ -226,13 +226,13 @@
                                     <span class="badge bg-light text-dark">@item.Quantity</span>
                                 </td>
                                 <td class="text-end">
-                                    <small>$@(item.Product?.ProductPrice ?? 0).ToString("N2")</small>
+                                    <small>$@((item.Product?.ProductPrice ?? 0).ToString("N2"))</small>
                                 </td>
                                 <td class="text-end">
-                                    <small class="text-danger">$@(item.Discount ?? 0).ToString("N2")</small>
+                                    <small class="text-danger">$@((item.Discount ?? 0).ToString("N2"))</small>
                                 </td>
                                 <td class="text-end">
-                                    <strong>$@(item.Total ?? 0).ToString("N2")</strong>
+                                    <strong>$@((item.Total ?? 0).ToString("N2"))</strong>
                                 </td>
                             </tr>
                         }
