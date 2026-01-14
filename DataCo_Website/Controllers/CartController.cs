@@ -34,12 +34,12 @@ namespace DataCo_Website.Controllers
 
             var cart = await GetOrCreateCartAsync(user.CustomerId.Value);
 
-            // ⭐ KIỂM TRA SẢN PHẨM HẾT HÀNG
+            // KIỂM TRA SẢN PHẨM HẾT HÀNG
             foreach (var item in cart.CartItems)
             {
                 if (item.Product != null && item.Product.Stock < item.Quantity)
                 {
-                    item.Status = "OutOfStock"; // Đánh dấu hết hàng
+                    item.Status = "OutOfStock"; 
                 }
             }
 
@@ -61,8 +61,7 @@ namespace DataCo_Website.Controllers
             {
                 return Json(new { success = false, message = "Số lượng không hợp lệ" });
             }
-
-            // ✅ KHÔNG CẦN LOCK - Chỉ kiểm tra loosely, lock chặt ở checkout
+            
             var product = await _context.Products
                 .AsNoTracking()
                 .Include(p => p.Category)
@@ -78,8 +77,7 @@ namespace DataCo_Website.Controllers
             {
                 return Json(new { success = false, message = "Sản phẩm hiện không còn khả dụng" });
             }
-
-            // ✅ KIỂM TRA STOCK LOOSELY - Không cần chính xác tuyệt đối
+            
             if (product.Stock <= 0)
             {
                 return Json(new { success = false, message = "Sản phẩm đã hết hàng" });
@@ -143,8 +141,7 @@ namespace DataCo_Website.Controllers
             {
                 newQuantity = existingItem.Quantity + quantity;
             }
-
-            // ✅ WARNING nếu vượt quá stock - nhưng vẫn cho thêm vào giỏ
+            
             string warningMessage = "";
             if (newQuantity > product.Stock)
             {
@@ -223,8 +220,7 @@ namespace DataCo_Website.Controllers
                 _context.CartItems.Remove(cartItem);
             }
             else
-            {
-                // ✅ WARNING nếu vượt stock nhưng vẫn cho update
+            {                
                 string warningMessage = "";
                 if (cartItem.Product != null && quantity > cartItem.Product.Stock)
                 {
@@ -271,8 +267,7 @@ namespace DataCo_Website.Controllers
             {
                 return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
             }
-
-            // ⭐ KIỂM TRA STOCK KHI CHỌN
+            
             if (isSelected && cartItem.Product != null && cartItem.Product.Stock < cartItem.Quantity)
             {
                 return Json(new
@@ -348,7 +343,6 @@ namespace DataCo_Website.Controllers
                 return RedirectToAction("Index");
             }
 
-            // ⭐ KIỂM TRA STOCK
             var outOfStockItems = selectedItems
                 .Where(ci => ci.Product != null && ci.Product.Stock < ci.Quantity)
                 .ToList();
@@ -427,15 +421,14 @@ namespace DataCo_Website.Controllers
                             TempData["Error"] = "Vui lòng chọn ít nhất một sản phẩm";
                             return RedirectToAction("Index");
                         }
-
-                        // ✅ FIX DEADLOCK: Sắp xếp ProductId từ nhỏ đến lớn
+                       
                         var productIds = selectedItems
                             .Select(ci => ci.ProductId)
                             .Distinct()
-                            .OrderBy(id => id) // ⭐ QUAN TRỌNG: Tránh deadlock
+                            .OrderBy(id => id) 
                             .ToList();
 
-                        // ✅ PESSIMISTIC LOCKING - LOCK THEO THỨ TỰ
+                        // PESSIMISTIC LOCKING - LOCK THEO THỨ TỰ
                         var productIdParams = string.Join(",", productIds);
                         var products = await _context.Products
                             .FromSqlRaw($"SELECT * FROM Product WITH (UPDLOCK, ROWLOCK) WHERE Product_Id IN ({productIdParams})")
@@ -443,7 +436,7 @@ namespace DataCo_Website.Controllers
                                 .ThenInclude(c => c.Department)
                             .ToListAsync();
 
-                        // ✅ KIỂM TRA TỪNG SẢN PHẨM
+                        // KIỂM TRA TỪNG SẢN PHẨM
                         var stockErrors = new List<string>();
                         foreach (var cartItem in selectedItems)
                         {
@@ -470,7 +463,7 @@ namespace DataCo_Website.Controllers
                             return RedirectToAction("Index");
                         }
 
-                        // ✅ TẠO ORDER
+                        // TẠO ORDER
                         var order = new Order
                         {
                             CustomerId = user.CustomerId.Value,
@@ -490,7 +483,7 @@ namespace DataCo_Website.Controllers
                         _context.Orders.Add(order);
                         await _context.SaveChangesAsync();
 
-                        // ✅ TẠO ORDER ITEMS VÀ TRỪ STOCK
+                        // TẠO ORDER ITEMS VÀ TRỪ STOCK
                         foreach (var cartItem in selectedItems)
                         {
                             var product = products.First(p => p.ProductId == cartItem.ProductId);
@@ -514,7 +507,7 @@ namespace DataCo_Website.Controllers
                                 DepartmentId = departmentId
                             });
 
-                            // ⭐ TRỪ STOCK
+                            // TRỪ STOCK
                             product.Stock -= cartItem.Quantity;
                             _context.Entry(product).State = EntityState.Modified;
                         }
