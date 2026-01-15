@@ -1,9 +1,9 @@
-﻿@{
+﻿@using System.Globalization
+@{
     ViewData["Title"] = "Admin Home";
 }
 
 <div class="container-fluid">
-    <!-- Welcome Banner -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="welcome-card">
@@ -15,14 +15,13 @@
                         Chào mừng bạn đến với hệ thống quản trị DataCo
                     </p>
                     <div class="welcome-time">
-                        <i class="far fa-clock"></i> @DateTime.Now.ToString("dddd, dd MMMM yyyy - HH:mm")
+                        <i class="far fa-clock"></i> @DateTime.Now.ToString("dddd, MMMM dd, yyyy - hh:mm tt", CultureInfo.GetCultureInfo("en-US"))
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Quick Access Cards -->
     <div class="row g-4">
         <div class="col-md-4">
             <div class="feature-card">
@@ -45,32 +44,6 @@
                 <h4>Quản Lý Sản Phẩm</h4>
                 <p>Thêm, sửa, xóa sản phẩm và quản lý kho hàng</p>
                 <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-warning">
-                    Truy cập <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="feature-card">
-                <div class="feature-icon bg-success">
-                    <i class="fas fa-shopping-cart fa-3x"></i>
-                </div>
-                <h4>Quản Lý Đơn Hàng</h4>
-                <p>Theo dõi và xử lý đơn hàng của khách hàng</p>
-                <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-success">
-                    Truy cập <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="feature-card">
-                <div class="feature-icon bg-info">
-                    <i class="fas fa-truck fa-3x"></i>
-                </div>
-                <h4>Quản Lý Giao Hàng</h4>
-                <p>Theo dõi tình trạng vận chuyển và giao hàng</p>
-                <a asp-area="Admin" asp-controller="Shippings" asp-action="Index" class="btn btn-info">
                     Truy cập <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -101,9 +74,34 @@
                 </a>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon bg-success">
+                    <i class="fas fa-shopping-cart fa-3x"></i>
+                </div>
+                <h4>Quản Lý Đơn Hàng</h4>
+                <p>Theo dõi và xử lý đơn hàng của khách hàng</p>
+                <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-success">
+                    Truy cập <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon bg-info">
+                    <i class="fas fa-truck fa-3x"></i>
+                </div>
+                <h4>Quản Lý Giao Hàng</h4>
+                <p>Theo dõi tình trạng vận chuyển và giao hàng</p>
+                <a asp-area="Admin" asp-controller="Shippings" asp-action="Index" class="btn btn-info">
+                    Truy cập <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Info Section -->
     <div class="row mt-5">
         <div class="col-12">
             <div class="info-box">
