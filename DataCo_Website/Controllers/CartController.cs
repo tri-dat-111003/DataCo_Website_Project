@@ -391,7 +391,6 @@ namespace DataCo_Website.Controllers
                 string.IsNullOrWhiteSpace(orderCountry) ||
                 string.IsNullOrWhiteSpace(shippingMode) ||
                 string.IsNullOrWhiteSpace(paymentMethod) ||
-                // THÊM 2 DÒNG NÀY ĐỂ CHẶN LỖI NULL
                 string.IsNullOrWhiteSpace(orderState) ||
                 string.IsNullOrWhiteSpace(orderCity))
             {
