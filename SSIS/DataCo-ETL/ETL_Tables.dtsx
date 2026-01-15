@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="10/28/2024 10:03:02 PM"
@@ -9,10 +9,11 @@
   DTS:ExecutableType="Microsoft.Package"
   DTS:LastModifiedProductVersion="16.0.5397.1"
   DTS:LocaleID="1033"
+  DTS:MaxConcurrentExecutables="1"
   DTS:ObjectName="ETL_Tables"
   DTS:PackageType="5"
-  DTS:VersionBuild="33"
-  DTS:VersionGUID="{457E76CD-6D7E-4D04-AE50-E29BD63BFCAE}">
+  DTS:VersionBuild="47"
+  DTS:VersionGUID="{4228A19D-29A5-4DD6-896E-A739FF5D0382}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -56,7 +57,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -90,8 +91,8 @@
               <connections>
                 <connection
                   refId="Package\DF -  Stage Customer\DST - Stage stgCustomer.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -267,7 +268,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT        customer.Customer_Id, customer.First_name, customer.Last_name, customer.Zipcode, customer.Segment, location.City, location.State, location.Country
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT        customer.Customer_Id, customer.First_name, customer.Last_name, customer.Zipcode, customer.Segment, location.City, location.State, location.Country
 FROM         customer INNER JOIN
                 location ON customer.Zipcode = location.Zipcode</property>
                 <property
@@ -295,8 +296,8 @@ FROM         customer INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Customer\SRC - DataCo_DWH Customer.Connections[OleDbConnection]"
-                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
-                  connectionManagerRefId="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
+                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -568,7 +569,7 @@ FROM         customer INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -602,8 +603,8 @@ FROM         customer INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Department\DST - Stage stgDepartment.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -695,7 +696,7 @@ FROM         customer INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -721,8 +722,8 @@ FROM         customer INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Connections[OleDbConnection]"
-                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
-                  connectionManagerRefId="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
+                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -751,6 +752,24 @@ FROM         customer INNER JOIN
                       lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].Columns[Department_Name]"
                       name="Department_Name"
                       truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].Columns[AddressLine]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].ExternalColumns[AddressLine]"
+                      lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].Columns[AddressLine]"
+                      name="AddressLine"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].Columns[IsActive]"
+                      dataType="bool"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].ExternalColumns[IsActive]"
+                      lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].Columns[IsActive]"
+                      name="IsActive"
+                      truncationRowDisposition="FailComponent" />
                   </outputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -764,6 +783,14 @@ FROM         customer INNER JOIN
                       dataType="str"
                       length="50"
                       name="Department_Name" />
+                    <externalMetadataColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].ExternalColumns[AddressLine]"
+                      dataType="nText"
+                      name="AddressLine" />
+                    <externalMetadataColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Output].ExternalColumns[IsActive]"
+                      dataType="bool"
+                      name="IsActive" />
                   </externalMetadataColumns>
                 </output>
                 <output
@@ -783,6 +810,16 @@ FROM         customer INNER JOIN
                       length="50"
                       lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[Department_Name]"
                       name="Department_Name" />
+                    <outputColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[AddressLine]"
+                      dataType="nText"
+                      lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[AddressLine]"
+                      name="AddressLine" />
+                    <outputColumn
+                      refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[IsActive]"
+                      dataType="bool"
+                      lineageId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[IsActive]"
+                      name="IsActive" />
                     <outputColumn
                       refId="Package\DF -  Stage Department\SRC - DataCo_DWH Department.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
                       dataType="i4"
@@ -850,7 +887,7 @@ FROM         customer INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -884,8 +921,8 @@ FROM         customer INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Product\DST - Stage stgProduct.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1001,7 +1038,7 @@ FROM         customer INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT        product.Product_Id, product.Product_Name, product.Product_Price, category.Category_Name
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT        product.Product_Id, product.Product_Name, product.Product_Price, category.Category_Name
 FROM         category INNER JOIN
                 product ON category.Category_Id = product.Category_Id</property>
                 <property
@@ -1029,8 +1066,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Product\SRC - DataCo_DWH Product.Connections[OleDbConnection]"
-                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
-                  connectionManagerRefId="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
+                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1176,6 +1213,154 @@ FROM         category INNER JOIN
           version="1">
           <components>
             <component
+              refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      dataType="bool"
+                      description="RowIsCurrent"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      name="RowIsCurrent"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_BOOL)("0")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_BOOL)("0")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      dataType="bool"
+                      description="RowIsCurrent"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      name="RowIsCurrent"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_BOOL)("1")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_BOOL)("1")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
@@ -1200,7 +1385,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1234,8 +1419,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1252,7 +1437,7 @@ FROM         category INNER JOIN
                       cachedDataType="i4"
                       cachedName="Customer_Id"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerId]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Customer_Id]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[First_name]"
                       cachedCodepage="932"
@@ -1260,7 +1445,7 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="First_name"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[FirstName]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[First_name]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[First_name]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[Last_name]"
                       cachedCodepage="932"
@@ -1268,7 +1453,7 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="Last_name"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[LastName]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Last_name]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Last_name]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[Zipcode]"
                       cachedCodepage="932"
@@ -1276,7 +1461,7 @@ FROM         category INNER JOIN
                       cachedLength="6"
                       cachedName="Zipcode"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[Zipcode]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Zipcode]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Zipcode]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[Segment]"
                       cachedCodepage="932"
@@ -1284,7 +1469,7 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="Segment"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[Segment]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Segment]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Segment]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[City]"
                       cachedCodepage="932"
@@ -1292,7 +1477,7 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="City"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[City]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[City]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[City]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[State]"
                       cachedCodepage="932"
@@ -1300,7 +1485,7 @@ FROM         category INNER JOIN
                       cachedLength="3"
                       cachedName="State"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[State]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[State]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[State]" />
                     <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[Country]"
                       cachedCodepage="932"
@@ -1308,7 +1493,13 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="Country"
                       externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[Country]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Country]" />
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Country]" />
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].Columns[RowIsCurrent]"
+                      cachedDataType="bool"
+                      cachedName="RowIsCurrent"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[RowIsCurrent]"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -1425,17 +1616,17 @@ FROM         category INNER JOIN
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE [dbo].[DimCustomer] SET [City] = ?,[Country] = ?,[FirstName] = ?,[LastName] = ?,[Segment] = ?,[State] = ?,[Zipcode] = ? WHERE [CustomerId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[DimCustomer] SET [RowIsCurrent] = ? WHERE [CustomerId] = ? AND [RowIsCurrent] = '1'</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
-                  name="DefaultCodePage">932</property>
+                  name="DefaultCodePage">1252</property>
               </properties>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1448,75 +1639,23 @@ FROM         category INNER JOIN
                   name="OLE DB Command Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[City]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="City"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[City]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[Country]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Country"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Country]" />
-                    <inputColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[Customer_Id]"
                       cachedDataType="i4"
                       cachedName="Customer_Id"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_7]"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
                       lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]" />
                     <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[First_name]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="First_name"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[First_name]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[Last_name]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Last_name"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_3]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Last_name]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[Segment]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Segment"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_4]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Segment]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[State]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="3"
-                      cachedName="State"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_5]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[State]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[Zipcode]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="6"
-                      cachedName="Zipcode"
-                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_6]"
-                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Zipcode]" />
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].Columns[RowIsCurrent]"
+                      cachedDataType="bool"
+                      cachedName="RowIsCurrent"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
+                      dataType="bool"
                       name="Param_0">
                       <properties>
                         <property
@@ -1527,86 +1666,8 @@ FROM         category INNER JOIN
                     </externalMetadataColumn>
                     <externalMetadataColumn
                       refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
-                      name="Param_1">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
-                      name="Param_2">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_3]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
-                      name="Param_3">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_4]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
-                      name="Param_4">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_5]"
-                      codePage="932"
-                      dataType="str"
-                      length="3"
-                      name="Param_5">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_6]"
-                      codePage="932"
-                      dataType="str"
-                      length="6"
-                      name="Param_6">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_7]"
                       dataType="i4"
-                      name="Param_7">
+                      name="Param_1">
                       <properties>
                         <property
                           dataType="System.Int32"
@@ -1650,6 +1711,143 @@ FROM         category INNER JOIN
               </outputs>
             </component>
             <component
+              refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="OLE DB Command 1"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[DimCustomer] SET [FirstName] = ?,[LastName] = ? WHERE [CustomerId] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">932</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Connections[OleDbConnection]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].Columns[Customer_Id]"
+                      cachedDataType="i4"
+                      cachedName="Customer_Id"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]" />
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].Columns[First_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="First_name"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[First_name]" />
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].Columns[Last_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Last_name"
+                      externalMetadataColumnId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Last_name]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">65</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">65</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
+                      dataType="i4"
+                      name="Param_2">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">81</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension"
               componentClassID="Microsoft.SCD"
               contactInfo="Slowly Changing Dimension;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
@@ -1661,15 +1859,15 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="Specifies the SELECT statement used to create a schema rowset."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [City], [Country], [CustomerId], [FirstName], [LastName], [Segment], [State], [Zipcode] FROM [dbo].[DimCustomer]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT [City], [Country], [CustomerId], [FirstName], [LastName], [Segment], [State], [Zipcode],[RowIsCurrent] FROM [dbo].[DimCustomer]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the WHERE clause in the SELECT statement that selects the current row among rows with identical business keys."
-                  name="CurrentRowWhere"></property>
+                  name="CurrentRowWhere">[RowIsCurrent] = '1'</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether historical attribute updates are directed to the transformation output for changing attribute updates."
-                  name="UpdateChangingAttributeHistory">false</property>
+                  name="UpdateChangingAttributeHistory">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the transformation fails when columns with fixed attributes contain changes."
@@ -1699,8 +1897,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Connections[LookupConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Defines the connection to use for lookups in the dimension table"
                   name="LookupConnection" />
               </connections>
@@ -1721,7 +1919,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -1736,7 +1934,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -1794,7 +1992,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -1809,7 +2007,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -1824,7 +2022,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -1876,6 +2074,10 @@ FROM         category INNER JOIN
                       dataType="str"
                       length="6"
                       name="Zipcode" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Inputs[Slowly Changing Dimension Input].ExternalColumns[RowIsCurrent]"
+                      dataType="bool"
+                      name="RowIsCurrent" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -1955,7 +2157,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -1981,8 +2183,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2204,23 +2406,379 @@ FROM         category INNER JOIN
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\DF - Load from stgCustomer to DimCustomer\Union All"
+              componentClassID="Microsoft.UnionAll"
+              contactInfo="Union All;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combines rows from multiple data flows without sorting. For example, add rows back to a data flow after correction of errors. If sorting is important, we recommend using the Merge transformation."
+              name="Union All"
+              version="1">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1]"
+                  name="Union All Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[Customer_Id]"
+                      cachedDataType="i4"
+                      cachedName="Customer_Id"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Customer_Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[First_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="First_name"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[First_name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[First_name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[Last_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Last_name"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Last_name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Last_name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[Zipcode]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="Zipcode"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Zipcode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Zipcode]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[Segment]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Segment"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Segment]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Segment]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[City]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="City"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[City]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[City]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[State]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="State"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[State]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[State]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1].Columns[Country]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Country"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Country]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Country]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2]"
+                  hasSideEffects="true"
+                  name="Union All Input 2">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[Customer_Id]"
+                      cachedDataType="i4"
+                      cachedName="Customer_Id"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Customer_Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[First_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="First_name"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[First_name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[First_name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[Last_name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Last_name"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Last_name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Last_name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[Zipcode]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="6"
+                      cachedName="Zipcode"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Zipcode]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Zipcode]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[Segment]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Segment"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Segment]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Segment]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[City]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="City"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[City]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[City]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[State]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="State"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[State]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[State]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2].Columns[Country]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Country"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Country]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Country]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 3]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 3">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1]"
+                  name="Union All Output 1">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Customer_Id]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Customer_Id]"
+                      name="Customer_Id" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[First_name]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[First_name]"
+                      name="First_name" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Last_name]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Last_name]"
+                      name="Last_name" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Zipcode]"
+                      codePage="932"
+                      dataType="str"
+                      length="6"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Zipcode]"
+                      name="Zipcode" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Segment]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Segment]"
+                      name="Segment" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[City]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[City]"
+                      name="City" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[State]"
+                      codePage="932"
+                      dataType="str"
+                      length="3"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[State]"
+                      name="State" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Country]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1].Columns[Country]"
+                      name="Country" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
               refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[Changing Attribute Updates Output]"
-              endId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1.Inputs[OLE DB Command Input]"
               name="Changing Attribute Updates Output"
               startId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Outputs[Changing Attribute Updates Output]" />
             <path
-              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[New Output]"
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[Derived Column Output]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Inputs[OLE DB Command Input]"
+              name="Derived Column Output"
+              startId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[Derived Column Output1]"
               endId="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[Historical Attribute Inserts Output]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column.Inputs[Derived Column Input]"
+              name="Historical Attribute Inserts Output"
+              startId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Outputs[Historical Attribute Inserts Output]" />
+            <path
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[New Output]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 1]"
               name="New Output"
               startId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Outputs[New Output]" />
+            <path
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[OLE DB Command Output]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Inputs[Union All Input 2]"
+              name="OLE DB Command Output"
+              startId="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command.Outputs[OLE DB Command Output]" />
             <path
               refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[OLE DB Source Output]"
               endId="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension.Inputs[Slowly Changing Dimension Input]"
               name="OLE DB Source Output"
               startId="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\DF - Load from stgCustomer to DimCustomer.Paths[Union All Output 1]"
+              endId="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1.Inputs[Derived Column Input]"
+              name="Union All Output 1"
+              startId="Package\DF - Load from stgCustomer to DimCustomer\Union All.Outputs[Union All Output 1]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -2264,7 +2822,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -2298,8 +2856,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgDepartment to DimDepartment\Insert Destination.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2405,7 +2963,7 @@ FROM         category INNER JOIN
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE [dbo].[DimDepartment] SET [DepartmentName] = ? WHERE [DepartmentId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[DimDepartment] SET [DepartmentName] = ? WHERE [DepartmentId] = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -2414,8 +2972,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgDepartment to DimDepartment\OLE DB Command.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2515,7 +3073,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="Specifies the SELECT statement used to create a schema rowset."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [DepartmentId], [DepartmentName] FROM [dbo].[DimDepartment]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT [DepartmentId], [DepartmentName] FROM [dbo].[DimDepartment]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the WHERE clause in the SELECT statement that selects the current row among rows with identical business keys."
@@ -2553,8 +3111,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgDepartment to DimDepartment\Slowly Changing Dimension.Connections[LookupConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Defines the connection to use for lookups in the dimension table"
                   name="LookupConnection" />
               </connections>
@@ -2683,7 +3241,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -2709,8 +3267,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgDepartment to DimDepartment\SRC - Stage stgDepartment.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2824,6 +3382,154 @@ FROM         category INNER JOIN
           version="1">
           <components>
             <component
+              refId="Package\DF - Load from stgProduct to DimProduct\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      dataType="bool"
+                      description="RowIsCurrent"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      name="RowIsCurrent"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_BOOL)("0")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_BOOL)("0")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column 1"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      dataType="bool"
+                      description="RowIsCurrent"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]"
+                      name="RowIsCurrent"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_BOOL)("1")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_BOOL)("1")</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination"
               componentClassID="Microsoft.OLEDBDestination"
               contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
@@ -2848,7 +3554,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -2882,8 +3588,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2900,7 +3606,7 @@ FROM         category INNER JOIN
                       cachedDataType="i4"
                       cachedName="Product_Id"
                       externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductId]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]" />
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Id]" />
                     <inputColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].Columns[Product_Name]"
                       cachedCodepage="932"
@@ -2908,7 +3614,7 @@ FROM         category INNER JOIN
                       cachedLength="200"
                       cachedName="Product_Name"
                       externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductName]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Name]" />
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Name]" />
                     <inputColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].Columns[Category_Name]"
                       cachedCodepage="932"
@@ -2916,13 +3622,19 @@ FROM         category INNER JOIN
                       cachedLength="50"
                       cachedName="Category_Name"
                       externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[CategoryName]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Category_Name]" />
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Category_Name]" />
                     <inputColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].Columns[Product_Price]"
                       cachedDataType="r8"
                       cachedName="Product_Price"
                       externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductPrice]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Price]" />
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Price]" />
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].Columns[RowIsCurrent]"
+                      cachedDataType="bool"
+                      cachedName="RowIsCurrent"
+                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input].ExternalColumns[RowIsCurrent]"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Output].Columns[RowIsCurrent]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -3013,17 +3725,17 @@ FROM         category INNER JOIN
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE [dbo].[DimProduct] SET [CategoryName] = ?,[ProductName] = ?,[ProductPrice] = ? WHERE [ProductId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[DimProduct] SET [RowIsCurrent] = ? WHERE [ProductId] = ? AND [RowIsCurrent] = '1'</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
-                  name="DefaultCodePage">932</property>
+                  name="DefaultCodePage">1252</property>
               </properties>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -3036,41 +3748,23 @@ FROM         category INNER JOIN
                   name="OLE DB Command Input">
                   <inputColumns>
                     <inputColumn
-                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].Columns[Category_Name]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="50"
-                      cachedName="Category_Name"
-                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Category_Name]" />
-                    <inputColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].Columns[Product_Id]"
                       cachedDataType="i4"
                       cachedName="Product_Id"
-                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_3]"
+                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
                       lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]" />
                     <inputColumn
-                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].Columns[Product_Name]"
-                      cachedCodepage="932"
-                      cachedDataType="str"
-                      cachedLength="200"
-                      cachedName="Product_Name"
-                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Name]" />
-                    <inputColumn
-                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].Columns[Product_Price]"
-                      cachedDataType="r8"
-                      cachedName="Product_Price"
-                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
-                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Price]" />
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].Columns[RowIsCurrent]"
+                      cachedDataType="bool"
+                      cachedName="RowIsCurrent"
+                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Output].Columns[RowIsCurrent]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
                     <externalMetadataColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
-                      codePage="932"
-                      dataType="str"
-                      length="50"
+                      dataType="bool"
                       name="Param_0">
                       <properties>
                         <property
@@ -3081,32 +3775,8 @@ FROM         category INNER JOIN
                     </externalMetadataColumn>
                     <externalMetadataColumn
                       refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
-                      codePage="932"
-                      dataType="str"
-                      length="200"
-                      name="Param_1">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">65</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_2]"
-                      dataType="r8"
-                      name="Param_2">
-                      <properties>
-                        <property
-                          dataType="System.Int32"
-                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
-                          name="DBParamInfoFlags">81</property>
-                      </properties>
-                    </externalMetadataColumn>
-                    <externalMetadataColumn
-                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input].ExternalColumns[Param_3]"
                       dataType="i4"
-                      name="Param_3">
+                      name="Param_1">
                       <properties>
                         <property
                           dataType="System.Int32"
@@ -3150,6 +3820,122 @@ FROM         category INNER JOIN
               </outputs>
             </component>
             <component
+              refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1"
+              componentClassID="Microsoft.OLEDBCommand"
+              contactInfo="OLE DB Command;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;2"
+              description="Runs an SQL statement for each row in a data flow. For example, call a 'new employee setup' stored procedure for each row in the 'new employees' table. Note: running an SQL statement for each row of a large data flow may take a long time."
+              name="OLE DB Command 1"
+              usesDispositions="true"
+              version="2">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[DimProduct] SET [ProductName] = ? WHERE [ProductId] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">932</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Connections[OleDbConnection]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input]"
+                  errorOrTruncationOperation="Command Execution"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Command Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].Columns[Product_Id]"
+                      cachedDataType="i4"
+                      cachedName="Product_Id"
+                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]" />
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].Columns[Product_Name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="Product_Name"
+                      externalMetadataColumnId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Name]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_0]"
+                      codePage="932"
+                      dataType="str"
+                      length="200"
+                      name="Param_0">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">65</property>
+                      </properties>
+                    </externalMetadataColumn>
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input].ExternalColumns[Param_1]"
+                      dataType="i4"
+                      name="Param_1">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="Parameter information.  Matches OLE DB's DBPARAMFLAGSENUM values."
+                          name="DBParamInfoFlags">81</property>
+                      </properties>
+                    </externalMetadataColumn>
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Output]"
+                  exclusionGroup="1"
+                  name="OLE DB Command Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Command Error Output"
+                  synchronousInputId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Outputs[OLE DB Command Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
               refId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension"
               componentClassID="Microsoft.SCD"
               contactInfo="Slowly Changing Dimension;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
@@ -3161,15 +3947,15 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="Specifies the SELECT statement used to create a schema rowset."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [CategoryName], [ProductId], [ProductName], [ProductPrice] FROM [dbo].[DimProduct]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT [CategoryName], [ProductId], [ProductName], [ProductPrice],[RowIsCurrent] FROM [dbo].[DimProduct]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the WHERE clause in the SELECT statement that selects the current row among rows with identical business keys."
-                  name="CurrentRowWhere"></property>
+                  name="CurrentRowWhere">[RowIsCurrent] = '1'</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether historical attribute updates are directed to the transformation output for changing attribute updates."
-                  name="UpdateChangingAttributeHistory">false</property>
+                  name="UpdateChangingAttributeHistory">true</property>
                 <property
                   dataType="System.Boolean"
                   description="Indicates whether the transformation fails when columns with fixed attributes contain changes."
@@ -3199,8 +3985,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Connections[LookupConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Defines the connection to use for lookups in the dimension table"
                   name="LookupConnection" />
               </connections>
@@ -3221,7 +4007,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                     <inputColumn
@@ -3262,7 +4048,7 @@ FROM         category INNER JOIN
                         <property
                           dataType="System.Int32"
                           name="ColumnType"
-                          typeConverter="ColumnType">2</property>
+                          typeConverter="ColumnType">3</property>
                       </properties>
                     </inputColumn>
                   </inputColumns>
@@ -3288,6 +4074,10 @@ FROM         category INNER JOIN
                       refId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Inputs[Slowly Changing Dimension Input].ExternalColumns[ProductPrice]"
                       dataType="r8"
                       name="ProductPrice" />
+                    <externalMetadataColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Inputs[Slowly Changing Dimension Input].ExternalColumns[RowIsCurrent]"
+                      dataType="bool"
+                      name="RowIsCurrent" />
                   </externalMetadataColumns>
                 </input>
               </inputs>
@@ -3367,7 +4157,7 @@ FROM         category INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -3393,8 +4183,8 @@ FROM         category INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -3514,23 +4304,225 @@ FROM         category INNER JOIN
                 </output>
               </outputs>
             </component>
+            <component
+              refId="Package\DF - Load from stgProduct to DimProduct\Union All"
+              componentClassID="Microsoft.UnionAll"
+              contactInfo="Union All;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combines rows from multiple data flows without sorting. For example, add rows back to a data flow after correction of errors. If sorting is important, we recommend using the Merge transformation."
+              name="Union All"
+              version="1">
+              <inputs>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1]"
+                  name="Union All Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1].Columns[Product_Id]"
+                      cachedDataType="i4"
+                      cachedName="Product_Id"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1].Columns[Product_Name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="Product_Name"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1].Columns[Product_Price]"
+                      cachedDataType="r8"
+                      cachedName="Product_Price"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Price]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Price]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1].Columns[Category_Name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Category_Name"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Category_Name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Category_Name]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2]"
+                  hasSideEffects="true"
+                  name="Union All Input 2">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2].Columns[Product_Id]"
+                      cachedDataType="i4"
+                      cachedName="Product_Id"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Id]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2].Columns[Product_Name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="200"
+                      cachedName="Product_Name"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Name]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2].Columns[Product_Price]"
+                      cachedDataType="r8"
+                      cachedName="Product_Price"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Price]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Price]}</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2].Columns[Category_Name]"
+                      cachedCodepage="932"
+                      cachedDataType="str"
+                      cachedLength="50"
+                      cachedName="Category_Name"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Category_Name]">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Output column lineage ID"
+                          name="OutputColumnLineageID">#{Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Category_Name]}</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 3]"
+                  dangling="true"
+                  hasSideEffects="true"
+                  name="Union All Input 3">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1]"
+                  name="Union All Output 1">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Id]"
+                      dataType="i4"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Id]"
+                      name="Product_Id" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Name]"
+                      codePage="932"
+                      dataType="str"
+                      length="200"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Name]"
+                      name="Product_Name" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Price]"
+                      dataType="r8"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Product_Price]"
+                      name="Product_Price" />
+                    <outputColumn
+                      refId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Category_Name]"
+                      codePage="932"
+                      dataType="str"
+                      length="50"
+                      lineageId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1].Columns[Category_Name]"
+                      name="Category_Name" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
           </components>
           <paths>
             <path
               refId="Package\DF - Load from stgProduct to DimProduct.Paths[Changing Attribute Updates Output]"
-              endId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input]"
+              endId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1.Inputs[OLE DB Command Input]"
               name="Changing Attribute Updates Output"
               startId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Outputs[Changing Attribute Updates Output]" />
             <path
-              refId="Package\DF - Load from stgProduct to DimProduct.Paths[New Output]"
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[Derived Column Output]"
+              endId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Inputs[OLE DB Command Input]"
+              name="Derived Column Output"
+              startId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[Derived Column Output1]"
               endId="Package\DF - Load from stgProduct to DimProduct\Insert Destination.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[Historical Attribute Inserts Output]"
+              endId="Package\DF - Load from stgProduct to DimProduct\Derived Column.Inputs[Derived Column Input]"
+              name="Historical Attribute Inserts Output"
+              startId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Outputs[Historical Attribute Inserts Output]" />
+            <path
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[New Output]"
+              endId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 1]"
               name="New Output"
               startId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Outputs[New Output]" />
+            <path
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[OLE DB Command Output]"
+              endId="Package\DF - Load from stgProduct to DimProduct\Union All.Inputs[Union All Input 2]"
+              name="OLE DB Command Output"
+              startId="Package\DF - Load from stgProduct to DimProduct\OLE DB Command.Outputs[OLE DB Command Output]" />
             <path
               refId="Package\DF - Load from stgProduct to DimProduct.Paths[OLE DB Source Output]"
               endId="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension.Inputs[Slowly Changing Dimension Input]"
               name="OLE DB Source Output"
               startId="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\DF - Load from stgProduct to DimProduct.Paths[Union All Output 1]"
+              endId="Package\DF - Load from stgProduct to DimProduct\Derived Column 1.Inputs[Derived Column Input]"
+              name="Union All Output 1"
+              startId="Package\DF - Load from stgProduct to DimProduct\Union All.Outputs[Union All Output 1]" />
           </paths>
         </pipeline>
       </DTS:ObjectData>
@@ -3581,7 +4573,7 @@ FROM         category INNER JOIN
     <DTS:PrecedenceConstraint
       DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
       DTS:CreationName=""
-      DTS:DTSID="{2A2ED550-5C93-46D9-9A7F-2E56E4243187}"
+      DTS:DTSID="{44261FCA-854C-47E9-835B-CD0590E068E8}"
       DTS:From="Package\SQL - Truncate Stage Tables"
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint 3"
@@ -3649,9 +4641,9 @@ FROM         category INNER JOIN
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-79.3531746031746,92.261904761905"
+              EndConnector="-79.3531746031748,92.261904761905"
               Start="0,0"
-              End="-79.3531746031746,84.761904761905">
+              End="-79.3531746031748,84.761904761905">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
@@ -3662,13 +4654,13 @@ FROM         category INNER JOIN
                     Point2="0,46.1309523809525"
                     Point3="-4,46.1309523809525" />
                   <mssgle:LineSegment
-                    End="-75.3531746031746,46.1309523809525" />
+                    End="-75.3531746031748,46.1309523809525" />
                   <mssgle:CubicBezierSegment
-                    Point1="-75.3531746031746,46.1309523809525"
-                    Point2="-79.3531746031746,46.1309523809525"
-                    Point3="-79.3531746031746,50.1309523809525" />
+                    Point1="-75.3531746031748,46.1309523809525"
+                    Point2="-79.3531746031748,46.1309523809525"
+                    Point3="-79.3531746031748,50.1309523809525" />
                   <mssgle:LineSegment
-                    End="-79.3531746031746,84.761904761905" />
+                    End="-79.3531746031748,84.761904761905" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3705,26 +4697,26 @@ FROM         category INNER JOIN
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="72.5912698412686,86.2380952380943"
+              EndConnector="72.5912698412679,86.238095238094"
               Start="0,0"
-              End="72.5912698412686,78.7380952380943">
+              End="72.5912698412679,78.738095238094">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,39.1190476190472" />
+                    End="0,39.119047619047" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,39.1190476190472"
-                    Point2="0,43.1190476190472"
-                    Point3="4,43.1190476190472" />
+                    Point1="0,39.119047619047"
+                    Point2="0,43.119047619047"
+                    Point3="4,43.119047619047" />
                   <mssgle:LineSegment
-                    End="68.5912698412686,43.1190476190472" />
+                    End="68.5912698412679,43.119047619047" />
                   <mssgle:CubicBezierSegment
-                    Point1="68.5912698412686,43.1190476190472"
-                    Point2="72.5912698412686,43.1190476190472"
-                    Point3="72.5912698412686,47.1190476190472" />
+                    Point1="68.5912698412679,43.119047619047"
+                    Point2="72.5912698412679,43.119047619047"
+                    Point3="72.5912698412679,47.119047619047" />
                   <mssgle:LineSegment
-                    End="72.5912698412686,78.7380952380943" />
+                    End="72.5912698412679,78.738095238094" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3746,16 +4738,16 @@ FROM         category INNER JOIN
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,5.39230769230761" />
+                    End="0,5.39230769230759" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,5.39230769230761"
-                    Point2="0,9.39230769230761"
-                    Point3="-4,9.39230769230761" />
+                    Point1="0,5.39230769230759"
+                    Point2="0,9.39230769230759"
+                    Point3="-4,9.39230769230759" />
                   <mssgle:LineSegment
-                    End="-160.615079365079,9.39230769230761" />
+                    End="-160.615079365079,9.39230769230759" />
                   <mssgle:CubicBezierSegment
-                    Point1="-160.615079365079,9.39230769230761"
-                    Point2="-164.615079365079,9.39230769230761"
+                    Point1="-160.615079365079,9.39230769230759"
+                    Point2="-164.615079365079,9.39230769230759"
                     Point3="-164.615079365079,13.3923076923076" />
                   <mssgle:LineSegment
                     End="-164.615079365079,19.9999999999997" />
@@ -3769,18 +4761,18 @@ FROM         category INNER JOIN
         </EdgeLayout>
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint 4]"
-          TopLeft="436.466269841269,108.785714285714">
+          TopLeft="436.46626984127,108.785714285714">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="0,29.5714285714284"
+              EndConnector="0,29.5714285714287"
               Start="0,0"
-              End="0,22.0714285714284">
+              End="0,22.0714285714287">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,22.0714285714284" />
+                    End="0,22.0714285714287" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3795,26 +4787,26 @@ FROM         category INNER JOIN
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="199.27380952381,29.5317460317464"
+              EndConnector="199.27380952381,29.5317460317467"
               Start="0,0"
-              End="199.27380952381,22.0317460317464">
+              End="199.27380952381,22.0317460317467">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,6.08622710622722" />
+                    End="0,6.08622710622734" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,6.08622710622722"
-                    Point2="0,10.0862271062272"
-                    Point3="4,10.0862271062272" />
+                    Point1="0,6.08622710622734"
+                    Point2="0,10.0862271062273"
+                    Point3="4,10.0862271062273" />
                   <mssgle:LineSegment
-                    End="195.27380952381,10.0862271062272" />
+                    End="195.27380952381,10.0862271062273" />
                   <mssgle:CubicBezierSegment
-                    Point1="195.27380952381,10.0862271062272"
-                    Point2="199.27380952381,10.0862271062272"
-                    Point3="199.27380952381,14.0862271062272" />
+                    Point1="195.27380952381,10.0862271062273"
+                    Point2="199.27380952381,10.0862271062273"
+                    Point3="199.27380952381,14.0862271062273" />
                   <mssgle:LineSegment
-                    End="199.27380952381,22.0317460317464" />
+                    End="199.27380952381,22.0317460317467" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -3830,7 +4822,7 @@ FROM         category INNER JOIN
     design-time-name="Package\DF -  Stage Customer">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="198,42"
           Id="Package\DF -  Stage Customer\DST - Stage stgCustomer"
@@ -3858,7 +4850,9 @@ FROM         category INNER JOIN
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -3894,7 +4888,7 @@ FROM         category INNER JOIN
     design-time-name="Package\DF -  Stage Department">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="232,42"
           Id="Package\DF -  Stage Department\SRC - DataCo_DWH Department"
@@ -3922,7 +4916,9 @@ FROM         category INNER JOIN
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -3958,7 +4954,7 @@ FROM         category INNER JOIN
     design-time-name="Package\DF -  Stage Product">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="212,42"
           Id="Package\DF -  Stage Product\SRC - DataCo_DWH Product"
@@ -3986,7 +4982,9 @@ FROM         category INNER JOIN
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -4017,26 +5015,18 @@ FROM         category INNER JOIN
     design-time-name="Package\DF - Load from stgCustomer to DimCustomer">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
-        <NodeLayout
-          Size="165.5,42"
-          Id="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command"
-          TopLeft="229.25,209.5" />
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="208.5,42"
           Id="Package\DF - Load from stgCustomer to DimCustomer\Slowly Changing Dimension"
-          TopLeft="207.75,107.5" />
-        <NodeLayout
-          Size="163,42"
-          Id="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination"
-          TopLeft="5.50000000000006,209.5" />
+          TopLeft="128,107.5" />
         <NodeLayout
           Size="197.5,42"
           Id="Package\DF - Load from stgCustomer to DimCustomer\SRC - Stage stgCustomer"
-          TopLeft="213.25,5.5" />
+          TopLeft="133.5,5.5" />
         <EdgeLayout
           Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[OLE DB Source Output]"
-          TopLeft="312,47.5">
+          TopLeft="232.25,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4056,75 +5046,235 @@ FROM         category INNER JOIN
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="154,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\Derived Column"
+          TopLeft="17.2500000000001,209.5" />
         <EdgeLayout
-          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[New Output]"
-          TopLeft="278.583333333333,149.5">
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Historical Attribute Inserts Output]"
+          TopLeft="182.125,149.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-191.583333333333,60"
+              EndConnector="-87.875,60"
               Start="0,0"
-              End="-191.583333333333,52.5">
+              End="-87.875,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.2741551642075" />
+                    End="0,16.5051302288871" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,20.2741551642075"
-                    Point2="0,24.2741551642075"
-                    Point3="-4,24.2741551642075" />
+                    Point1="0,16.5051302288871"
+                    Point2="0,20.5051302288871"
+                    Point3="-4,20.5051302288871" />
                   <mssgle:LineSegment
-                    End="-187.583333333333,24.2741551642075" />
+                    End="-83.875,20.5051302288871" />
                   <mssgle:CubicBezierSegment
-                    Point1="-187.583333333333,24.2741551642075"
-                    Point2="-191.583333333333,24.2741551642075"
-                    Point3="-191.583333333333,28.2741551642075" />
+                    Point1="-83.875,20.5051302288871"
+                    Point2="-87.875,20.5051302288871"
+                    Point3="-87.875,24.5051302288871" />
                   <mssgle:LineSegment
-                    End="-191.583333333333,52.5" />
+                    End="-87.875,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-122.883053385417,29.2741551642075,54.1827734375,11.43359375"
+              BoundingBox="-118.99388671875,25.5051302288871,150.1127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="165.5,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command"
+          TopLeft="5.50000000000006,311.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Derived Column Output]"
+          TopLeft="91.2500000000001,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="120.5,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\Union All"
+          TopLeft="172,413.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[New Output]"
+          TopLeft="232.25,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.75,264"
+              Start="0,0"
+              End="18.75,256.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,152.324324324324" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,152.324324324324"
+                    Point2="0,156.324324324324"
+                    Point3="4,156.324324324324" />
+                  <mssgle:LineSegment
+                    End="14.75,156.324324324324" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.75,156.324324324324"
+                    Point2="18.75,156.324324324324"
+                    Point3="18.75,160.324324324324" />
+                  <mssgle:LineSegment
+                    End="18.75,256.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-17.71638671875,161.324324324324,54.1827734375,11.43359375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
         <EdgeLayout
-          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Changing Attribute Updates Output]"
-          TopLeft="345.416666666667,149.5">
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[OLE DB Command Output]"
+          TopLeft="88.2500000000001,353.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-33.4166666666667,60"
+              EndConnector="125.25,60"
               Start="0,0"
-              End="-33.4166666666667,52.5">
+              End="125.25,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.2741551642075" />
+                    End="0,31.5282555282555" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,20.2741551642075"
-                    Point2="0,24.2741551642075"
-                    Point3="-4,24.2741551642075" />
+                    Point1="0,31.5282555282555"
+                    Point2="0,35.5282555282555"
+                    Point3="4,35.5282555282555" />
                   <mssgle:LineSegment
-                    End="-29.4166666666667,24.2741551642075" />
+                    End="121.25,35.5282555282555" />
                   <mssgle:CubicBezierSegment
-                    Point1="-29.4166666666667,24.2741551642075"
-                    Point2="-33.4166666666667,24.2741551642075"
-                    Point3="-33.4166666666667,28.2741551642075" />
+                    Point1="121.25,35.5282555282555"
+                    Point2="125.25,35.5282555282555"
+                    Point3="125.25,39.5282555282555" />
                   <mssgle:LineSegment
-                    End="-33.4166666666667,52.5" />
+                    End="125.25,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\Derived Column 1"
+          TopLeft="150.75,515.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Union All Output 1]"
+          TopLeft="232.25,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\Insert Destination"
+          TopLeft="150.75,617.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Derived Column Output1]"
+          TopLeft="232.25,557.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="174.5,42"
+          Id="Package\DF - Load from stgCustomer to DimCustomer\OLE DB Command 1"
+          TopLeft="293,209.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgCustomer to DimCustomer.Paths[Changing Attribute Updates Output]"
+          TopLeft="282.375,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="97.875,60"
+              Start="0,0"
+              End="97.875,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.5051302288871" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.5051302288871"
+                    Point2="0,20.5051302288871"
+                    Point3="4,20.5051302288871" />
+                  <mssgle:LineSegment
+                    End="93.875,20.5051302288871" />
+                  <mssgle:CubicBezierSegment
+                    Point1="93.875,20.5051302288871"
+                    Point2="97.875,20.5051302288871"
+                    Point3="97.875,24.5051302288871" />
+                  <mssgle:LineSegment
+                    End="97.875,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-95.2422395833334,29.2741551642075,157.0678125,11.6630859375"
+              BoundingBox="-29.59640625,25.5051302288871,157.0678125,11.6630859375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -4146,13 +5296,13 @@ FROM         category INNER JOIN
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[City]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;City&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
     &lt;InputColumnToDBColumn&gt;
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Country]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;Country&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
     &lt;InputColumnToDBColumn&gt;
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Customer_Id]&lt;/IdentificationString&gt;
@@ -4176,35 +5326,39 @@ FROM         category INNER JOIN
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Segment]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;Segment&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
     &lt;InputColumnToDBColumn&gt;
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[State]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;State&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
     &lt;InputColumnToDBColumn&gt;
       &lt;IdentificationString&gt;SRC - Stage stgCustomer.Outputs[OLE DB Source Output].Columns[Zipcode]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;Zipcode&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
   &lt;/InputToColumnsCollection&gt;
   &lt;GeneratedComponentsIdentificationStrings&gt;
-    &lt;anyType xsi:type="xsd:string"&gt;Insert Destination&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Derived Column&lt;/anyType&gt;
     &lt;anyType xsi:type="xsd:string"&gt;OLE DB Command&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Union All&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Derived Column 1&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Insert Destination&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;OLE DB Command 1&lt;/anyType&gt;
   &lt;/GeneratedComponentsIdentificationStrings&gt;
   &lt;FailFixedAttribute&gt;false&lt;/FailFixedAttribute&gt;
-  &lt;FailChangeAttribute&gt;false&lt;/FailChangeAttribute&gt;
+  &lt;FailChangeAttribute&gt;true&lt;/FailChangeAttribute&gt;
   &lt;UseStartEndDate&gt;false&lt;/UseStartEndDate&gt;
-  &lt;CurrentIndicatorColumn /&gt;
+  &lt;CurrentIndicatorColumn&gt;RowIsCurrent&lt;/CurrentIndicatorColumn&gt;
   &lt;InferredIndicatorColumn /&gt;
-  &lt;ValueCurrent /&gt;
-  &lt;ValueExpired /&gt;
-  &lt;StartDateColumn /&gt;
-  &lt;EndDateColumn /&gt;
-  &lt;DateVariable /&gt;
+  &lt;ValueCurrent&gt;1&lt;/ValueCurrent&gt;
+  &lt;ValueExpired&gt;0&lt;/ValueExpired&gt;
+  &lt;StartDateColumn&gt;RowStartDate&lt;/StartDateColumn&gt;
+  &lt;EndDateColumn&gt;RowEndDate&lt;/EndDateColumn&gt;
+  &lt;DateVariable&gt;System::ContainerStartTime&lt;/DateVariable&gt;
   &lt;EnableInferredSupport&gt;false&lt;/EnableInferredSupport&gt;
 &lt;/SCDWizardMetadata&gt;</Value>
       </Property>
@@ -4335,7 +5489,9 @@ FROM         category INNER JOIN
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -4401,62 +5557,18 @@ FROM         category INNER JOIN
     design-time-name="Package\DF - Load from stgProduct to DimProduct">
     <LayoutInfo>
       <GraphLayout
-        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="208.5,42"
           Id="Package\DF - Load from stgProduct to DimProduct\Slowly Changing Dimension"
-          TopLeft="207.75,107.5" />
-        <NodeLayout
-          Size="165.5,42"
-          Id="Package\DF - Load from stgProduct to DimProduct\OLE DB Command"
-          TopLeft="229.25,209.5" />
-        <NodeLayout
-          Size="163,42"
-          Id="Package\DF - Load from stgProduct to DimProduct\Insert Destination"
-          TopLeft="5.50000000000006,209.5" />
+          TopLeft="128,107.5" />
         <NodeLayout
           Size="188.5,42"
           Id="Package\DF - Load from stgProduct to DimProduct\SRC - Stage stgProduct"
-          TopLeft="217.75,5.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Changing Attribute Updates Output]"
-          TopLeft="345.416666666667,149.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-33.4166666666667,60"
-              Start="0,0"
-              End="-33.4166666666667,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20.2741551642075" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20.2741551642075"
-                    Point2="0,24.2741551642075"
-                    Point3="-4,24.2741551642075" />
-                  <mssgle:LineSegment
-                    End="-29.4166666666667,24.2741551642075" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-29.4166666666667,24.2741551642075"
-                    Point2="-33.4166666666667,24.2741551642075"
-                    Point3="-33.4166666666667,28.2741551642075" />
-                  <mssgle:LineSegment
-                    End="-33.4166666666667,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-95.2422395833334,29.2741551642075,157.0678125,11.6630859375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          TopLeft="138,5.5" />
         <EdgeLayout
           Id="Package\DF - Load from stgProduct to DimProduct.Paths[OLE DB Source Output]"
-          TopLeft="312,47.5">
+          TopLeft="232.25,47.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
@@ -4476,39 +5588,235 @@ FROM         category INNER JOIN
             <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <NodeLayout
+          Size="154,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\Derived Column"
+          TopLeft="17.2500000000001,209.5" />
         <EdgeLayout
-          Id="Package\DF - Load from stgProduct to DimProduct.Paths[New Output]"
-          TopLeft="278.583333333333,149.5">
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Historical Attribute Inserts Output]"
+          TopLeft="182.125,149.5">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-191.583333333333,60"
+              EndConnector="-87.875,60"
               Start="0,0"
-              End="-191.583333333333,52.5">
+              End="-87.875,52.5">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,20.2741551642075" />
+                    End="0,16.5051302288871" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,20.2741551642075"
-                    Point2="0,24.2741551642075"
-                    Point3="-4,24.2741551642075" />
+                    Point1="0,16.5051302288871"
+                    Point2="0,20.5051302288871"
+                    Point3="-4,20.5051302288871" />
                   <mssgle:LineSegment
-                    End="-187.583333333333,24.2741551642075" />
+                    End="-83.875,20.5051302288871" />
                   <mssgle:CubicBezierSegment
-                    Point1="-187.583333333333,24.2741551642075"
-                    Point2="-191.583333333333,24.2741551642075"
-                    Point3="-191.583333333333,28.2741551642075" />
+                    Point1="-83.875,20.5051302288871"
+                    Point2="-87.875,20.5051302288871"
+                    Point3="-87.875,24.5051302288871" />
                   <mssgle:LineSegment
-                    End="-191.583333333333,52.5" />
+                    End="-87.875,52.5" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
             <mssgm:EdgeLabel
-              BoundingBox="-122.883053385417,29.2741551642075,54.1827734375,11.43359375"
+              BoundingBox="-118.99388671875,25.5051302288871,150.1127734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="165.5,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\OLE DB Command"
+          TopLeft="5.50000000000006,311.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Derived Column Output]"
+          TopLeft="91.2500000000001,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="120.5,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\Union All"
+          TopLeft="172,413.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[New Output]"
+          TopLeft="232.25,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.75,264"
+              Start="0,0"
+              End="18.75,256.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,152.324324324324" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,152.324324324324"
+                    Point2="0,156.324324324324"
+                    Point3="4,156.324324324324" />
+                  <mssgle:LineSegment
+                    End="14.75,156.324324324324" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.75,156.324324324324"
+                    Point2="18.75,156.324324324324"
+                    Point3="18.75,160.324324324324" />
+                  <mssgle:LineSegment
+                    End="18.75,256.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-17.71638671875,161.324324324324,54.1827734375,11.43359375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[OLE DB Command Output]"
+          TopLeft="88.2500000000001,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="125.25,60"
+              Start="0,0"
+              End="125.25,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5282555282555" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,31.5282555282555"
+                    Point2="0,35.5282555282555"
+                    Point3="4,35.5282555282555" />
+                  <mssgle:LineSegment
+                    End="121.25,35.5282555282555" />
+                  <mssgle:CubicBezierSegment
+                    Point1="121.25,35.5282555282555"
+                    Point2="125.25,35.5282555282555"
+                    Point3="125.25,39.5282555282555" />
+                  <mssgle:LineSegment
+                    End="125.25,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\Derived Column 1"
+          TopLeft="150.75,515.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Union All Output 1]"
+          TopLeft="232.25,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\Insert Destination"
+          TopLeft="150.75,617.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Derived Column Output1]"
+          TopLeft="232.25,557.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="174.5,42"
+          Id="Package\DF - Load from stgProduct to DimProduct\OLE DB Command 1"
+          TopLeft="293,209.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgProduct to DimProduct.Paths[Changing Attribute Updates Output]"
+          TopLeft="282.375,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="97.875,60"
+              Start="0,0"
+              End="97.875,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.5051302288871" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.5051302288871"
+                    Point2="0,20.5051302288871"
+                    Point3="4,20.5051302288871" />
+                  <mssgle:LineSegment
+                    End="93.875,20.5051302288871" />
+                  <mssgle:CubicBezierSegment
+                    Point1="93.875,20.5051302288871"
+                    Point2="97.875,20.5051302288871"
+                    Point3="97.875,24.5051302288871" />
+                  <mssgle:LineSegment
+                    End="97.875,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-29.59640625,25.5051302288871,157.0678125,11.6630859375"
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
@@ -4530,7 +5838,7 @@ FROM         category INNER JOIN
       &lt;IdentificationString&gt;SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Category_Name]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;CategoryName&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
     &lt;InputColumnToDBColumn&gt;
       &lt;IdentificationString&gt;SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Id]&lt;/IdentificationString&gt;
@@ -4548,23 +5856,27 @@ FROM         category INNER JOIN
       &lt;IdentificationString&gt;SRC - Stage stgProduct.Outputs[OLE DB Source Output].Columns[Product_Price]&lt;/IdentificationString&gt;
       &lt;ColumnName&gt;ProductPrice&lt;/ColumnName&gt;
       &lt;KeyType&gt;None&lt;/KeyType&gt;
-      &lt;ChangeType&gt;ChangingAttribute&lt;/ChangeType&gt;
+      &lt;ChangeType&gt;HistoricalAttribute&lt;/ChangeType&gt;
     &lt;/InputColumnToDBColumn&gt;
   &lt;/InputToColumnsCollection&gt;
   &lt;GeneratedComponentsIdentificationStrings&gt;
-    &lt;anyType xsi:type="xsd:string"&gt;Insert Destination&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Derived Column&lt;/anyType&gt;
     &lt;anyType xsi:type="xsd:string"&gt;OLE DB Command&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Union All&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Derived Column 1&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;Insert Destination&lt;/anyType&gt;
+    &lt;anyType xsi:type="xsd:string"&gt;OLE DB Command 1&lt;/anyType&gt;
   &lt;/GeneratedComponentsIdentificationStrings&gt;
   &lt;FailFixedAttribute&gt;false&lt;/FailFixedAttribute&gt;
-  &lt;FailChangeAttribute&gt;false&lt;/FailChangeAttribute&gt;
+  &lt;FailChangeAttribute&gt;true&lt;/FailChangeAttribute&gt;
   &lt;UseStartEndDate&gt;false&lt;/UseStartEndDate&gt;
-  &lt;CurrentIndicatorColumn /&gt;
+  &lt;CurrentIndicatorColumn&gt;RowIsCurrent&lt;/CurrentIndicatorColumn&gt;
   &lt;InferredIndicatorColumn /&gt;
-  &lt;ValueCurrent /&gt;
-  &lt;ValueExpired /&gt;
-  &lt;StartDateColumn /&gt;
-  &lt;EndDateColumn /&gt;
-  &lt;DateVariable /&gt;
+  &lt;ValueCurrent&gt;1&lt;/ValueCurrent&gt;
+  &lt;ValueExpired&gt;0&lt;/ValueExpired&gt;
+  &lt;StartDateColumn&gt;RowStartDate&lt;/StartDateColumn&gt;
+  &lt;EndDateColumn&gt;RowEndDate&lt;/EndDateColumn&gt;
+  &lt;DateVariable&gt;System::ContainerStartTime&lt;/DateVariable&gt;
   &lt;EnableInferredSupport&gt;false&lt;/EnableInferredSupport&gt;
 &lt;/SCDWizardMetadata&gt;</Value>
       </Property>

@@ -12,7 +12,7 @@
   DTS:ObjectName="DateDimensionImport"
   DTS:PackageType="5"
   DTS:VersionBuild="16"
-  DTS:VersionGUID="{2D1A2F99-0C75-4F8A-9AA7-43142D5E6DDB}">
+  DTS:VersionGUID="{88F17C37-170C-458E-8D12-4A03DF59A3BD}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />

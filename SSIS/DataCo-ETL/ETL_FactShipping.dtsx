@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="12/4/2024 11:06:06 AM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="ETL_FactShipping"
   DTS:PackageType="5"
-  DTS:VersionBuild="19"
-  DTS:VersionGUID="{6D85CB1B-6F75-43ED-ACD0-06881FBEC417}">
+  DTS:VersionBuild="21"
+  DTS:VersionGUID="{A8F52A52-E137-4382-A0C9-DF9283E4C59B}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -56,7 +56,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -90,8 +90,8 @@
               <connections>
                 <connection
                   refId="Package\DF -  Stage Shipping\DST - Stage stgShipping.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -287,7 +287,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT        shipping.Order_Id, shipping.Order_Date, shipping.Shipping_Date, shipping.Late_Delivery_Risk, shipping.Days_For_Shipment_Scheduled, shipping.Days_For_Shipping_Actual, shipping.Delivery_Status, shipping.Shipping_Mode, order_item.Order_Item_Id, product.Product_Id, department.Department_Id, orders.Customer_Id
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT        shipping.Order_Id, shipping.Order_Date, shipping.Shipping_Date, shipping.Late_Delivery_Risk, shipping.Days_For_Shipment_Scheduled, shipping.Days_For_Shipping_Actual, shipping.Delivery_Status, shipping.Shipping_Mode, order_item.Order_Item_Id, product.Product_Id, department.Department_Id, orders.Customer_Id
 FROM         shipping INNER JOIN
                 order_item ON shipping.Order_Id = order_item.Order_Id INNER JOIN
                 product ON order_item.Product_Id = product.Product_Id INNER JOIN
@@ -318,8 +318,8 @@ FROM         shipping INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Shipping\SRC - DataCo_DWH Shipping.Connections[OleDbConnection]"
-                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce]"
+                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
+                  connectionManagerRefId="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -740,7 +740,7 @@ FROM         shipping INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -774,8 +774,8 @@ FROM         shipping INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\Insert Destination.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -960,14 +960,20 @@ FROM         shipping INNER JOIN
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimCustomer]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimCustomer]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (select * from [dbo].[DimCustomer]) [refTable]
-where [refTable].[CustomerId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT *
+FROM (
+    SELECT *
+    FROM [dbo].[DimCustomer]
+    WHERE RowIsCurrent= 1
+) AS refTable
+WHERE refTable.CustomerId = ?
+</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -977,7 +983,7 @@ where [refTable].[CustomerId] = ?</property>
                   dataType="System.Int32"
                   description="Specifies the cache type of the lookup table."
                   name="CacheType"
-                  typeConverter="CacheType">0</property>
+                  typeConverter="CacheType">1</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
@@ -1016,8 +1022,8 @@ where [refTable].[CustomerId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\Lookup CustomerKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1118,13 +1124,13 @@ where [refTable].[CustomerId] = ?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimDepartment]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimDepartment]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (select * from [dbo].[DimDepartment]) [refTable]
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from [dbo].[DimDepartment]) [refTable]
 where [refTable].[DepartmentId] = ?</property>
                 <property
                   dataType="System.Int32"
@@ -1174,8 +1180,8 @@ where [refTable].[DepartmentId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\Lookup DepartmentKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1276,14 +1282,20 @@ where [refTable].[DepartmentId] = ?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimProduct]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimProduct]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (select * from [dbo].[DimProduct]) [refTable]
-where [refTable].[ProductId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT *
+FROM (
+    SELECT *
+    FROM [dbo].[DimProduct]
+    WHERE RowIsCurrent= 1
+) AS refTable
+WHERE refTable.ProductId = ?
+</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1293,7 +1305,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.Int32"
                   description="Specifies the cache type of the lookup table."
                   name="CacheType"
-                  typeConverter="CacheType">0</property>
+                  typeConverter="CacheType">1</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
@@ -1332,8 +1344,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\Lookup ProductKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1438,7 +1450,7 @@ where [refTable].[ProductId] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[FactShipping] SET [CustomerKey] = ?,[Days_Actual] = ?,[Days_Scheduled] = ?,[Delivery_Status] = ?,[DepartmentKey] = ?,[Late_Delivery_Risk] = ?,[OrderDateKey] = ?,[ShipDateKey] = ?,[Shipping_Mode] = ? WHERE [OrderId] = ? AND [OrderItemId] = ? AND [ProductKey] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE [dbo].[FactShipping] SET [CustomerKey] = ?,[Days_Actual] = ?,[Days_Scheduled] = ?,[Delivery_Status] = ?,[DepartmentKey] = ?,[Late_Delivery_Risk] = ?,[OrderDateKey] = ?,[ShipDateKey] = ?,[Shipping_Mode] = ? WHERE [OrderId] = ? AND [OrderItemId] = ? AND [ProductKey] = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1447,8 +1459,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\OLE DB Command.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1722,7 +1734,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.String"
                   description="Specifies the SELECT statement used to create a schema rowset."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT [CustomerKey], [Days_Actual], [Days_Scheduled], [Delivery_Status], [DepartmentKey], [Late_Delivery_Risk], [OrderDateKey], [OrderId], [OrderItemId], [ProductKey], [ShipDateKey], [Shipping_Mode] FROM [dbo].[FactShipping]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [CustomerKey], [Days_Actual], [Days_Scheduled], [Delivery_Status], [DepartmentKey], [Late_Delivery_Risk], [OrderDateKey], [OrderId], [OrderItemId], [ProductKey], [ShipDateKey], [Shipping_Mode] FROM [dbo].[FactShipping]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the WHERE clause in the SELECT statement that selects the current row among rows with identical business keys."
@@ -1760,8 +1772,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\Slowly Changing Dimension.Connections[LookupConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
                   description="Defines the connection to use for lookups in the dimension table"
                   name="LookupConnection" />
               </connections>
@@ -2064,7 +2076,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -2090,8 +2102,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgShipping to FactShipping\SRC - Stage stgSales.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
-                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2592,149 +2604,37 @@ where [refTable].[ProductId] = ?</property>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="177,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\SRC - Stage stgSales"
-          TopLeft="223.5,5.5" />
-        <NodeLayout
-          Size="169.5,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\Lookup ProductKey"
-          TopLeft="227.25,107.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgShipping to FactShipping.Paths[OLE DB Source Output]"
-          TopLeft="312,47.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="178.5,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\Lookup CustomerKey"
-          TopLeft="222.75,209.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output]"
-          TopLeft="312,149.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="163,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\Insert Destination"
+          TopLeft="5.50000000000011,617.5" />
         <NodeLayout
           Size="189.5,42"
           Id="Package\DF - Load from stgShipping to FactShipping\Lookup DepartmentKey"
           TopLeft="217.25,311.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output1]"
-          TopLeft="312,251.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <NodeLayout
-          Size="157.5,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\Derived DateKey"
-          TopLeft="233.25,413.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output2]"
-          TopLeft="312,353.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="165.5,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\OLE DB Command"
+          TopLeft="229.25,617.5" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\SRC - Stage stgSales"
+          TopLeft="223.5,5.5" />
         <NodeLayout
           Size="208.5,42"
           Id="Package\DF - Load from stgShipping to FactShipping\Slowly Changing Dimension"
           TopLeft="207.75,515.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Derived Column Output]"
-          TopLeft="312,455.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <NodeLayout
-          Size="163,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\Insert Destination"
-          TopLeft="5.50000000000011,617.5" />
+          Size="178.5,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\Lookup CustomerKey"
+          TopLeft="222.75,209.5" />
+        <NodeLayout
+          Size="169.5,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\Lookup ProductKey"
+          TopLeft="227.25,107.5" />
+        <NodeLayout
+          Size="157.5,42"
+          Id="Package\DF - Load from stgShipping to FactShipping\Derived DateKey"
+          TopLeft="233.25,413.5" />
         <EdgeLayout
           Id="Package\DF - Load from stgShipping to FactShipping.Paths[New Output]"
           TopLeft="278.583333333333,557.5">
@@ -2771,10 +2671,100 @@ where [refTable].[ProductId] = ?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
-        <NodeLayout
-          Size="165.5,42"
-          Id="Package\DF - Load from stgShipping to FactShipping\OLE DB Command"
-          TopLeft="229.25,617.5" />
+        <EdgeLayout
+          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output2]"
+          TopLeft="312,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output1]"
+          TopLeft="312,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Lookup Match Output]"
+          TopLeft="312,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgShipping to FactShipping.Paths[Derived Column Output]"
+          TopLeft="312,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
         <EdgeLayout
           Id="Package\DF - Load from stgShipping to FactShipping.Paths[Changing Attribute Updates Output]"
           TopLeft="345.416666666667,557.5">
@@ -2809,6 +2799,28 @@ where [refTable].[ProductId] = ?</property>
             <mssgm:EdgeLabel
               BoundingBox="-95.2422395833333,29.2741551642075,157.0678125,11.6630859375"
               RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgShipping to FactShipping.Paths[OLE DB Source Output]"
+          TopLeft="312,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -2959,7 +2971,7 @@ where [refTable].[ProductId] = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">true</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -2982,7 +2994,7 @@ where [refTable].[ProductId] = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:boolean">true</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -2992,7 +3004,7 @@ where [refTable].[ProductId] = ?</property>
       <Property>
         <Name>TableInfoObjectType</Name>
         <Value
-          type="q4:string">0</Value>
+          type="q4:int">0</Value>
       </Property>
       <Property>
         <Name>DataSourceViewID</Name>

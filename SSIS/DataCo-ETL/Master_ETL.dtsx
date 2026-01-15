@@ -12,7 +12,7 @@
   DTS:ObjectName="Master_ETL"
   DTS:PackageType="5"
   DTS:VersionBuild="4"
-  DTS:VersionGUID="{20B65377-CCE8-4896-BC7E-CFD84580882B}">
+  DTS:VersionGUID="{2262A610-FA5F-436A-88EF-F2DFDD028367}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />

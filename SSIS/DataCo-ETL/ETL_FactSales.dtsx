@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
   DTS:refId="Package"
   DTS:CreationDate="10/29/2024 8:53:46 PM"
@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="ETL_FactSales"
   DTS:PackageType="5"
-  DTS:VersionBuild="28"
-  DTS:VersionGUID="{DDEBC2D3-4491-48AD-908B-6850AFC44E6E}">
+  DTS:VersionBuild="32"
+  DTS:VersionGUID="{46C5F672-3F23-4AC5-920A-93469D76214A}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -56,7 +56,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -90,8 +90,8 @@
               <connections>
                 <connection
                   refId="Package\DF -  Stage Sales\DST - Stage stgSales.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -357,7 +357,7 @@
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT        orders.Order_Id, orders.Order_Region, orders.Order_Country, orders.Order_State, orders.Order_City, orders.Status, orders.Market, orders.Type_Transaction, order_item.Sales, order_item.Total, order_item.Discount, order_item.Profit_Ratio, orders.Order_Date, product.Product_Id, customer.Customer_Id, department.Department_Id, 
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT        orders.Order_Id, orders.Order_Region, orders.Order_Country, orders.Order_State, orders.Order_City, orders.Status, orders.Market, orders.Type_Transaction, order_item.Sales, order_item.Total, order_item.Discount, order_item.Profit_Ratio, orders.Order_Date, product.Product_Id, customer.Customer_Id, department.Department_Id, 
                 order_item.Order_Item_Id
 FROM         orders INNER JOIN
                 order_item ON orders.Order_Id = order_item.Order_Id INNER JOIN
@@ -389,8 +389,8 @@ FROM         orders INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF -  Stage Sales\SRC - DataCo_DWH Sales.Connections[OleDbConnection]"
-                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
-                  connectionManagerRefId="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:invalid"
+                  connectionManagerID="{3943685F-973C-4BF9-BE8B-D2F8189A5615}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_Ecommerce]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -936,7 +936,7 @@ FROM         orders INNER JOIN
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -970,8 +970,8 @@ FROM         orders INNER JOIN
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\Insert Destination.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -1226,14 +1226,20 @@ FROM         orders INNER JOIN
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimCustomer]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimCustomer]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from [dbo].[DimCustomer]) [refTable]
-where [refTable].[CustomerId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+    SELECT *
+    FROM [dbo].[DimCustomer]
+    WHERE RowIsCurrent= 1
+) AS refTable
+WHERE refTable.CustomerId = ?
+</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1243,7 +1249,7 @@ where [refTable].[CustomerId] = ?</property>
                   dataType="System.Int32"
                   description="Specifies the cache type of the lookup table."
                   name="CacheType"
-                  typeConverter="CacheType">0</property>
+                  typeConverter="CacheType">1</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
@@ -1282,8 +1288,8 @@ where [refTable].[CustomerId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\Lookup CustomerKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1384,13 +1390,13 @@ where [refTable].[CustomerId] = ?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimDepartment]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimDepartment]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from [dbo].[DimDepartment]) [refTable]
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from (select * from [dbo].[DimDepartment]) [refTable]
 where [refTable].[DepartmentId] = ?</property>
                 <property
                   dataType="System.Int32"
@@ -1440,8 +1446,8 @@ where [refTable].[DepartmentId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\Lookup DepartmentKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1542,14 +1548,20 @@ where [refTable].[DepartmentId] = ?</property>
                   description="Specifies the SQL statement that generates the lookup table."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [dbo].[DimProduct]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">select * from [dbo].[DimProduct]</property>
                 <property
                   dataType="System.String"
                   description="Specifies a SQL statement that uses parameters to generate the lookup table."
                   expressionType="Notify"
                   name="SqlCommandParam"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from [dbo].[DimProduct]) [refTable]
-where [refTable].[ProductId] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT *
+FROM (
+    SELECT *
+    FROM [dbo].[DimProduct]
+    WHERE RowIsCurrent= 1
+) AS refTable
+WHERE refTable.ProductId = ?
+</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the type of connection used to access the reference dataset."
@@ -1559,7 +1571,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.Int32"
                   description="Specifies the cache type of the lookup table."
                   name="CacheType"
-                  typeConverter="CacheType">0</property>
+                  typeConverter="CacheType">1</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
@@ -1598,8 +1610,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\Lookup ProductKey.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Connection manager used to access lookup data."
                   name="OleDbConnection" />
               </connections>
@@ -1704,7 +1716,7 @@ where [refTable].[ProductId] = ?</property>
                   description="The SQL command to be executed."
                   expressionType="Notify"
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">UPDATE [dbo].[FactSales] SET [CustomerKey] = ?,[DepartmentKey] = ?,[Discount_Amount] = ?,[Market] = ?,[Order_City] = ?,[Order_Country] = ?,[Order_Region] = ?,[Order_State] = ?,[OrderDateKey] = ?,[Original_Price] = ?,[Profit] = ?,[Status] = ?,[Total_Price] = ?,[Type_Transaction] = ? WHERE [OrderId] = ? AND [OrderItemId] = ? AND [ProductKey] = ?</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">UPDATE [dbo].[FactSales] SET [CustomerKey] = ?,[DepartmentKey] = ?,[Discount_Amount] = ?,[Market] = ?,[Order_City] = ?,[Order_Country] = ?,[Order_Region] = ?,[Order_State] = ?,[OrderDateKey] = ?,[Original_Price] = ?,[Profit] = ?,[Status] = ?,[Total_Price] = ?,[Type_Transaction] = ? WHERE [OrderId] = ? AND [OrderItemId] = ? AND [ProductKey] = ?</property>
                 <property
                   dataType="System.Int32"
                   description="Specifies the column code page to use when code page information is unavailable from the data source."
@@ -1713,8 +1725,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\OLE DB Command.Connections[OleDbConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -2093,7 +2105,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.String"
                   description="Specifies the SELECT statement used to create a schema rowset."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT [CustomerKey], [DepartmentKey], [Discount_Amount], [Market], [Order_City], [Order_Country], [Order_Region], [Order_State], [OrderDateKey], [OrderId], [OrderItemId], [Original_Price], [ProductKey], [Profit], [Status], [Total_Price], [Type_Transaction] FROM [dbo].[FactSales]</property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91">SELECT [CustomerKey], [DepartmentKey], [Discount_Amount], [Market], [Order_City], [Order_Country], [Order_Region], [Order_State], [OrderDateKey], [OrderId], [OrderItemId], [Original_Price], [ProductKey], [Profit], [Status], [Total_Price], [Type_Transaction] FROM [dbo].[FactSales]</property>
                 <property
                   dataType="System.String"
                   description="Specifies the WHERE clause in the SELECT statement that selects the current row among rows with identical business keys."
@@ -2131,8 +2143,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\Slowly Changing Dimension.Connections[LookupConnection]"
-                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
-                  connectionManagerRefId="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:invalid"
+                  connectionManagerID="{7C62FCF4-6CEE-4F10-902B-5A39DF51B883}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH]"
                   description="Defines the connection to use for lookups in the dimension table"
                   name="LookupConnection" />
               </connections>
@@ -2540,7 +2552,7 @@ where [refTable].[ProductId] = ?</property>
                   dataType="System.String"
                   description="The SQL command to be executed."
                   name="SqlCommand"
-                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor, Microsoft.DataTransformationServices.Controls, Version=16.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91"></property>
                 <property
                   dataType="System.String"
                   description="The variable that contains the SQL command to be executed."
@@ -2566,8 +2578,8 @@ where [refTable].[ProductId] = ?</property>
               <connections>
                 <connection
                   refId="Package\DF - Load from stgSales to FactSales\SRC - Stage stgSales.Connections[OleDbConnection]"
-                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
-                  connectionManagerRefId="{707CC383-5A92-4CC9-AC17-081AE94930D2}:invalid"
+                  connectionManagerID="{707CC383-5A92-4CC9-AC17-081AE94930D2}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[DESKTOP-V3U3D65_TRIDAT.DataCo_DWH_Stage]"
                   description="The OLE DB runtime connection used to access the database."
                   name="OleDbConnection" />
               </connections>
@@ -3103,7 +3115,7 @@ where [refTable].[ProductId] = ?</property>
     design-time-name="Package\DF -  Stage Sales">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
           Size="200.5,42"
           Id="Package\DF -  Stage Sales\SRC - DataCo_DWH Sales"
@@ -3131,7 +3143,9 @@ where [refTable].[ProductId] = ?</property>
             </mssgle:Curve>
           </EdgeLayout.Curve>
           <EdgeLayout.Labels>
-            <EdgeLabelCollection />
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
       </GraphLayout>
@@ -3164,189 +3178,37 @@ where [refTable].[ProductId] = ?</property>
       <GraphLayout
         Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
         <NodeLayout
-          Size="177,42"
-          Id="Package\DF - Load from stgSales to FactSales\SRC - Stage stgSales"
-          TopLeft="223.5,5.5" />
-        <NodeLayout
           Size="169.5,42"
           Id="Package\DF - Load from stgSales to FactSales\Lookup ProductKey"
           TopLeft="227.25,107.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[OLE DB Source Output]"
-          TopLeft="312,47.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="178.5,42"
-          Id="Package\DF - Load from stgSales to FactSales\Lookup CustomerKey"
-          TopLeft="222.75,209.5" />
-        <NodeLayout
-          Size="189.5,42"
-          Id="Package\DF - Load from stgSales to FactSales\Lookup DepartmentKey"
-          TopLeft="217.25,311.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output]"
-          TopLeft="312,149.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output1]"
-          TopLeft="312,251.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
-        <NodeLayout
-          Size="154,42"
-          Id="Package\DF - Load from stgSales to FactSales\Derived Profit and DateKey"
-          TopLeft="235,413.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output2]"
-          TopLeft="312,353.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <NodeLayout
           Size="208.5,42"
           Id="Package\DF - Load from stgSales to FactSales\Slowly Changing Dimension"
           TopLeft="207.75,515.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[Derived Column Output]"
-          TopLeft="312,455.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="0,60"
-              Start="0,0"
-              End="0,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <EdgeLabelCollection />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
         <NodeLayout
-          Size="163,42"
-          Id="Package\DF - Load from stgSales to FactSales\Insert Destination"
-          TopLeft="5.50000000000011,617.5" />
-        <EdgeLayout
-          Id="Package\DF - Load from stgSales to FactSales.Paths[New Output]"
-          TopLeft="278.583333333333,557.5">
-          <EdgeLayout.Curve>
-            <mssgle:Curve
-              StartConnector="{assembly:Null}"
-              EndConnector="-191.583333333333,60"
-              Start="0,0"
-              End="-191.583333333333,52.5">
-              <mssgle:Curve.Segments>
-                <mssgle:SegmentCollection
-                  Capacity="5">
-                  <mssgle:LineSegment
-                    End="0,20.2741551642075" />
-                  <mssgle:CubicBezierSegment
-                    Point1="0,20.2741551642075"
-                    Point2="0,24.2741551642075"
-                    Point3="-4,24.2741551642075" />
-                  <mssgle:LineSegment
-                    End="-187.583333333333,24.2741551642075" />
-                  <mssgle:CubicBezierSegment
-                    Point1="-187.583333333333,24.2741551642075"
-                    Point2="-191.583333333333,24.2741551642075"
-                    Point3="-191.583333333333,28.2741551642075" />
-                  <mssgle:LineSegment
-                    End="-191.583333333333,52.5" />
-                </mssgle:SegmentCollection>
-              </mssgle:Curve.Segments>
-            </mssgle:Curve>
-          </EdgeLayout.Curve>
-          <EdgeLayout.Labels>
-            <mssgm:EdgeLabel
-              BoundingBox="-122.883053385417,29.2741551642075,54.1827734375,11.43359375"
-              RelativePosition="Any" />
-          </EdgeLayout.Labels>
-        </EdgeLayout>
+          Size="189.5,42"
+          Id="Package\DF - Load from stgSales to FactSales\Lookup DepartmentKey"
+          TopLeft="217.25,311.5" />
         <NodeLayout
           Size="165.5,42"
           Id="Package\DF - Load from stgSales to FactSales\OLE DB Command"
           TopLeft="229.25,617.5" />
+        <NodeLayout
+          Size="178.5,42"
+          Id="Package\DF - Load from stgSales to FactSales\Lookup CustomerKey"
+          TopLeft="224.75,209.5" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\DF - Load from stgSales to FactSales\Derived Profit and DateKey"
+          TopLeft="235,413.5" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DF - Load from stgSales to FactSales\SRC - Stage stgSales"
+          TopLeft="223.5,5.5" />
+        <NodeLayout
+          Size="163,42"
+          Id="Package\DF - Load from stgSales to FactSales\Insert Destination"
+          TopLeft="5.50000000000011,617.5" />
         <EdgeLayout
           Id="Package\DF - Load from stgSales to FactSales.Paths[Changing Attribute Updates Output]"
           TopLeft="345.416666666667,557.5">
@@ -3383,6 +3245,158 @@ where [refTable].[ProductId] = ?</property>
               RelativePosition="Any" />
           </EdgeLayout.Labels>
         </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[OLE DB Source Output]"
+          TopLeft="312,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[New Output]"
+          TopLeft="278.583333333333,557.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-191.583333333333,60"
+              Start="0,0"
+              End="-191.583333333333,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.2741551642075" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.2741551642075"
+                    Point2="0,24.2741551642075"
+                    Point3="-4,24.2741551642075" />
+                  <mssgle:LineSegment
+                    End="-187.583333333333,24.2741551642075" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-187.583333333333,24.2741551642075"
+                    Point2="-191.583333333333,24.2741551642075"
+                    Point3="-191.583333333333,28.2741551642075" />
+                  <mssgle:LineSegment
+                    End="-191.583333333333,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-122.883053385417,29.2741551642075,54.1827734375,11.43359375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output2]"
+          TopLeft="312,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output1]"
+          TopLeft="313,251.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[Lookup Match Output]"
+          TopLeft="313,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,20.4453125,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\DF - Load from stgSales to FactSales.Paths[Derived Column Output]"
+          TopLeft="312,455.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
       </GraphLayout>
     </LayoutInfo>
   </TaskHost>
@@ -3392,7 +3406,7 @@ where [refTable].[ProductId] = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:string">true</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
@@ -3571,7 +3585,7 @@ where [refTable].[ProductId] = ?</property>
       <Property>
         <Name>OverwriteParamsSQLProp</Name>
         <Value
-          type="q2:string">false</Value>
+          type="q2:string">true</Value>
       </Property>
       <Property>
         <Name>UsedTableName</Name>
